@@ -3,19 +3,19 @@ id: TASK-004
 title: Task management web UI
 type: TASK
 priority: MEDIUM
-status: READY
+status: IN_PROGRESS
 assignee: FE
 parent: REQ-001
 depends_on: [TASK-003]
 sprint:
-branch:
+branch: feature/TASK-004-task-management-ui
 merge_commit:
 release:
 review_iteration: 0
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:14
+updated: 2026-09-23 17:15
 ---
 
 ## Description
@@ -50,3 +50,4 @@ Repo: frontend (new)
 |------|------|----|----|------|
 | 2026-09-23 17:00 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-23 17:14 | BACKLOG | READY | SCRUM | DoR met |
+| 2026-09-23 17:15 | READY | IN_PROGRESS | FE | feature/TASK-004-task-management-ui |
