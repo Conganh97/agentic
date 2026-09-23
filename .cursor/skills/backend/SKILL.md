@@ -70,7 +70,8 @@ board, commit `[TASK-###] <FROM> -> IN_PROGRESS (BE): ...`).
   no commented-out code, matches the design/API contract, every review comment addressed.
 
 ### 6. Commit (product repo)
-`git -C product add <files> && git -C product commit -m "feat(TASK-###): <summary>"` (use `fix(...)` for BUG).
+`git -C product add <files> && git -C product commit -m "feat(TASK-###): <summary>"` (use `fix(...)` for BUG; review fixes keep the prefix of the current iteration).
+Then `git -C product checkout main` so the next role starts from a clean `main`.
 
 ### 7. Hand over
 - Append an iteration to `## Implementation (BE/FE)` (format below).

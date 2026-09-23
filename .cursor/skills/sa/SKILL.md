@@ -110,18 +110,22 @@ SA only reads, runs tests and merges in `product/`. Never fix code yourself — 
 - If this chat implemented the task → refuse ("never review your own work").
 - `branch` set and exists: `git -C product rev-parse --verify <branch>`. The Implementation section has
   more iterations than there are Review rounds (round 1 needs ≥1 iteration). Otherwise `NEEDS_INPUT`.
-- `git -C product status --porcelain` must be empty and the current branch `main`; else `NEEDS_INPUT`.
+- `git -C product status --porcelain` must be empty, else `NEEDS_INPUT`. If the current branch is not
+  `main`, run `git -C product checkout main`.
 
 ### 2. Gather (only what is needed)
 - Task: AC, Design (SA), latest Implementation iteration, previous Review rounds.
-- The design doc linked in Design (SA), if any; `docs/standards/<backend|frontend>.md`; `memory/lessons.md`.
+- The design doc linked in Design (SA); if none is linked, the Design (SA) section is the contract; `docs/standards/<backend|frontend>.md`; `memory/lessons.md`.
 - `git -C product log --oneline main..<branch>`, `git -C product diff --stat main...<branch>`,
   `git -C product diff main...<branch>`; open full files only where the diff lacks context.
 
 ### 3. Verify
-- Build and test the branch: `git -C product checkout <branch>`, run the build/test command from
-  `project.md` in each changed service/app folder (respect its local notes, e.g. `JAVA_HOME`, running
+- Build and test the branch: `git -C product checkout <branch>`, run the full verify command from
+  `project.md` (BE: `./mvnw -q verify`; FE: FE verify) in each changed service/app folder (respect its local notes, e.g. `JAVA_HOME`, running
   outside the sandbox), then `git -C product checkout main`. Build output is git-ignored, so the tree stays clean.
+- To prove a suspected bug or that a test really guards a fix, experiment only in the product working tree
+  on the branch and revert with `git checkout -- <files>` / `git clean` before leaving; never elsewhere.
+- Review against the standards on disk at review time, even if a rule is newer than the implementation.
 - A failing build or test is a BLOCKER. Environment problems (e.g. Docker not running) → note them;
   they are not the implementer's fault, but untested AC must be called out.
 
@@ -142,6 +146,7 @@ Severity:
 - **BLOCKER**: AC not met, build/test failure, security issue, data loss, design violation.
 - **MAJOR**: bug in an edge case, missing test for an AC, standards violation that affects maintainability.
 - **MINOR**: naming, style, small cleanup. Never blocks approval.
+- Repeating a pitfall already in `memory/lessons.md` raises the severity one level (MINOR → MAJOR).
 
 Decision: any BLOCKER or MAJOR → CHANGES_REQUESTED; otherwise APPROVED (MINOR comments are recorded).
 
@@ -167,7 +172,7 @@ Then in the team repo: append the APPROVED round with `Merged <sha>.`, set `stat
 Report with `Next: TEST — /tester TASK-###`. Leave the feature branch in place (TEST/BUG may need it).
 
 ### 6. Lessons
-When a finding of any severity is generic (likely to recur in other tasks; not a one-off typo), append one row to `memory/lessons.md` in the
+When a finding of any severity is generic (likely to recur in other tasks; not a one-off typo), append one row per lesson to `memory/lessons.md` in the
 same commit: `| <date> | TASK-### review round N | <lesson> | BE / FE / all |`.
 
 ### Round format
@@ -179,7 +184,8 @@ Previous round: #1 resolved, #2 not resolved (see #1 below)   ← omit in round 
 | # | File | Severity | Comment |
 |---|------|----------|---------|
 | 1 | path:line | BLOCKER / MAJOR / MINOR | what is wrong, why, and what is expected |
-Merged <sha>.   ← only when APPROVED
+
+Merged <sha>.   ← only when APPROVED; keep the blank line above
 ```
 
 No comments → write `No comments.` instead of the table. An APPROVED round may still contain a table

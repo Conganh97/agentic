@@ -15,7 +15,8 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phase 4 — Backend Skill (done).** Next: Phase 5 — SA Review Skill.
+**Phases 0–8 and 10 done (Scrum incl. `/scrum run` orchestrator).** Pending: Phase 9 — DevOps Skill
+(GitHub Actions + Docker Compose; needs a GitHub remote for `product/` and Docker).
 Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript); details in `project.md`.
 Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
@@ -37,13 +38,16 @@ Update this section whenever a phase starts or finishes.
 - Always read files and run `git` to learn state; never assume it.
 - Read only the files your role needs (plan §12); never load the whole repository.
 - Never write secrets into markdown, commits, or chat.
+- Never bypass or edit guardrails (`.githooks/`, `.cursor/hooks*`, `--no-verify`); report a blocked
+ command or rejected commit to the user instead of working around it.
 - No external tracker (no Jira, no GitHub/GitLab issues or PRs). Planning, tracking, review, merge
   approval and releases are recorded only in markdown files in this repo.
 
 ## 4. How to work
 
 1. One phase at a time; do not build future phases early.
-2. One chat = one role on one task.
+2. One chat = one role on one task. Exception: `/scrum run` — the main chat stays SCRUM and delegates
+ every other role to a fresh subagent per step (one subagent = one role on one task).
 3. Keep changes small; show the diff; commit after each stable step.
 4. Create folders only when their phase starts.
 5. Architectural decisions go into an ADR in `docs/adr/`.
@@ -62,6 +66,7 @@ Update this section whenever a phase starts or finishes.
 | `docs/standards/` | Product standards (from Phase 4) |
 | `memory/` | Decisions and lessons learned (from Phase 3) |
 | `.cursor/rules/`, `.cursor/skills/`, `.cursor/hooks.json` | Workflow rule, role skills, guardrails |
+| `scripts/`, `.githooks/` | Task workflow check (pre-commit) |
 | `product/` | Product code (separate git repo, ignored here) |
 
 ## 6. Commit conventions

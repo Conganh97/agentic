@@ -413,10 +413,14 @@ Acceptance:
 ## Phase 6 — Guardrails
 
 Deliver:
-- `scripts/check-transitions.sh` + git `pre-commit` hook in the team repo: rejects commits where a task's
-  `status` changes by a transition not in §6, or History is not appended.
-- `.cursor/hooks.json` `beforeShellExecution`: deny `git push --force`, direct push to `main` in
-  `product/`, destructive commands (`rm -rf`, `DROP`, `TRUNCATE`); ask for approval on PROD deploy commands.
+- `scripts/check_transitions.py` + versioned git hook `.githooks/pre-commit`
+  (`git config core.hooksPath .githooks`): rejects commits where a task's `status` changes by a transition
+  not in §6 or by a role not allowed, History is edited or not appended with exactly one matching row,
+  counters/limits, `blocked_from`, `merge_commit`, `release` are wrong, `approved_by` is set without a
+  HUMAN History row, a new task does not start in BACKLOG, or a task file is deleted.
+- `.cursor/hooks.json` `beforeShellExecution` → `.cursor/hooks/guard-shell.sh` (fail closed): deny
+  `git push --force`, direct push to `main` in `product/`, `git commit --no-verify`, destructive commands
+  (`rm -rf`, `DROP`, `TRUNCATE`); ask for approval on PROD deploy commands.
 
 Acceptance:
 - An invalid transition commit is rejected; a forbidden shell command is blocked.
@@ -426,19 +430,26 @@ Acceptance:
 Deliver:
 - `.cursor/skills/tester/SKILL.md`, `docs/standards/testing.md`
 
-Test flow: MERGED → TESTING → write/run tests against AC → PASS → READY_FOR_DEPLOY, or FAIL → BUG with
+Test flow: MERGED → TESTING → build + automated tests on `main` → black-box acceptance check per AC
+(run the service, record command + actual output as evidence) → PASS → READY_FOR_DEPLOY, or FAIL → BUG with
 reproduction steps, expected vs actual, logs. Append recurring issues to `memory/lessons.md`.
+TEST does not commit to `product/`: automated tests (incl. bug regression tests) are written by BE/FE and
+reviewed by SA, so every product change still passes SA review.
 
 ## Phase 8 — Frontend Skill
 
 Deliver:
 - `.cursor/skills/frontend/SKILL.md`, `docs/standards/frontend.md`
-- Same boundary and flow as Backend.
+- Same boundary and flow as Backend. The first FE task creates `product/frontend/` with `create-vite`
+  (react-ts); FE verify = `npm run lint && npm run format:check && npm test -- --run && npm run build`.
 
 ## Phase 9 — DevOps Skill
 
 Deliver:
 - `.cursor/skills/devops/SKILL.md`, `docs/standards/devops.md`, `templates/release.md`
+
+Direction (decided by the human, details in an ADR when the phase starts): CI/CD with GitHub Actions;
+Docker Compose first, Kubernetes later; FE and BE may move to separate repos for deployment.
 
 Flow: build → package → deploy DEV/STG/UAT per `project.md` → smoke check → Deployment section.
 PROD only when `approved_by` is set by a human. Rollback steps recorded.
@@ -451,10 +462,13 @@ Deliver:
 - `.cursor/skills/scrum/SKILL.md`, `templates/sprint.md`
 
 Scrum modes:
+- `run REQ-###`: orchestrate end-to-end in the main chat — SCRUM steps itself, every other role as a fresh
+  subagent per step; verify each step from disk; stop at human gates (requirement approval, PROD
+  approval, NEEDS_INPUT, BLOCKED, retry limits, guardrail rejections, dispatch limit)
 - `next`: pick the next actionable task and role (respect dependencies, priority, BLOCKED)
 - `ready`: check Definition of Ready, move BACKLOG → READY
 - `sprint`: create/organize `sprints/SPRINT-##.md`
-- `sync`: rebuild `tasks/board.md` from task files
+- `sync`: rebuild `tasks/board.md` from task files (`scripts/sync_board.py`; pre-commit rejects a stale board)
 - `report`: progress, blockers, cycle time, review/test iterations (computed from History)
 
 ---
