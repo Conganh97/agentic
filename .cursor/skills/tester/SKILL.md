@@ -59,6 +59,8 @@ MERGED → TESTING per the protocol; commit `[TASK-###] MERGED -> TESTING (TEST)
   TESTING, commit `[TASK-###] note (TEST): run N incomplete, <reason>`, report `NEEDS_INPUT`.
 - For each AC: run a check (e.g. `curl -s -w '\n%{http_code}' ...`), compare with the AC, keep the
   command and actual output.
+- UI tasks: also start the FE dev server (`project.md`, proxied to the backend port you chose), check each
+  AC in the Cursor browser (navigate, interact, snapshot) and record the steps and the observed text.
 - In-scope exploratory checks per `docs/standards/testing.md` (boundaries, invalid input, no regression of
   earlier behaviour, known pitfalls).
 - Stop the service (kill the PID you started) and confirm with `nc -z` that the port is free again.

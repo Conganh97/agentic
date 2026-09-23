@@ -15,8 +15,10 @@ reviews are consistent.
   Spring Cloud 2025.1.x only when a cross-service feature needs it.
 - **Architecture:** microservices in one product repo (`services/<name>-service/`), database per service
   (PostgreSQL + Flyway), synchronous REST (`/api/v1/...`) between services; messaging only via a new ADR.
-- **Frontend:** React + TypeScript (Vite), React Router, TanStack Query, Vitest + React Testing Library,
-  ESLint + Prettier. Lives in `frontend/`.
+- **Frontend:** React + TypeScript (Vite), TanStack Query, React Router (when there is more than one
+  route), Vitest + React Testing Library, oxlint + Prettier. Lives in `frontend/`.
+  *Amended 2026-09-23 (Phase 8):* linter changed from ESLint to oxlint, which `create-vite` 9 generates;
+  the project keeps the scaffolder's tooling instead of swapping it.
 - **Testing:** JUnit 5, AssertJ, Mockito, Spring slice tests; Testcontainers for PostgreSQL when Docker
   is available; Playwright for end-to-end tests (TEST role).
 

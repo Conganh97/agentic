@@ -66,7 +66,7 @@ board, commit `[TASK-###] <FROM> -> IN_PROGRESS (FE): ...`).
   record it in Notes.
 
 ### 5. Verify
-- In `product/frontend/`: `npm run lint && npm test -- --run && npm run build`. All must pass.
+- In `product/frontend/`: `npm run lint && npm run format:check && npm test -- --run && npm run build`. All must pass.
 - Still failing after 3 fix attempts → keep IN_PROGRESS, commit work in progress on the branch, report
   `FAILED` with the error.
 - Self-review `git -C product diff main...HEAD`: only task-related changes (no `dist/`, no
@@ -88,6 +88,6 @@ BUG; review fixes keep the prefix of the current iteration). Then `git -C produc
 ### Iteration N (<initial | review round K | test run K>)
 - Branch: `feature/TASK-###-slug` @ <short sha>
 - Changed: `frontend/src/...`, ...
-- Tests: `npm run lint && npm test -- --run && npm run build` → pass (<n> tests)
+- Tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` → pass (<n> tests)
 - Notes: decisions; review comments addressed (#1, #2); limitations
 ```

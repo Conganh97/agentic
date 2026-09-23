@@ -441,7 +441,7 @@ reviewed by SA, so every product change still passes SA review.
 Deliver:
 - `.cursor/skills/frontend/SKILL.md`, `docs/standards/frontend.md`
 - Same boundary and flow as Backend. The first FE task creates `product/frontend/` with `create-vite`
-  (react-ts); FE verify = `npm run lint && npm test -- --run && npm run build`.
+  (react-ts); FE verify = `npm run lint && npm run format:check && npm test -- --run && npm run build`.
 
 ## Phase 9 — DevOps Skill
 

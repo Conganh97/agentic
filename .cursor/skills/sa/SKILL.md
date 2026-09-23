@@ -120,9 +120,12 @@ SA only reads, runs tests and merges in `product/`. Never fix code yourself — 
   `git -C product diff main...<branch>`; open full files only where the diff lacks context.
 
 ### 3. Verify
-- Build and test the branch: `git -C product checkout <branch>`, run the build/test command from
-  `project.md` in each changed service/app folder (respect its local notes, e.g. `JAVA_HOME`, running
+- Build and test the branch: `git -C product checkout <branch>`, run the full verify command from
+  `project.md` (BE: `./mvnw -q verify`; FE: FE verify) in each changed service/app folder (respect its local notes, e.g. `JAVA_HOME`, running
   outside the sandbox), then `git -C product checkout main`. Build output is git-ignored, so the tree stays clean.
+- To prove a suspected bug or that a test really guards a fix, experiment only in the product working tree
+  on the branch and revert with `git checkout -- <files>` / `git clean` before leaving; never elsewhere.
+- Review against the standards on disk at review time, even if a rule is newer than the implementation.
 - A failing build or test is a BLOCKER. Environment problems (e.g. Docker not running) → note them;
   they are not the implementer's fault, but untested AC must be called out.
 
@@ -169,7 +172,7 @@ Then in the team repo: append the APPROVED round with `Merged <sha>.`, set `stat
 Report with `Next: TEST — /tester TASK-###`. Leave the feature branch in place (TEST/BUG may need it).
 
 ### 6. Lessons
-When a finding of any severity is generic (likely to recur in other tasks; not a one-off typo), append one row to `memory/lessons.md` in the
+When a finding of any severity is generic (likely to recur in other tasks; not a one-off typo), append one row per lesson to `memory/lessons.md` in the
 same commit: `| <date> | TASK-### review round N | <lesson> | BE / FE / all |`.
 
 ### Round format
