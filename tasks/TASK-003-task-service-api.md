@@ -3,19 +3,19 @@ id: TASK-003
 title: Task service REST API and persistence
 type: TASK
 priority: MEDIUM
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-001
 depends_on: []
 sprint:
-branch:
+branch: feature/TASK-003-task-service-api
 merge_commit:
 release:
 review_iteration: 0
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:01
+updated: 2026-09-23 17:04
 ---
 
 ## Description
@@ -51,3 +51,4 @@ Repo: task-service (new)
 |------|------|----|----|------|
 | 2026-09-23 17:00 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-23 17:01 | BACKLOG | READY | SCRUM | DoR met |
+| 2026-09-23 17:04 | READY | IN_PROGRESS | BE | feature/TASK-003-task-service-api |
