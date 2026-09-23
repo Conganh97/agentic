@@ -51,13 +51,19 @@ MERGED → TESTING per the protocol; commit `[TASK-###] MERGED -> TESTING (TEST)
   (`git -C product show --stat <merge_commit>`), respecting its local notes. Failure → FAIL.
 
 ### 4. Acceptance checks
-- Start the service per `project.md` in the background, wait until `/actuator/health` is `UP`
-  (max ~60 s; port busy or start failure caused by the environment → `NEEDS_INPUT`).
+- Start, all checks and stop must run in **one** shell invocation: background processes are killed when the
+  invoking shell call ends.
+- Pick a free port (`nc -z localhost <port>` fails = free; start at 18081) and start the service per
+  `project.md` in the background with `SERVER_PORT=<port>`; wait until `/actuator/health` is `UP` (max ~60 s).
+  Start failure caused by the environment (no free port, Docker down) → write an INCOMPLETE run, keep
+  TESTING, commit `[TASK-###] note (TEST): run N incomplete, <reason>`, report `NEEDS_INPUT`.
 - For each AC: run a check (e.g. `curl -s -w '\n%{http_code}' ...`), compare with the AC, keep the
   command and actual output.
 - In-scope exploratory checks per `docs/standards/testing.md` (boundaries, invalid input, no regression of
   earlier behaviour, known pitfalls).
-- Stop the service (kill the PID you started) and confirm the port is free. `product/` stays clean.
+- Stop the service (kill the PID you started) and confirm with `nc -z` that the port is free again.
+  `product/` stays clean.
+- Open MINOR review comments and earlier INCOMPLETE runs hint at what to explore; they are not AC.
 
 ### 5. Verdict
 **PASS** — every AC passes with evidence and build/tests pass:
@@ -86,11 +92,14 @@ to `memory/lessons.md` in the same commit.
 Task `## Test (TEST)` — append one run per test cycle:
 
 ```markdown
-### Run N — PASS | FAIL
-- Tested: main @ <sha> (contains merge `<merge_commit>`)
+### Run N — PASS | FAIL | INCOMPLETE
+- Tested: main @ <sha> (contains merge `<merge_commit>`), service on port <port>
 - Build/tests: `<command>` PASS | FAIL (<n> tests)
 - AC-1 pass — `curl -s localhost:8081/api/v1/...` → 200 `{"message":"..."}`
 - AC-2 fail — `<command>` → <actual>
 - Exploratory: <checks done; findings>
 - Bug (FAIL only): repro 1. … 2. … · expected: <AC/design quote> · actual: <output excerpt>
+- Blocker (INCOMPLETE only): what failed in the environment · what the human must do
 ```
+
+INCOMPLETE runs change no status and no counter; the next attempt is Run N+1.

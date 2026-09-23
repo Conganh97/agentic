@@ -73,6 +73,8 @@ Design section filled or links a design doc.
    ```
 
 On `FAILED` or `NEEDS_INPUT` the status does not change (steps 4–8 may still record notes).
+A commit that records notes without a status change adds no History row and uses
+`[TASK-001] note (ROLE): short note`.
 
 ## 6. Creating tasks
 

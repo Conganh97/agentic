@@ -32,7 +32,8 @@ an AC is untested and fails, otherwise a note in the Test run).
   or standards (e.g. 500 instead of 400, stack trace in a response).
 - A test that passes only on retry is flaky → FAIL, with both results recorded.
 - Defects outside the task's scope → a new BUG task (workflow §6), not a FAIL of this task.
-- Environment problems (port busy, Docker down) are not a FAIL: report `NEEDS_INPUT` and keep TESTING.
+- Environment problems (no free port, Docker down) are not a FAIL: write an INCOMPLETE run, keep TESTING,
+  report `NEEDS_INPUT`.
 
 ## Bug report (in the Test run)
 

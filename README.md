@@ -19,8 +19,9 @@ software from requirement to release **using only Cursor, markdown files and git
 | 4 | Backend Skill | Done |
 | 5 | SA Review Skill (MVP) | Done |
 | 6 | Guardrails | Done |
-| 7 | Test Skill | Next |
-| 8–10 | Frontend, DevOps, Scrum Skills | Planned |
+| 7 | Test Skill | Done |
+| 8 | Frontend Skill | Next |
+| 9–10 | DevOps, Scrum Skills | Planned |
 
 ## Start here
 

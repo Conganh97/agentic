@@ -39,7 +39,8 @@ controller until a service is justified.
 - `@WebMvcTest` lives in `org.springframework.boot.webmvc.test.autoconfigure`; mock beans with
   `@MockitoBean` (`org.springframework.test.context.bean.override.mockito`). When unsure about a Boot 4
   API, check the docs (Context7 `/spring-projects/spring-boot`) instead of guessing.
-- Distinct `server.port` per service, documented in the service README.
+- Distinct default port per service, overridable: `server.port: ${SERVER_PORT:<port>}`; document it in the
+  service README.
 
 ## REST API
 
@@ -48,6 +49,8 @@ controller until a service is justified.
 - Validate input with Jakarta Validation (`@Valid`, `@NotBlank`, ...). Put constraints directly on
   `@PathVariable`/`@RequestParam` parameters and do **not** add class-level `@Validated`: Spring MVC then
   validates the method itself and raises `HandlerMethodValidationException`, which the default handler maps to 400.
+- Bound every free-text input (`@Size(max = …)` on path/query/body fields); never echo unbounded user input
+  back in error details.
 - Errors: RFC 9457 `ProblemDetail` from one `@RestControllerAdvice` that extends
   `ResponseEntityExceptionHandler`; no stack traces in responses.
 - Status codes: 200/201/204 success, 400 validation, 401/403 auth, 404 missing, 409 conflict.

@@ -15,7 +15,7 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phase 6 — Guardrails (done).** Next: Phase 7 — Test Skill.
+**Phase 7 — Test Skill (done).** Next: Phase 8 — Frontend Skill.
 Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript); details in `project.md`.
 Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
