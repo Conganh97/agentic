@@ -1,12 +1,12 @@
 ---
 id: REQ-001
 title: Simple Task Management App
-status: APPROVED
+status: ANALYZED
 priority: MEDIUM
 owner: Product Owner
-design:
-tasks: []
-updated: 2026-09-23
+design: docs/design/REQ-001-design.md
+tasks: [TASK-003, TASK-004, TASK-005, TASK-006]
+updated: 2026-09-23 17:00
 ---
 
 ## Goal
