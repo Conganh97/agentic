@@ -1,10 +1,17 @@
-# Agentic Engineering Team — Cursor Implementation Plan
+# Agentic Engineering Team — Cursor-Native Plan (Markdown-driven)
 
 ## 1. Objective
 
-Build an Agentic Software Engineering Team that can manage a software development lifecycle from requirement to release.
+Build an Agentic Software Engineering Team that manages the software lifecycle from requirement to
+release, running **entirely inside Cursor**.
 
-The team consists of:
+- No custom platform code, no database, no Java/Python orchestrator.
+- **Cursor is the runtime.** Agents are Cursor Agent sessions guided by project rules and skills.
+- **Markdown files are the state.** Tasks, status, designs, reviews, test results and history live in
+  `.md` files in this repository.
+- **Git is the audit log.** Every state change is a commit.
+
+Team roles:
 
 - Scrum Agent
 - Solution Architect (SA) Agent
@@ -15,1293 +22,511 @@ The team consists of:
 
 Core lifecycle:
 
-Requirement
-→ Scrum Planning
-→ SA Analysis
-→ Architecture / Technical Design
-→ Task Breakdown
-→ BE / FE Implementation
-→ SA Code Review
-→ Fix Loop
-→ Merge
-→ Automation Test
-→ Bug Fix Loop
-→ DevOps Deployment
-→ UAT
-→ Release
-
-The system must be workflow-driven. Agents provide intelligence and execution; the Orchestrator owns state and controls transitions.
+Requirement → Scrum Planning → SA Analysis → Technical Design → Task Breakdown
+→ BE/FE Implementation → SA Code Review ⇄ Fix Loop → Merge
+→ Automation Test ⇄ Bug Fix Loop → DevOps Deployment → UAT → Release
 
 ---
 
-# 2. Core Architecture Principles
+# 2. Core Principles
 
-## 2.1 Six core principles
+1. Agent = intelligence (Cursor Agent + role skill)
+2. Workflow = control (workflow rule + state machine in markdown)
+3. Tools = capability (Cursor tools: files, terminal, git, CLI)
+4. Knowledge = context (docs, ADRs, memory files)
+5. Policy = constraints (AGENTS.md, rules, hooks, git pre-commit check)
+6. State = source of truth (task file frontmatter)
 
-1. Agent = intelligence
-2. Workflow = control
-3. Tools = capability
-4. Knowledge = context
-5. Policy = constraints
-6. State = source of truth
+## 2.1 Hard rules
 
-## 2.2 Important rules
-
-- Agents must never bypass workflow states.
-- Agents must not arbitrarily modify task state.
-- Agents must not merge their own PRs.
-- Agents must not deploy production without an explicit approval gate.
-- Every task must have acceptance criteria.
-- Every code change must pass code review.
-- Test failures must produce actionable bugs/tasks.
-- Review and test loops must have a maximum retry count.
-- All important decisions must be auditable.
-- Prefer deterministic workflow execution over free-form agent collaboration.
-- Do not allow an agent to invent repository state; repository state must come from tools.
-- Avoid loading the entire repository into an agent context. Retrieve only relevant context.
+- A task's `status` in its task file is the only source of truth for its state.
+- Agents change state only through the **Transition Protocol** (§8). No other edits to `status`.
+- Agents only perform transitions their role is allowed to perform (§7, §9).
+- Agents never merge their own work and never approve their own code.
+- No production deployment without an explicit human approval recorded in the task file.
+- Every task has acceptance criteria before `READY`.
+- Every code change passes SA review before `MERGED`.
+- Test failures produce a bug record with reproduction steps.
+- Review and test loops have a maximum iteration count (default 3); exceeding it → `BLOCKED`.
+- Repository state comes from tools (read files, run `git`), never from memory or assumption.
+- Load only the files listed for the role (§12). Never load the whole repository.
 
 ---
 
-# 3. Recommended Initial Stack
+# 3. How Cursor Features Map to the Architecture
 
-## Agent Layer
-
-Python for the initial agent runtime.
-
-Reason:
-- Mature LLM/agent ecosystem
-- Easy tool integration
-- Good support for structured outputs
-- Easy experimentation
-
-## Control / Platform Layer
-
-Initially keep the implementation simple.
-
-Recommended future production stack:
-
-- Java 21
-- Spring Boot
-- PostgreSQL
-- Redis
-- Kafka
-- Temporal or an equivalent durable workflow engine
-
-Do NOT introduce all infrastructure in Phase 1.
-
-Start with:
-
-- Python
-- PostgreSQL or SQLite for local development
-- Git
-- Unit tests
-
-Add Kafka, Redis, Temporal, Kubernetes, etc. only when required by the next phase.
+| Architecture concept | Cursor implementation |
+|----------------------|-----------------------|
+| Project-wide rules | `AGENTS.md` (always loaded) |
+| Workflow / state machine | `.cursor/rules/workflow.mdc` (`alwaysApply: true`) + task file format |
+| Agents | Project skills: `.cursor/skills/<role>/SKILL.md` (sa, backend, frontend, tester, devops, scrum) |
+| Orchestrator | Scrum skill (dispatcher: "what's next, who does it") + human approval |
+| Task state | YAML frontmatter `status:` in `tasks/TASK-###-*.md` |
+| Task overview | `tasks/board.md` (index, derived from task files) |
+| Audit log | `## History` table in each task + one git commit per transition |
+| Hard guardrails | `.cursor/hooks.json` (block dangerous shell commands) + git `pre-commit` check of transitions |
+| Knowledge | `docs/` (architecture, ADRs, standards) + `memory/` |
+| Parallel work | Multiple Cursor chats / background agents, one task each |
 
 ---
 
 # 4. Repository Structure
 
-Initial repository:
+This repository is the **team workspace** (process + state). The **product code** lives in a separate git
+repository cloned into `product/` (git-ignored here). Keeping them separate means task state is always on
+`main` of the team repo, while code changes live on feature branches of the product repo.
 
-agentic-engineering-team/
-
-├── AGENTS.md
+```
+agentic/                         # team workspace (this repo)
+├── AGENTS.md                    # project-wide rules
 ├── README.md
-├── .gitignore
+├── project.md                   # product config: repo path, stack, commands, environments
+├── agentic_engineering_team_cursor_plan.md
+│
+├── .cursor/
+│   ├── rules/
+│   │   └── workflow.mdc         # state machine + transition protocol (always applied)
+│   ├── skills/
+│   │   ├── sa/SKILL.md
+│   │   ├── backend/SKILL.md
+│   │   ├── frontend/SKILL.md
+│   │   ├── tester/SKILL.md
+│   │   ├── devops/SKILL.md
+│   │   └── scrum/SKILL.md
+│   ├── hooks.json               # guardrails
+│   └── hooks/                   # hook scripts (bash)
+│
+├── templates/
+│   ├── task.md
+│   ├── requirement.md
+│   ├── design.md
+│   └── sprint.md
+│
+├── requirements/                # REQ-###-*.md (input from humans)
+├── tasks/
+│   ├── board.md                 # index of all tasks
+│   └── TASK-###-<slug>.md       # one file per task (source of truth)
+├── sprints/                     # SPRINT-##.md
 │
 ├── docs/
-│   ├── architecture/
-│   │   ├── system-overview.md
-│   │   ├── agent-contract.md
-│   │   ├── workflow.md
-│   │   └── security.md
-│   │
-│   ├── requirements/
-│   │
-│   ├── adr/
-│   │
-│   └── standards/
-│       ├── backend.md
-│       ├── frontend.md
-│       ├── testing.md
-│       └── devops.md
+│   ├── architecture/            # system-overview.md + product architecture
+│   ├── design/                  # SA designs: REQ-###-design.md
+│   ├── adr/                     # architecture decision records
+│   └── standards/               # product coding/testing/devops standards
 │
-├── orchestrator/
-│   ├── app/
-│   │   ├── domain/
-│   │   ├── workflow/
-│   │   ├── services/
-│   │   ├── repositories/
-│   │   └── main.py
-│   └── tests/
+├── memory/
+│   ├── decisions.md             # rejected designs, trade-offs (index of ADRs)
+│   └── lessons.md               # recurring bugs, review findings, failed approaches
 │
-├── agents/
-│   ├── sa/
-│   ├── backend/
-│   ├── frontend/
-│   ├── tester/
-│   ├── devops/
-│   └── scrum/
+├── scripts/
+│   └── check-transitions.sh     # used by git pre-commit hook
 │
-├── tools/
-│
-├── knowledge/
-│
-└── infrastructure/
+└── product/                     # product repo (separate git, git-ignored)
+```
 
-Do not create every implementation directory immediately. Create modules when their phase starts.
+Create folders only when their phase starts.
 
 ---
 
-# 5. Workflow State Machine
+# 5. Task File Format
 
-Initial states:
+`templates/task.md`:
 
-- BACKLOG
-- READY
-- IN_PROGRESS
-- CODE_REVIEW
-- CHANGES_REQUESTED
-- MERGED
-- TESTING
-- BUG
-- READY_FOR_DEPLOY
-- DEPLOYING
-- RELEASED
-- BLOCKED
+```markdown
+---
+id: TASK-001
+title: Login API
+type: STORY            # EPIC | STORY | TASK | BUG | TECHNICAL_TASK
+priority: HIGH         # LOW | MEDIUM | HIGH | CRITICAL
+status: BACKLOG        # see §6
+assignee: BE           # SCRUM | SA | BE | FE | TEST | DEVOPS | HUMAN
+parent: REQ-001        # requirement or epic id
+depends_on: []         # [TASK-002, ...]
+sprint:
+branch:                # feature/TASK-001-login-api
+pr:                    # PR/MR URL or merge commit
+review_iteration: 0
+test_iteration: 0
+blocked_from:          # previous status when BLOCKED
+approved_by:           # human name for PROD deploy approval
+updated: 2026-09-23
+---
 
-Primary flow:
+## Description
 
-BACKLOG
-→ READY
-→ IN_PROGRESS
-→ CODE_REVIEW
-→ MERGED
-→ TESTING
-→ READY_FOR_DEPLOY
-→ DEPLOYING
-→ RELEASED
+## Acceptance Criteria
+- [ ] AC-1 ...
 
-Review failure:
+## Design (SA)
+Link to docs/design/... and task-specific notes.
 
-CODE_REVIEW
-→ CHANGES_REQUESTED
-→ IN_PROGRESS
-→ CODE_REVIEW
+## Implementation (BE/FE)
+Branch, summary, changed files, how tested.
 
-Test failure:
+## Review (SA)
+### Round 1 — CHANGES_REQUESTED | APPROVED
+| # | File | Severity (BLOCKER/MAJOR/MINOR) | Comment | Resolved |
+|---|------|------|---------|----------|
 
-TESTING
-→ BUG
-→ IN_PROGRESS
-→ CODE_REVIEW
-→ MERGED
-→ TESTING
+## Test (TEST)
+### Run 1 — PASS | FAIL
+Scope, commands, results, bugs found.
 
-Blocked flow:
+## Deployment (DEVOPS)
+Environment, version, result, rollback plan.
 
-Any eligible state
-→ BLOCKED
+## History
+| Time | From | To | By | Note |
+|------|------|----|----|------|
+| 2026-09-23 10:00 | — | BACKLOG | SA | Created from REQ-001 |
+```
 
-BLOCKED must require an explicit unblock action.
+`tasks/board.md`:
+
+```markdown
+| ID | Title | Type | Priority | Status | Assignee | Depends on | Updated |
+|----|-------|------|----------|--------|----------|------------|---------|
+```
+
+Rules:
+- The task file is the source of truth; `board.md` is an index and must be updated in the same commit.
+- IDs are sequential: next id = highest id in `tasks/` + 1.
+- Sections are append-only: add a new Review round / Test run; never rewrite previous ones.
 
 ---
 
-# 6. State Transition Rules
+# 6. Workflow State Machine
 
-Allowed:
+States: `BACKLOG, READY, IN_PROGRESS, CODE_REVIEW, CHANGES_REQUESTED, MERGED, TESTING, BUG,
+READY_FOR_DEPLOY, DEPLOYING, RELEASED, BLOCKED`
 
-BACKLOG → READY
+| From | To | Who | Guard |
+|------|----|-----|-------|
+| BACKLOG | READY | SCRUM | Definition of Ready (§10) satisfied |
+| READY | IN_PROGRESS | BE / FE (assignee) | dependencies are MERGED or later |
+| IN_PROGRESS | CODE_REVIEW | BE / FE | tests pass, branch pushed/committed, Implementation section filled |
+| CODE_REVIEW | CHANGES_REQUESTED | SA | new Review round with ≥1 comment; `review_iteration += 1` |
+| CODE_REVIEW | MERGED | SA | Review round APPROVED, no open BLOCKER; branch merged; `pr` set |
+| CHANGES_REQUESTED | IN_PROGRESS | BE / FE | — |
+| MERGED | TESTING | TEST | — |
+| TESTING | BUG | TEST | Test run FAIL with bug details; `test_iteration += 1` |
+| TESTING | READY_FOR_DEPLOY | TEST | Test run PASS, all AC checked |
+| BUG | IN_PROGRESS | BE / FE | — |
+| READY_FOR_DEPLOY | DEPLOYING | DEVOPS | PROD only: `approved_by` set by a human |
+| DEPLOYING | RELEASED | DEVOPS | Deployment section filled, smoke check passed |
+| any working state* | BLOCKED | any role | reason in History; set `blocked_from` |
+| BLOCKED | `blocked_from` | HUMAN / SCRUM | explicit unblock with note; clear `blocked_from` |
 
-READY → IN_PROGRESS
+\* Working states: READY, IN_PROGRESS, CODE_REVIEW, CHANGES_REQUESTED, MERGED, TESTING, BUG,
+READY_FOR_DEPLOY, DEPLOYING.
 
-IN_PROGRESS → CODE_REVIEW
+Any transition not in this table is forbidden (e.g. BACKLOG → MERGED, IN_PROGRESS → RELEASED).
 
-CODE_REVIEW → CHANGES_REQUESTED
-
-CODE_REVIEW → MERGED
-
-CHANGES_REQUESTED → IN_PROGRESS
-
-MERGED → TESTING
-
-TESTING → BUG
-
-TESTING → READY_FOR_DEPLOY
-
-BUG → IN_PROGRESS
-
-READY_FOR_DEPLOY → DEPLOYING
-
-DEPLOYING → RELEASED
-
-Eligible states → BLOCKED
-
-BLOCKED → previous valid working state
-
-Disallowed examples:
-
-BACKLOG → MERGED
-BACKLOG → RELEASED
-IN_PROGRESS → RELEASED
-CODE_REVIEW → RELEASED
-TESTING → RELEASED
-BE Agent → MERGED directly
-Test Agent → RELEASED directly
-
-All transitions must be validated by the Orchestrator.
+Retry limits:
+- If `review_iteration` is already 3 and SA would request changes again → `BLOCKED` instead.
+- If `test_iteration` is already 3 and TEST would report BUG again → `BLOCKED` instead.
 
 ---
 
-# 7. Task Domain Model
+# 7. Roles and Permissions
 
-Initial Task should contain:
-
-- id
-- title
-- description
-- type
-- priority
-- status
-- assignee_agent
-- parent_task_id
-- dependencies
-- acceptance_criteria
-- created_at
-- updated_at
-- sprint_id
-- repository
-- branch
-- pull_request
-- review_iteration
-- test_iteration
-- metadata
-
-Task types:
-
-- EPIC
-- STORY
-- TASK
-- BUG
-- TECHNICAL_TASK
-
-Priority:
-
-- LOW
-- MEDIUM
-- HIGH
-- CRITICAL
+| Role | Reads | Writes | Transitions | Forbidden |
+|------|-------|--------|-------------|-----------|
+| SCRUM | requirements, board, tasks, sprints | board, sprints, task metadata (priority, sprint, assignee) | BACKLOG→READY, unblock | code, designs, reviews |
+| SA | requirement, architecture, ADRs, standards, relevant product code, diffs | designs, ADRs, new task files, Review sections, memory | CODE_REVIEW→CHANGES_REQUESTED / MERGED | editing product code |
+| BE / FE | task, SA design, standards, relevant product code | product code on feature branch, Implementation section | READY/CHANGES_REQUESTED/BUG→IN_PROGRESS, IN_PROGRESS→CODE_REVIEW | merge, approve own work, change architecture without SA |
+| TEST | requirement, AC, diff, existing tests | tests in product repo, Test section, bug notes, memory/lessons | MERGED→TESTING, TESTING→BUG / READY_FOR_DEPLOY | editing production code |
+| DEVOPS | project.md, build/CI/deploy config, release notes | CI/deploy config, Deployment section | READY_FOR_DEPLOY→DEPLOYING→RELEASED | PROD without `approved_by` |
+| HUMAN | everything | requirements, approvals | approve requirement, PROD approval, unblock | — |
 
 ---
 
-# 8. Agent Contract
+# 8. Transition Protocol (the Agent Contract)
 
-Agents must communicate using structured data.
+Every agent must follow these steps to change a task's state:
 
-Do not rely on free-form text for workflow decisions.
+1. Read the task file fresh from disk (never rely on earlier context).
+2. Check the transition is in §6 **and** allowed for your role.
+3. Check the guard conditions. If not met → do not change status; explain what is missing.
+4. Write your output section (Design / Implementation / Review round / Test run / Deployment).
+5. Update frontmatter: `status`, counters, `blocked_from`, `branch`, `pr`, `updated`.
+6. Append one row to `## History`: time, from, to, role, short note.
+7. Update the task's row in `tasks/board.md`.
+8. Commit in the team repo: `[TASK-001] IN_PROGRESS -> CODE_REVIEW (BE): <note>`.
+9. Report to the user: new status, what was done, the next role that should act.
 
-Generic:
-
-{
-  "agent": "SA",
-  "task_id": "TASK-123",
-  "status": "COMPLETED",
-  "result": {}
-}
-
-Possible agent execution statuses:
-
-- COMPLETED
-- FAILED
-- NEEDS_INPUT
-- BLOCKED
-- CHANGES_REQUESTED
-
-Agent results must be validated against schemas.
+Agent outcomes (reported in step 9 and History note):
+`COMPLETED`, `FAILED`, `NEEDS_INPUT` (question for human), `BLOCKED`, `CHANGES_REQUESTED`.
+On `FAILED` or `NEEDS_INPUT` the status does not change.
 
 ---
 
-# 9. Permission Model
+# 9. Operating Model (How to Run the Team in Cursor)
 
-## SA Agent
-
-Allowed:
-
-- Read requirements
-- Read repository
-- Read architecture
-- Read ADRs
-- Create technical design
-- Create tasks
-- Review code
-- Request changes
-- Approve code review
-
-Not allowed:
-
-- Modify production code
-- Merge its own implementation
-- Deploy production
-
-## BE Agent
-
-Allowed:
-
-- Read repository
-- Search code
-- Modify feature branch
-- Run tests
-- Commit
-- Push
-- Create PR
-
-Not allowed:
-
-- Merge PR
-- Approve own PR
-- Deploy production
-- Change architecture without SA approval
-
-## FE Agent
-
-Same boundary as BE Agent.
-
-## Test Agent
-
-Allowed:
-
-- Read requirements
-- Read acceptance criteria
-- Read implementation
-- Create tests
-- Execute tests
-- Analyze failures
-- Create bug reports
-
-Not allowed:
-
-- Merge production code
-- Deploy production
-
-## DevOps Agent
-
-Allowed:
-
-- Build
-- Package
-- Create container images
-- Push images
-- Deploy DEV
-- Deploy STG
-- Deploy UAT according to policy
-- Roll back according to policy
-
-Production deployment must require explicit approval.
-
-## Scrum Agent
-
-Allowed:
-
-- Create Epic
-- Create Story
-- Create Task
-- Create Bug
-- Organize Sprint
-- Track progress
-- Track dependencies
-- Generate reports
+- **One chat = one role on one task.** Start a new chat per step to keep context small.
+- Invoke a role by its skill, e.g.:
+  - `/sa analyze REQ-001`
+  - `/backend TASK-003`
+  - `/sa review TASK-003`
+  - `/tester TASK-003`
+  - `/devops deploy TASK-003 STG`
+  - `/scrum next` — reads the board and says which task and role should act next
+- **Parallel work:** run several chats or background agents on different tasks. Each BE/FE task uses its
+  own branch in `product/`. Only one agent edits a given task file at a time.
+- **Human in the loop:** writes requirements, answers `NEEDS_INPUT`, approves PROD, unblocks tasks,
+  and reviews commits.
 
 ---
 
-# 10. Phase Roadmap
+# 10. Definition of Ready / Done
 
-## Phase 0 — Repository Foundation
+Ready (BACKLOG → READY):
+- Requirement is clear and linked (`parent`)
+- Assignee role is set
+- ≥1 acceptance criterion
+- Dependencies listed
+- SA design exists (Design section or linked design doc)
 
-Goal:
+Done (RELEASED), when applicable:
+- All acceptance criteria checked
+- Tests pass (unit, integration, automation)
+- SA review approved, no open BLOCKER
+- Deployment completed and recorded
+- Docs / memory updated
 
-Create the repository structure and project rules.
+---
+
+# 11. Phase Roadmap
+
+Each phase is a small set of markdown files. Build one phase at a time; commit after each.
+
+## Phase 0 — Workspace Foundation
 
 Deliver:
+- `AGENTS.md`, `README.md`
+- `docs/architecture/system-overview.md`
+- ADR-0002 (markdown-driven, Cursor-native team)
+- `project.md` (product repo path, stack, build/test commands, environments)
+- `.gitignore` with `product/`
 
-- AGENTS.md
-- README.md
-- system-overview.md
-- coding standards
-- initial ADR
+Acceptance:
+- Workspace opens cleanly in Cursor; rules are explicit and understandable.
 
-No agent implementation yet.
+## Phase 1 — Task Format and Workflow Rule
 
-Acceptance criteria:
+Deliver:
+- `templates/task.md`, `tasks/board.md`
+- `.cursor/rules/workflow.mdc`: state table (§6), permissions (§7), Transition Protocol (§8)
 
-- Repository opens cleanly in Cursor
-- Architecture documentation is understandable
-- Coding rules are explicit
+Acceptance:
+- A sample task can be walked BACKLOG → RELEASED by following the rule manually.
+- Asking an agent to make a forbidden transition (e.g. BACKLOG → MERGED) is refused.
 
----
+## Phase 2 — Role Contracts
 
-# Phase 1 — Workflow Orchestrator
+Deliver:
+- Skill skeletons for all roles: purpose, files to read, output section format, allowed transitions,
+  forbidden actions, outcome reporting.
 
-Goal:
+Acceptance:
+- Each skill states exactly what it reads, what it writes, and which transitions it may perform.
 
-Build a deterministic Task State Machine.
+## Phase 3 — SA Skill (Analysis & Design)
 
-Implement:
+Deliver:
+- `templates/requirement.md`, `templates/design.md`
+- `.cursor/skills/sa/SKILL.md` — analyze mode
 
-- Task domain model
-- TaskState enum
-- State transition rules
-- Transition validation
-- Task service
-- Unit tests
+SA analyze produces:
+- `docs/design/REQ-###-design.md`: functional/non-functional requirements, architecture, APIs,
+  data model changes, dependencies, risks
+- Task files (BACKLOG) with acceptance criteria and assignee role
+- ADR when an architectural decision is made
 
-Do not implement agents yet.
+Acceptance:
+- Given a requirement, SA produces a design doc and well-formed task files; no product code changed.
 
-Acceptance criteria:
+## Phase 4 — Backend Skill
 
-- Every valid transition passes
-- Every invalid transition is rejected
-- State cannot be changed arbitrarily
-- Tests cover all transitions
-- No unnecessary dependencies
+Deliver:
+- `.cursor/skills/backend/SKILL.md`
+- `docs/standards/backend.md` for the product stack
 
-Cursor task:
+BE flow: read task + design → inspect relevant product files → create branch
+`feature/TASK-###-slug` → implement → run tests → review own `git diff` → commit in product repo →
+(push + create PR via `gh`/`glab` if a remote exists) → fill Implementation → IN_PROGRESS → CODE_REVIEW.
 
-"Read AGENTS.md and docs/architecture/system-overview.md. Implement only the Task domain model and deterministic state machine. Do not implement agents, database, Git integration, or LLM integration. Write comprehensive unit tests."
+Acceptance:
+- BE completes a small real feature in `product/` on a branch, tests pass, task moves to CODE_REVIEW.
 
----
+## Phase 5 — SA Review Skill
 
-# Phase 2 — Agent Contract
+Deliver:
+- Review mode in `.cursor/skills/sa/SKILL.md`
 
-Goal:
+SA review: read task, AC, design, `git diff main...branch` → check correctness, AC coverage, standards,
+security, tests → write Review round → CHANGES_REQUESTED (with comments) or APPROVED → merge branch →
+MERGED. Enforce review limit.
 
-Define how agents communicate with the Orchestrator.
+Acceptance:
+- **MVP loop works end-to-end** (§17).
 
-Implement:
+## Phase 6 — Guardrails
 
-- BaseAgent interface/protocol
-- AgentRequest
-- AgentResponse
-- Result schemas
-- Validation
-- Error model
-- Agent execution lifecycle
+Deliver:
+- `scripts/check-transitions.sh` + git `pre-commit` hook in the team repo: rejects commits where a task's
+  `status` changes by a transition not in §6, or History is not appended.
+- `.cursor/hooks.json` `beforeShellExecution`: deny `git push --force`, direct push to `main` in
+  `product/`, destructive commands (`rm -rf`, `DROP`, `TRUNCATE`); ask for approval on PROD deploy commands.
 
-Acceptance criteria:
+Acceptance:
+- An invalid transition commit is rejected; a forbidden shell command is blocked.
 
-- Invalid agent responses are rejected
-- Agent result is structured
-- Orchestrator remains the source of truth
+## Phase 7 — Test Skill
 
----
+Deliver:
+- `.cursor/skills/tester/SKILL.md`, `docs/standards/testing.md`
 
-# Phase 3 — SA Agent
+Test flow: MERGED → TESTING → write/run tests against AC → PASS → READY_FOR_DEPLOY, or FAIL → BUG with
+reproduction steps, expected vs actual, logs. Append recurring issues to `memory/lessons.md`.
 
-Goal:
+## Phase 8 — Frontend Skill
 
-Create the first useful engineering agent.
+Deliver:
+- `.cursor/skills/frontend/SKILL.md`, `docs/standards/frontend.md`
+- Same boundary and flow as Backend.
 
-SA responsibilities:
+## Phase 9 — DevOps Skill
 
-1. Analyze requirements
-2. Identify functional requirements
-3. Identify non-functional requirements
-4. Design architecture
-5. Identify dependencies
-6. Define APIs
-7. Define data model changes
-8. Define risks
-9. Create implementation tasks
-10. Define acceptance criteria
+Deliver:
+- `.cursor/skills/devops/SKILL.md`, `docs/standards/devops.md`
 
-SA must not implement feature code.
+Flow: build → package → deploy DEV/STG/UAT per `project.md` → smoke check → Deployment section.
+PROD only when `approved_by` is set by a human. Rollback steps recorded.
 
-Expected output:
+## Phase 10 — Scrum Skill
 
-Architecture Design
-+
-Task Breakdown
-+
-Acceptance Criteria
-+
-Technical Risks
+Deliver:
+- `.cursor/skills/scrum/SKILL.md`, `templates/sprint.md`
 
-Acceptance criteria:
-
-Given a requirement, SA produces a structured technical plan.
-
----
-
-# Phase 4 — Backend Agent
-
-Goal:
-
-Implement a real coding agent.
-
-BE workflow:
-
-Task
-→ Read SA Design
-→ Inspect Repository
-→ Identify Relevant Files
-→ Implement
-→ Run Tests
-→ Review Git Diff
-→ Commit
-→ Push Branch
-→ Create PR
-
-Tool capabilities:
-
-- read_file
-- search_code
-- list_files
-- edit_file
-- run_command
-- run_tests
-- git_status
-- git_diff
-- git_commit
-- git_push
-- create_pull_request
-
-Restrictions:
-
-- No merge
-- No production deployment
-- No architecture changes without approval
-
-Acceptance criteria:
-
-BE can complete a small real feature in a controlled repository and create a PR.
+Scrum modes:
+- `next`: pick the next actionable task and role (respect dependencies, priority, BLOCKED)
+- `ready`: check Definition of Ready, move BACKLOG → READY
+- `sprint`: create/organize `sprints/SPRINT-##.md`
+- `sync`: rebuild `tasks/board.md` from task files
+- `report`: progress, blockers, cycle time, review/test iterations (computed from History)
 
 ---
 
-# Phase 5 — SA Code Review
+# 12. Context Management
 
-Goal:
+Each skill lists exactly what to read. Do not read other files unless needed.
 
-Automate code review by SA.
-
-Review context:
-
-- Requirement
-- Acceptance Criteria
-- Architecture
-- ADR
-- PR diff
-- Tests
-- Relevant source code
-
-Review output:
-
-{
-  "decision": "APPROVED | CHANGES_REQUESTED",
-  "issues": [
-    {
-      "severity": "CRITICAL | HIGH | MEDIUM | LOW",
-      "file": "...",
-      "line": 123,
-      "issue": "...",
-      "recommendation": "..."
-    }
-  ]
-}
-
-Review loop:
-
-BE
-→ PR
-→ SA Review
-
-If rejected:
-
-SA
-→ CHANGES_REQUESTED
-→ BE
-→ new commit
-→ SA Review
-
-Maximum review iterations:
-
-3
-
-After maximum retries:
-
-BLOCKED
-→ human intervention
-
-Acceptance criteria:
-
-- SA can identify functional and architectural issues
-- Review result is structured
-- Review loop cannot become infinite
-- Approved PR can proceed to merge
+| Role | Context |
+|------|---------|
+| SA analyze | requirement, `docs/architecture/`, relevant ADRs, `memory/decisions.md`, product structure (listing only) |
+| SA review | task file, design doc, standards, `git diff main...branch`, `memory/lessons.md` |
+| BE / FE | task file, design doc, standards, files found by search in `product/`, related tests |
+| TEST | requirement, task AC, diff, existing tests, `memory/lessons.md` |
+| DEVOPS | `project.md`, build/CI/deploy config, task Deployment history |
+| SCRUM | `tasks/board.md`, task frontmatter only, current sprint |
 
 ---
 
-# Phase 6 — Git/GitLab Integration
+# 13. Memory Model
 
-Implement:
+| Level | Where |
+|-------|-------|
+| Short-term | current chat + current task file |
+| Project | `AGENTS.md`, `docs/architecture/`, `docs/standards/`, `project.md` |
+| Decision | `docs/adr/`, `memory/decisions.md` |
+| Historical | `memory/lessons.md`, task History tables, git log |
 
-- Repository abstraction
-- Branch creation
-- Commit
-- Push
-- PR creation
-- PR diff retrieval
-- PR status
-- Merge operation controlled by SA/Orchestrator
-
-Important:
-
-Agents do not directly mutate workflow state.
-
-Git/GitLab state and workflow state must be synchronized by the Orchestrator.
+Agents append to `memory/lessons.md` when a review finding or bug is likely to recur.
 
 ---
 
-# Phase 7 — Test Agent
+# 14. Observability and Audit
 
-Goal:
-
-Automate testing after merge.
-
-Input:
-
-- Requirement
-- Acceptance Criteria
-- Architecture
-- Changed files
-- Existing tests
-
-Test Agent responsibilities:
-
-1. Generate test cases
-2. Generate/update automation
-3. Run tests
-4. Analyze failures
-5. Classify failures
-6. Create bugs
-
-Test categories:
-
-- Unit
-- Integration
-- API
-- E2E
-- Regression
-- Concurrency
-- Idempotency
-- Performance where applicable
-
-Output:
-
-PASSED
-
-or
-
-FAILED + structured bug report
-
-Test failure flow:
-
-TESTING
-→ BUG
-→ IN_PROGRESS
-→ BE/FE
-→ CODE_REVIEW
-→ MERGED
-→ TESTING
-
-Maximum test-fix iterations should be configurable.
+- Every transition: History row + team-repo commit `[TASK-###] FROM -> TO (ROLE): note`.
+- Every code change: product-repo commit referencing the task id.
+- Metrics (computed by Scrum `report` from History): cycle time, review iterations, test iterations,
+  BLOCKED count, human interventions.
 
 ---
 
-# Phase 8 — Frontend Agent
+# 15. Safety and Guardrails
 
-FE responsibilities:
-
-- Analyze UI requirements
-- Understand API contracts
-- Inspect existing components
-- Implement UI
-- Write/update frontend tests
-- Run lint/build/test
-- Create PR
-
-Flow:
-
-SA
-→ FE Task
-→ FE
-→ PR
-→ SA Review
-→ Merge
-→ Test
-
-FE must respect SA architecture and API contracts.
+| Guardrail | Mechanism |
+|-----------|-----------|
+| Valid transitions only | workflow rule + `pre-commit` check |
+| Review/test loop limits | counters in frontmatter + rule |
+| No self-merge / self-approve | role permissions; SA merges only after its own review of BE/FE work |
+| PROD approval | `approved_by` field, rule + hook asks for approval |
+| Destructive commands | `beforeShellExecution` hook |
+| Secrets | never in markdown or commits; `.env` git-ignored |
+| Scope | agents read only files listed in §12 |
 
 ---
 
-# Phase 9 — DevOps Agent
+# 16. Limitations (and Mitigations)
 
-Goal:
-
-Automate deployment.
-
-Flow:
-
-TEST PASS
-→ READY_FOR_DEPLOY
-→ DEV
-→ Smoke Test
-→ STG
-→ UAT
-→ Release
-
-Capabilities:
-
-- Build
-- Docker image
-- Registry
-- CI/CD
-- Environment variables
-- Kubernetes
-- Helm
-- Deployment status
-- Rollback
-
-Production deployment requires explicit approval.
+- **Rules are guidance, not enforcement.** An agent can still make a mistake.
+  → git `pre-commit` check, hooks, and human review of commits.
+- **Concurrent edits to `board.md`.** → board is only an index; `scrum sync` rebuilds it; one agent per task.
+- **No automatic scheduling.** Agents run when a human starts a chat. → `scrum next` tells you what to run.
+- **Context size.** → one chat per step, strict read lists.
 
 ---
 
-# Phase 10 — Scrum Agent
+# 17. MVP Completion Criteria
 
-Responsibilities:
+The following flow works end-to-end on a small real feature in `product/`:
 
-- Epic management
-- Story creation
-- Task creation
-- Sprint planning
-- Priority
-- Dependencies
-- Sprint progress
-- Definition of Ready
-- Definition of Done
-- Sprint review
-- Retrospective summary
+Requirement → SA analyze → design + task → BE implement → CODE_REVIEW → SA review → CHANGES_REQUESTED
+→ BE fix → SA review → APPROVED → MERGED
 
-Example:
+with a correct History table and one commit per transition.
 
-Sprint
-→ Stories
-→ Tasks
-→ Agent execution
-→ Progress
-→ Blockers
-→ Completion
+Do not add Test, FE, DevOps, Scrum automation until this loop is stable.
 
 ---
 
-# 11. Definition of Ready
+# 18. Cursor Prompts per Phase
 
-A task can enter READY only when:
+## Phase 1
+"Read AGENTS.md and §5–§8 of the plan. Create `templates/task.md`, `tasks/board.md` and
+`.cursor/rules/workflow.mdc`. Only markdown. Then create a sample task and show a forbidden transition
+being refused."
 
-- Requirement is clear
-- Owner/agent is known
-- Acceptance criteria exist
-- Dependencies are identified
-- Required architecture/design exists
-- Scope is understood
+## Phase 3
+"Create the SA skill in analyze mode following §7, §8, §11 Phase 3 and §12. The SA must not edit
+`product/`. Test it with `requirements/REQ-001-*.md`."
 
----
+## Phase 4
+"Create the Backend skill following §7, §8, §11 Phase 4 and §12. Test it on the first READY task."
 
-# 12. Definition of Done
-
-A task is Done only when applicable:
-
-- Requirement satisfied
-- Acceptance criteria satisfied
-- Implementation complete
-- Unit tests pass
-- Integration tests pass
-- Code review approved
-- No blocking static analysis issues
-- Security checks pass
-- Automation tests pass
-- Regression tests pass
-- Documentation updated
-- Deployment completed if required
+## Phase 5
+"Add review mode to the SA skill following §6 retry limits and §11 Phase 5. Run the full MVP loop."
 
 ---
 
-# 13. Knowledge Architecture
+# 19. Evolution (Optional, Later)
 
-Do not implement complex RAG in the first phase.
-
-Initial knowledge sources:
-
-- AGENTS.md
-- Architecture docs
-- ADRs
-- Coding standards
-- Requirements
-- Existing tests
-
-Later add:
-
-- Vector search
-- Code indexing
-- Dependency graph
-- Historical PRs
-- Historical bugs
-- Historical code reviews
-
-Recommended evolution:
-
-Phase 1:
-Files + structured context
-
-Phase 2:
-PostgreSQL + pgvector
-
-Phase 3:
-Code index / AST / Tree-sitter
-
-Phase 4:
-Graph database if dependency relationships require it
+- MCP integrations: GitLab/GitHub (PRs), Jira (sync board), CI status.
+- Custom subagents per role for parallel execution from one chat.
+- Scheduled/background agents running `scrum next` automatically.
+- Search over `memory/` and history as it grows.
 
 ---
 
-# 14. Context Management
-
-Do not send the entire repository to an agent.
-
-Use targeted context.
-
-SA context:
-
-- Requirement
-- Architecture
-- ADR
-- Relevant repository structure
-- Database schema
-- API specification
-- Standards
-
-BE context:
-
-- Task
-- Acceptance criteria
-- SA design
-- Relevant files
-- Related tests
-- API contract
-- Database schema
-
-FE context:
-
-- Task
-- UI requirements
-- API contract
-- Relevant components
-- Existing tests
-
-TEST context:
-
-- Requirement
-- Acceptance criteria
-- Changed files
-- Existing tests
-- API contract
-
-DEVOPS context:
-
-- Build configuration
-- Docker
-- Kubernetes
-- CI/CD
-- Environment configuration
-- Release metadata
-
----
-
-# 15. Memory Model
-
-Use four levels:
-
-## Short-term memory
-
-Current task, current conversation, current PR, current error.
-
-## Project memory
-
-Architecture, coding conventions, repository structure.
-
-## Decision memory
-
-ADR, rejected designs, architectural trade-offs.
-
-## Historical memory
-
-Previous bugs, reviews, performance issues, failed approaches.
-
----
-
-# 16. Observability
-
-Every agent execution must be auditable.
-
-Capture:
-
-- task_id
-- agent
-- execution_id
-- start_time
-- end_time
-- model
-- tool calls
-- result
-- errors
-- retry count
-- token/cost metadata where available
-- state transition
-
-Useful metrics:
-
-- task cycle time
-- PR review iterations
-- agent retry count
-- test failure rate
-- bug escape rate
-- human intervention rate
-- agent execution cost
-- time per task
-
----
-
-# 17. Safety and Guardrails
-
-Hard limits:
-
-- Maximum SA review iterations
-- Maximum test-fix iterations
-- Maximum tool execution time
-- Maximum shell command scope
-- Production deployment approval
-- Database destructive command protection
-- Secret access protection
-- Restricted filesystem paths
-
-Agents must not have unrestricted shell access in production.
-
----
-
-# 18. Cursor Development Rules
-
-When using Cursor:
-
-1. Build one phase at a time.
-2. Ask Cursor to inspect existing architecture before coding.
-3. Use small implementation prompts.
-4. Require tests with every implementation step.
-5. Review the generated diff after every major change.
-6. Do not ask Cursor to build the entire platform in one prompt.
-7. Commit after each stable milestone.
-8. Keep architecture documentation synchronized with implementation.
-9. Use AGENTS.md as the project-wide rule.
-10. Use separate agent-specific instructions when necessary.
-
-Recommended Cursor workflow:
-
-Prompt
-→ Inspect
-→ Plan
-→ Implement
-→ Test
-→ Review Diff
-→ Commit
-→ Next step
-
----
-
-# 19. First Cursor Prompts
-
-## Prompt 1 — Architecture analysis
-
-Read AGENTS.md and docs/architecture/system-overview.md.
-
-Do not modify any files.
-
-Analyze the current architecture requirements and propose the implementation plan for Phase 1: Workflow Orchestrator and Task State Machine.
-
-Return:
-
-1. Folder structure
-2. Domain model
-3. State machine
-4. Valid transitions
-5. Invalid transitions
-6. Responsibilities
-7. Testing strategy
-8. Risks
-
-Do not implement anything.
-
----
-
-## Prompt 2 — Implement state machine
-
-Read AGENTS.md and the approved architecture.
-
-Implement only Phase 1.
-
-Requirements:
-
-- Task domain model
-- TaskState enum
-- State transition rules
-- Transition validation
-- Unit tests
-- Invalid transition tests
-
-Do not implement:
-
-- Agents
-- LLM
-- Database
-- Git integration
-- CI/CD
-
-Keep the implementation deterministic and minimal.
-
----
-
-## Prompt 3 — Review Phase 1
-
-Review the implementation against:
-
-- AGENTS.md
-- system-overview.md
-- workflow requirements
-
-Check:
-
-- Architecture violations
-- Invalid transitions
-- Missing tests
-- Over-engineering
-- Unnecessary dependencies
-- Maintainability
-
-Do not modify files.
-
-Return findings grouped by severity.
-
----
-
-## Prompt 4 — Agent Contract
-
-Implement Phase 2: Agent Contract.
-
-Create:
-
-- AgentRequest
-- AgentResponse
-- AgentStatus
-- Structured result models
-- Validation
-- Error model
-- Unit tests
-
-Do not implement actual LLM agents yet.
-
-The Orchestrator must remain the source of truth for workflow state.
-
----
-
-## Prompt 5 — SA Agent
-
-Implement Phase 3: SA Agent.
-
-The SA Agent must:
-
-- Analyze requirements
-- Produce functional requirements
-- Produce non-functional requirements
-- Design architecture
-- Identify dependencies
-- Produce technical tasks
-- Produce acceptance criteria
-- Identify risks
-
-The SA Agent must not modify application source code.
-
-All outputs must be structured and validated.
-
----
-
-## Prompt 6 — Backend Agent
-
-Implement Phase 4: Backend Agent.
-
-The agent must:
-
-- Read task
-- Read SA design
-- Inspect repository
-- Identify relevant files
-- Implement changes
-- Run tests
-- Review git diff
-- Create feature branch
-- Commit changes
-- Push changes
-- Create PR
-
-It must not:
-
-- Merge its own PR
-- Deploy production
-- Bypass SA review
-- Change architecture without approval
-
----
-
-# 20. MVP Completion Criteria
-
-MVP is complete when the following flow works end-to-end:
-
-User Requirement
-→ SA Agent
-→ Architecture
-→ Task
-→ BE Agent
-→ Code
-→ PR
-→ SA Review
-→ CHANGES_REQUESTED
-→ BE Fix
-→ SA Review
-→ APPROVED
-→ Merge
-
-The system must be able to demonstrate this flow on a small real feature.
-
-Do not add FE, Test, DevOps, Scrum, RAG, or Kubernetes until this loop is stable.
-
----
-
-# 21. Production Evolution
-
-After MVP:
-
-1. Add Test Agent
-2. Add FE Agent
-3. Add DevOps Agent
-4. Add Scrum Agent
-5. Add persistent workflow engine
-6. Add PostgreSQL
-7. Add Redis
-8. Add Kafka/event-driven execution
-9. Add knowledge/RAG
-10. Add code graph
-11. Add observability
-12. Add human approval gates
-13. Add multi-project support
-14. Add cost controls
-15. Add security policies
-
----
-
-# 22. Target Final Architecture
-
-                    USER
-                      |
-                      v
-              ┌───────────────┐
-              │ Scrum Agent   │
-              └───────┬───────┘
-                      |
-                      v
-              ┌───────────────┐
-              │ Orchestrator  │
-              │ State Machine │
-              └───────┬───────┘
-                      |
-        ┌─────────────┼─────────────┐
-        |             |             |
-        v             v             v
-       SA            BE            FE
-        |             |             |
-        └─────────────┼─────────────┘
-                      |
-                      v
-                 SA Review
-                      |
-                 ┌────┴────┐
-                 |         |
-                FAIL      PASS
-                 |         |
-                 v         v
-                Fix       Merge
-                 |         |
-                 └────┐    |
-                      |    v
-                      |   TEST
-                      |    |
-                      | ┌──┴──┐
-                      | |     |
-                      |FAIL  PASS
-                      | |     |
-                      | v     v
-                      | BUG  DEVOPS
-                      |       |
-                      └───────┘
-                              |
-                         DEV/STG/UAT
-                              |
-                           RELEASE
-
-Supporting layers:
-
-- Tool Layer
-- Knowledge Layer
-- Policy Layer
-- Observability Layer
-- Audit Layer
-
----
-
-# 23. Final Engineering Principle
+# 20. Final Engineering Principle
 
 Do not build six independent chatbots.
 
-Build one controlled software delivery platform with specialized agents.
-
-The Orchestrator controls:
-
-- Who works
-- When they work
-- What context they receive
-- What tools they can use
-- What state the task is in
-- Whether the next step is allowed
-
-Agents control:
-
-- Analysis
-- Design
-- Coding
-- Review
-- Testing
-- Deployment operations
-
-The system should progressively move from:
-
-Human-driven
-→ Agent-assisted
-→ Agent-orchestrated
-→ Highly autonomous
-
-while keeping deterministic workflow, auditability, permissions, and human approval gates.
+Build one controlled delivery workflow where:
+- markdown holds the state,
+- rules and guardrails control transitions,
+- skills give each agent a clear role,
+- git records every decision,
+- humans approve what matters.

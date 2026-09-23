@@ -1,6 +1,6 @@
 # ADR-0001: Workflow-driven Orchestrator with a minimal Java stack
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0002
 - **Date:** 2026-09-23
 - **Deciders:** Project owner
 

@@ -1,15 +1,5 @@
-# Java / Maven
-target/
-*.class
-*.jar
-!.mvn/wrapper/maven-wrapper.jar
-*.log
-hs_err_pid*
-
-# Local data
-*.db
-*.mv.db
-*.trace.db
+# Product code (separate git repository)
+product/
 
 # Secrets
 .env
@@ -19,5 +9,4 @@ hs_err_pid*
 # OS / editor
 .DS_Store
 .idea/
-*.iml
 .vscode/
