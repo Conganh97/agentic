@@ -15,7 +15,7 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phase 2 — Role Contracts (done).** Next: Phase 3 — SA Skill (Analysis & Design).
+**Phase 3 — SA Skill, analyze mode (done).** Next: Phase 4 — Backend Skill.
 Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
 `templates/examples/TASK-000-example.md`.
@@ -29,6 +29,7 @@ Update this section whenever a phase starts or finishes.
   allowed to perform (plan §6–§7).
 - Never merge your own work; never approve your own code.
 - No production deployment without `approved_by` set by a human in the task file.
+- A requirement is analyzed only after a human sets its `status: APPROVED`.
 - A task needs acceptance criteria before `READY`.
 - Every code change passes SA review before `MERGED`.
 - Review and test loops are limited to 3 iterations; beyond that the task becomes `BLOCKED`.

@@ -15,8 +15,8 @@ software from requirement to release **using only Cursor, markdown files and git
 | 0 | Workspace Foundation | Done |
 | 1 | Task Format and Workflow Rule | Done |
 | 2 | Role Contracts | Done |
-| 3 | SA Skill (Analysis & Design) | Next |
-| 4 | Backend Skill | Planned |
+| 3 | SA Skill (Analysis & Design) | Done |
+| 4 | Backend Skill | Next |
 | 5 | SA Review Skill (MVP) | Planned |
 | 6 | Guardrails | Planned |
 | 7–10 | Test, Frontend, DevOps, Scrum Skills | Planned |

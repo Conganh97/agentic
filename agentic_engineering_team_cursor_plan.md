@@ -366,11 +366,15 @@ Deliver:
 - `templates/requirement.md`, `templates/design.md`
 - `.cursor/skills/sa/SKILL.md` — analyze mode
 
+Gate: the requirement's `status` must be `APPROVED` (set by a human). Blocking questions → design doc
+with Open Questions only, `NEEDS_INPUT`, no tasks.
+
 SA analyze produces:
 - `docs/design/REQ-###-design.md`: functional/non-functional requirements, architecture, APIs,
-  data model changes, dependencies, risks
+  data model changes, dependencies, risks, assumptions, open questions, task breakdown
 - Task files (BACKLOG) with acceptance criteria and assignee role
-- ADR when an architectural decision is made
+- ADR when an architectural decision is made (+ row in `memory/decisions.md`)
+- Requirement set to `ANALYZED`; one commit `[REQ-###] analyzed (SA): ...`
 
 Acceptance:
 - Given a requirement, SA produces a design doc and well-formed task files; no product code changed.

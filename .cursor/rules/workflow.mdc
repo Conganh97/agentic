@@ -79,7 +79,8 @@ On `FAILED` or `NEEDS_INPUT` the status does not change (steps 4–8 may still r
 - Who: SA (from a design), TEST (new BUG found outside a task's test run), SCRUM, HUMAN.
 - Copy `templates/task.md`; id = highest existing `TASK-###` + 1; file `tasks/TASK-###-<kebab-slug>.md`.
 - Initial status BACKLOG; History row `— → BACKLOG`; add a board row.
-- Commit: `[TASK-007] created (SA): short note`.
+- Commit: `[TASK-007] created (SA): short note`. When SA creates several tasks from one requirement,
+  use one commit: `[REQ-001] analyzed (SA): TASK-003..TASK-007 created`.
 - A failing test run on an existing task uses TESTING → BUG on that task, not a new task.
 
 ## 7. Refusing
