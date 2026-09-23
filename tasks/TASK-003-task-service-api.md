@@ -3,7 +3,7 @@ id: TASK-003
 title: Task service REST API and persistence
 type: TASK
 priority: MEDIUM
-status: CODE_REVIEW
+status: CHANGES_REQUESTED
 assignee: BE
 parent: REQ-001
 depends_on: []
@@ -11,11 +11,11 @@ sprint:
 branch: feature/TASK-003-task-service-api
 merge_commit:
 release:
-review_iteration: 0
+review_iteration: 1
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:07
+updated: 2026-09-23 17:08
 ---
 
 ## Description
@@ -48,6 +48,16 @@ Repo: task-service (new)
 
 ## Review (SA)
 
+### Round 1 — CHANGES_REQUESTED
+Reviewed: feature/TASK-003-task-service-api @ 41db5fa · Build/tests: `./mvnw -q verify` PASS (10 run, 3 skipped — Docker unavailable)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | src/test/java/com/product/task/api/TaskControllerWebMvcTest.java | MAJOR | AC-5: add MockMvc tests for `PATCH` and `DELETE` on unknown `id` returning 404 with `application/problem+json` (mirror `getTaskWhenMissingReturns404ProblemDetail`). |
+| 2 | src/test/java/com/product/task/api/TaskControllerWebMvcTest.java:147 | MAJOR | AC-5: `updateWhenMissingReturns404` asserts status only; also expect ProblemDetail content type like other 404 cases. |
+| 3 | src/test/java/com/product/task/api/TaskControllerWebMvcTest.java | MAJOR | AC-1: list ordering by `createdAt` desc is only covered in `TaskRepositoryIntegrationTest`; add a test that would fail if `TaskService.listTasks` stopped using `findAllByOrderByCreatedAtDesc` (e.g. `@WebMvcTest` with real ordering via mocked repo returning two tasks, or a focused `TaskService` unit test). |
+| 4 | src/test/java/com/product/task/api/TaskControllerWebMvcTest.java | MAJOR | AC-3: add POST with missing/null `title` (e.g. `{}`) expecting 400 `application/problem+json`, not only blank whitespace. |
+| 5 | src/test/java/com/product/task/api/TaskControllerWebMvcTest.java | MAJOR | AC-4: add PATCH with `{ "status": "TODO" }` (revert from COMPLETED) so both allowed status values are exercised at the API layer. |
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -59,3 +69,4 @@ Repo: task-service (new)
 | 2026-09-23 17:01 | BACKLOG | READY | SCRUM | DoR met |
 | 2026-09-23 17:04 | READY | IN_PROGRESS | BE | feature/TASK-003-task-service-api |
 | 2026-09-23 17:07 | IN_PROGRESS | CODE_REVIEW | BE | task-service API ready for SA |
+| 2026-09-23 17:08 | CODE_REVIEW | CHANGES_REQUESTED | SA | 5 MAJOR test gaps (AC-1, AC-3–AC-5) |
