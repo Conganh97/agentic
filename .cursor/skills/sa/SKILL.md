@@ -110,11 +110,12 @@ SA only reads, runs tests and merges in `product/`. Never fix code yourself — 
 - If this chat implemented the task → refuse ("never review your own work").
 - `branch` set and exists: `git -C product rev-parse --verify <branch>`. The Implementation section has
   more iterations than there are Review rounds (round 1 needs ≥1 iteration). Otherwise `NEEDS_INPUT`.
-- `git -C product status --porcelain` must be empty and the current branch `main`; else `NEEDS_INPUT`.
+- `git -C product status --porcelain` must be empty, else `NEEDS_INPUT`. If the current branch is not
+  `main`, run `git -C product checkout main`.
 
 ### 2. Gather (only what is needed)
 - Task: AC, Design (SA), latest Implementation iteration, previous Review rounds.
-- The design doc linked in Design (SA), if any; `docs/standards/<backend|frontend>.md`; `memory/lessons.md`.
+- The design doc linked in Design (SA); if none is linked, the Design (SA) section is the contract; `docs/standards/<backend|frontend>.md`; `memory/lessons.md`.
 - `git -C product log --oneline main..<branch>`, `git -C product diff --stat main...<branch>`,
   `git -C product diff main...<branch>`; open full files only where the diff lacks context.
 
@@ -142,6 +143,7 @@ Severity:
 - **BLOCKER**: AC not met, build/test failure, security issue, data loss, design violation.
 - **MAJOR**: bug in an edge case, missing test for an AC, standards violation that affects maintainability.
 - **MINOR**: naming, style, small cleanup. Never blocks approval.
+- Repeating a pitfall already in `memory/lessons.md` raises the severity one level (MINOR → MAJOR).
 
 Decision: any BLOCKER or MAJOR → CHANGES_REQUESTED; otherwise APPROVED (MINOR comments are recorded).
 
@@ -179,7 +181,8 @@ Previous round: #1 resolved, #2 not resolved (see #1 below)   ← omit in round 
 | # | File | Severity | Comment |
 |---|------|----------|---------|
 | 1 | path:line | BLOCKER / MAJOR / MINOR | what is wrong, why, and what is expected |
-Merged <sha>.   ← only when APPROVED
+
+Merged <sha>.   ← only when APPROVED; keep the blank line above
 ```
 
 No comments → write `No comments.` instead of the table. An APPROVED round may still contain a table

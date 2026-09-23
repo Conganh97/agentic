@@ -60,7 +60,7 @@ Design section filled or links a design doc.
 4. Write your output section (append a new round/run; never rewrite older ones).
 5. Update frontmatter: `status`, counters, `blocked_from`, `branch`, `merge_commit`, `release`, `updated`.
 6. Append a History row. Get the time with `date "+%Y-%m-%d %H:%M"`; never guess it.
-7. Update the task's row in `tasks/board.md`.
+7. Update the task's row in `tasks/board.md` and keep the sort order defined in `task-files.mdc`.
 8. Commit only the files you changed in this repo:
    `git commit -m "[TASK-001] IN_PROGRESS -> CODE_REVIEW (BE): short note"`
 9. Report to the user in this format:

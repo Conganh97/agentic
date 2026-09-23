@@ -17,8 +17,8 @@ software from requirement to release **using only Cursor, markdown files and git
 | 2 | Role Contracts | Done |
 | 3 | SA Skill (Analysis & Design) | Done |
 | 4 | Backend Skill | Done |
-| 5 | SA Review Skill (MVP) | Next |
-| 6 | Guardrails | Planned |
+| 5 | SA Review Skill (MVP) | Done |
+| 6 | Guardrails | Next |
 | 7–10 | Test, Frontend, DevOps, Scrum Skills | Planned |
 
 ## Start here
