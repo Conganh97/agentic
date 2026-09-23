@@ -84,7 +84,7 @@ BLOCKED           → previous valid working state (explicit unblock only)
 ```
 
 Anything else is rejected by the Orchestrator (e.g. `BACKLOG → MERGED`, `IN_PROGRESS → RELEASED`).
-Detailed rules will be specified in `docs/architecture/workflow.md` during Phase 1.
+Detailed rules and guards: `docs/architecture/workflow.md`.
 
 ## 6. Task domain model (initial)
 

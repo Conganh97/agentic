@@ -5,9 +5,10 @@ Applies to the Orchestrator, agent runtime, and tool layer (all Java).
 ## Language and tooling
 
 - Java 21 (LTS). Build: Maven (`pom.xml`, introduced in Phase 1). Use the Maven Wrapper (`./mvnw`).
-- Application framework: Spring Boot — only in the application/adapters layer (see Structure).
+- Application framework: Spring Boot — only in the application/adapters layer (see Structure),
+  added when the Orchestrator needs an API or wiring.
 - Tests: JUnit 5 + AssertJ (see `testing.md`).
-- Formatting: Spotless with Google Java Format (added in Phase 1).
+- Formatting (Spotless) and coverage (JaCoCo) are added together with CI (Phase 6).
 
 ## Structure
 
@@ -18,16 +19,15 @@ orchestrator/
 ├── pom.xml
 └── src/
     ├── main/java/com/agentic/orchestrator/
-    │   ├── domain/        # entities, enums, value objects — pure Java, no Spring, no I/O
-    │   ├── workflow/      # state machine, transition rules — pure Java, deterministic
+    │   ├── workflow/      # TaskState + transition rules — pure Java, deterministic
+    │   ├── domain/        # Task aggregate, enums, value objects — pure Java, no Spring, no I/O
     │   ├── service/       # use cases; coordinate domain + repositories
-    │   ├── repository/    # persistence interfaces + adapters (in-memory first)
-    │   └── OrchestratorApplication.java
+    │   └── repository/    # persistence interfaces + adapters (in-memory first)
     └── test/java/com/agentic/orchestrator/   # mirrors main
 ```
 
-- Dependencies point inward: `service → domain/workflow`, `repository → domain`.
-  `domain` and `workflow` never import from `service`, `repository`, or Spring.
+- Dependencies point inward: `service → domain/workflow`, `repository → domain`, `domain → workflow`.
+  `workflow` depends on nothing. `domain` and `workflow` never import from `service`, `repository`, or Spring.
 - No I/O, network, LLM calls, `Instant.now()`, or randomness inside `domain` and `workflow`.
   Inject them (e.g. `java.time.Clock`).
 

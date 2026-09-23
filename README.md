@@ -9,8 +9,8 @@ under a deterministic, auditable workflow owned by an Orchestrator.
 | Phase | Name | Status |
 |-------|------|--------|
 | 0 | Repository Foundation | Done |
-| 1 | Workflow Orchestrator | Next |
-| 2 | Agent Contract | Planned |
+| 1 | Workflow Orchestrator | Done |
+| 2 | Agent Contract | Next |
 | 3 | SA Agent | Planned |
 | 4 | Backend Agent | Planned |
 | 5 | SA Code Review | Planned |
@@ -44,11 +44,21 @@ Additional infrastructure is added only when a phase requires it (see ADR-0001).
 ├── AGENTS.md
 ├── README.md
 ├── agentic_engineering_team_cursor_plan.md
-└── docs/
-    ├── architecture/system-overview.md
-    ├── adr/
-    ├── requirements/
-    └── standards/
+├── docs/
+│   ├── architecture/   # system-overview.md, workflow.md
+│   ├── adr/
+│   ├── requirements/
+│   └── standards/
+└── orchestrator/       # Task domain model + state machine (Java, Maven)
 ```
 
-`orchestrator/`, `agents/`, `tools/`, `knowledge/`, `infrastructure/` are created when their phase starts.
+`agents/`, `tools/`, `knowledge/`, `infrastructure/` are created when their phase starts.
+
+## Build and test
+
+Requires JDK 21+.
+
+```bash
+cd orchestrator
+./mvnw test
+```

@@ -13,7 +13,8 @@ A workflow-driven platform that runs an agentic software engineering team
 
 ## 2. Current phase
 
-**Phase 0 — Repository Foundation (done).** Next: Phase 1 — Workflow Orchestrator.
+**Phase 1 — Workflow Orchestrator (done).** Next: Phase 2 — Agent Contract.
+Workflow rules: `docs/architecture/workflow.md`. Build/test: `cd orchestrator && ./mvnw test`.
 
 Update this section whenever a phase starts or finishes.
 
