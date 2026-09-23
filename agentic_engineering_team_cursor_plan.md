@@ -10,6 +10,8 @@ release, running **entirely inside Cursor**.
 - **Markdown files are the state.** Tasks, status, designs, reviews, test results and history live in
   `.md` files in this repository.
 - **Git is the audit log.** Every state change is a commit.
+- **No external tracker.** No Jira, no GitHub/GitLab issues, no PR/MR tools. Backlog, sprints, board,
+  reviews, bugs and releases are all markdown files (see §3.1).
 
 Team roles:
 
@@ -50,6 +52,8 @@ Requirement → Scrum Planning → SA Analysis → Technical Design → Task Bre
 - Review and test loops have a maximum iteration count (default 3); exceeding it → `BLOCKED`.
 - Repository state comes from tools (read files, run `git`), never from memory or assumption.
 - Load only the files listed for the role (§12). Never load the whole repository.
+- All planning, tracking, review and approval happen in markdown files in this repo — never in an
+  external tool.
 
 ---
 
@@ -67,6 +71,24 @@ Requirement → Scrum Planning → SA Analysis → Technical Design → Task Bre
 | Hard guardrails | `.cursor/hooks.json` (block dangerous shell commands) + git `pre-commit` check of transitions |
 | Knowledge | `docs/` (architecture, ADRs, standards) + `memory/` |
 | Parallel work | Multiple Cursor chats / background agents, one task each |
+
+## 3.1 Tracker Features in Markdown (instead of Jira)
+
+| Tracker feature | Markdown equivalent |
+|-----------------|---------------------|
+| Epic / Story / Task / Bug | `tasks/TASK-###-*.md` with `type:` EPIC / STORY / TASK / BUG / TECHNICAL_TASK |
+| Parent / sub-task, links | `parent:` and `depends_on:` in frontmatter |
+| Workflow & statuses | `status:` + `.cursor/rules/workflow.mdc` |
+| Assignee | `assignee:` (role) |
+| Board / backlog view | `tasks/board.md` (rows sorted by status, priority) |
+| Sprint | `sprints/SPRINT-##.md` (goal, scope, dates, outcome) |
+| Comments / activity | task sections (Design, Implementation, Review, Test, Deployment) + `## History` |
+| Pull request / code review | Review rounds in the task file + `git diff main...branch` in `product/` |
+| Merge | local `git merge --no-ff` in `product/` by SA; `merge_commit:` in frontmatter |
+| Bug report | BUG task file with reproduction steps, expected vs actual, logs |
+| Release / version | `releases/REL-###.md` (version, tasks included, environments, approval) |
+| Reports / dashboards | Scrum `report` computed from frontmatter and History |
+| Search / filters | Cursor search / `rg` over `tasks/` frontmatter |
 
 ---
 
@@ -100,13 +122,15 @@ agentic/                         # team workspace (this repo)
 │   ├── task.md
 │   ├── requirement.md
 │   ├── design.md
-│   └── sprint.md
+│   ├── sprint.md
+│   └── release.md
 │
 ├── requirements/                # REQ-###-*.md (input from humans)
 ├── tasks/
 │   ├── board.md                 # index of all tasks
 │   └── TASK-###-<slug>.md       # one file per task (source of truth)
 ├── sprints/                     # SPRINT-##.md
+├── releases/                    # REL-###.md (release notes, approvals)
 │
 ├── docs/
 │   ├── architecture/            # system-overview.md + product architecture
@@ -144,7 +168,8 @@ parent: REQ-001        # requirement or epic id
 depends_on: []         # [TASK-002, ...]
 sprint:
 branch:                # feature/TASK-001-login-api
-pr:                    # PR/MR URL or merge commit
+merge_commit:          # merge commit sha in product/ (set by SA on MERGED)
+release:               # REL-001 (set by DEVOPS)
 review_iteration: 0
 test_iteration: 0
 blocked_from:          # previous status when BLOCKED
@@ -206,7 +231,7 @@ READY_FOR_DEPLOY, DEPLOYING, RELEASED, BLOCKED`
 | READY | IN_PROGRESS | BE / FE (assignee) | dependencies are MERGED or later |
 | IN_PROGRESS | CODE_REVIEW | BE / FE | tests pass, branch pushed/committed, Implementation section filled |
 | CODE_REVIEW | CHANGES_REQUESTED | SA | new Review round with ≥1 comment; `review_iteration += 1` |
-| CODE_REVIEW | MERGED | SA | Review round APPROVED, no open BLOCKER; branch merged; `pr` set |
+| CODE_REVIEW | MERGED | SA | Review round APPROVED, no open BLOCKER; branch merged locally (`git merge --no-ff`); `merge_commit` set |
 | CHANGES_REQUESTED | IN_PROGRESS | BE / FE | — |
 | MERGED | TESTING | TEST | — |
 | TESTING | BUG | TEST | Test run FAIL with bug details; `test_iteration += 1` |
@@ -249,7 +274,7 @@ Every agent must follow these steps to change a task's state:
 2. Check the transition is in §6 **and** allowed for your role.
 3. Check the guard conditions. If not met → do not change status; explain what is missing.
 4. Write your output section (Design / Implementation / Review round / Test run / Deployment).
-5. Update frontmatter: `status`, counters, `blocked_from`, `branch`, `pr`, `updated`.
+5. Update frontmatter: `status`, counters, `blocked_from`, `branch`, `merge_commit`, `updated`.
 6. Append one row to `## History`: time, from, to, role, short note.
 7. Update the task's row in `tasks/board.md`.
 8. Commit in the team repo: `[TASK-001] IN_PROGRESS -> CODE_REVIEW (BE): <note>`.
@@ -353,8 +378,9 @@ Deliver:
 - `docs/standards/backend.md` for the product stack
 
 BE flow: read task + design → inspect relevant product files → create branch
-`feature/TASK-###-slug` → implement → run tests → review own `git diff` → commit in product repo →
-(push + create PR via `gh`/`glab` if a remote exists) → fill Implementation → IN_PROGRESS → CODE_REVIEW.
+`feature/TASK-###-slug` → implement → run tests → review own `git diff` → commit in product repo
+(push the branch only if a remote exists, as backup) → fill Implementation → IN_PROGRESS → CODE_REVIEW.
+No PR/MR is created: the review happens in the task file.
 
 Acceptance:
 - BE completes a small real feature in `product/` on a branch, tests pass, task moves to CODE_REVIEW.
@@ -365,8 +391,8 @@ Deliver:
 - Review mode in `.cursor/skills/sa/SKILL.md`
 
 SA review: read task, AC, design, `git diff main...branch` → check correctness, AC coverage, standards,
-security, tests → write Review round → CHANGES_REQUESTED (with comments) or APPROVED → merge branch →
-MERGED. Enforce review limit.
+security, tests → write Review round → CHANGES_REQUESTED (with comments) or APPROVED →
+`git merge --no-ff` into `main` in `product/` → record `merge_commit` → MERGED. Enforce review limit.
 
 Acceptance:
 - **MVP loop works end-to-end** (§17).
@@ -399,10 +425,12 @@ Deliver:
 ## Phase 9 — DevOps Skill
 
 Deliver:
-- `.cursor/skills/devops/SKILL.md`, `docs/standards/devops.md`
+- `.cursor/skills/devops/SKILL.md`, `docs/standards/devops.md`, `templates/release.md`
 
 Flow: build → package → deploy DEV/STG/UAT per `project.md` → smoke check → Deployment section.
 PROD only when `approved_by` is set by a human. Rollback steps recorded.
+Each release is a `releases/REL-###.md` file: version, included tasks, environments deployed, approval,
+rollback plan. Released tasks get `release: REL-###`.
 
 ## Phase 10 — Scrum Skill
 
@@ -513,7 +541,8 @@ being refused."
 
 # 19. Evolution (Optional, Later)
 
-- MCP integrations: GitLab/GitHub (PRs), Jira (sync board), CI status.
+Markdown stays the only control plane. No Jira or external tracker is planned.
+
 - Custom subagents per role for parallel execution from one chat.
 - Scheduled/background agents running `scrum next` automatically.
 - Search over `memory/` and history as it grows.

@@ -5,9 +5,9 @@ Agents read this file to learn how to work with the product. Fill in every `TODO
 ## Repository
 
 - Path: `product/`
-- Remote: TODO (e.g. `git@gitlab.com:org/app.git`, or "none" for local-only)
+- Remote: TODO (git URL for backup/push, or "none" for local-only)
 - Main branch: `main`
-- PR tool: TODO (`gh`, `glab`, or "none" — then SA merges locally with `git merge --no-ff`)
+- Merge: SA merges locally with `git merge --no-ff` after approval in the task file (no PR/MR)
 
 ## Stack
 

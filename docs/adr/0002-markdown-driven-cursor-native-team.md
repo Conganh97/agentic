@@ -19,6 +19,8 @@ Cursor, without writing or maintaining platform code or infrastructure.
 5. Git is the audit log: one commit per transition, plus a History table in each task.
 6. Hard guardrails use a git `pre-commit` transition check and Cursor hooks (bash scripts only).
 7. Product code lives in a separate git repo in `product/`, so task state never diverges across branches.
+8. No external tracker: backlog, sprints, board, code review, merge approval, bugs and releases are all
+   markdown files. Merges are done locally with `git merge --no-ff` after SA approval in the task file.
 
 ## Consequences
 
@@ -34,4 +36,5 @@ Cursor, without writing or maintaining platform code or infrastructure.
 ## Alternatives considered
 
 - **Java/Python orchestrator + DB (ADR-0001)** — rejected: requires building and maintaining a platform.
-- **External tracker (Jira/GitLab issues) as state** — deferred: possible later via MCP.
+- **External tracker (Jira, GitHub/GitLab issues or PRs)** — rejected: all planning, tracking, review and
+  approval stay in markdown in this repo, so there is one source of truth and no tool to integrate.

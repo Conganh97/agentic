@@ -32,6 +32,8 @@ Update this section whenever a phase starts or finishes.
 - Always read files and run `git` to learn state; never assume it.
 - Read only the files your role needs (plan §12); never load the whole repository.
 - Never write secrets into markdown, commits, or chat.
+- No external tracker (no Jira, no GitHub/GitLab issues or PRs). Planning, tracking, review, merge
+  approval and releases are recorded only in markdown files in this repo.
 
 ## 4. How to work
 
@@ -48,6 +50,7 @@ Update this section whenever a phase starts or finishes.
 | `project.md` | Product repo path, stack, commands, environments |
 | `requirements/` | Input requirements (`REQ-###-*.md`) |
 | `tasks/` | Task files and `board.md` (from Phase 1) |
+| `sprints/`, `releases/` | Sprint and release files (from Phase 9–10) |
 | `docs/architecture/` | Architecture docs |
 | `docs/design/` | SA designs (from Phase 3) |
 | `docs/adr/` | Architecture Decision Records |
