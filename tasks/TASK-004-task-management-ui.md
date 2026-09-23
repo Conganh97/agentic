@@ -3,7 +3,7 @@ id: TASK-004
 title: Task management web UI
 type: TASK
 priority: MEDIUM
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 depends_on: [TASK-003]
@@ -15,7 +15,7 @@ review_iteration: 0
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:15
+updated: 2026-09-23 17:17
 ---
 
 ## Description
@@ -39,6 +39,12 @@ Repo: frontend (new)
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (initial)
+- Branch: `feature/TASK-004-task-management-ui` @ c919214
+- Changed: `frontend/src/api/`, `frontend/src/features/tasks/`, `frontend/src/app/`, `frontend/vite.config.ts`, scaffold (Vite/React/TS)
+- Tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` → pass (7 tests)
+- Notes: Local `frontend` repo bootstrapped (no `gh auth` / GitHub remote yet); push failed: no `origin`. Dev proxy uses `BACKEND_PORT` default 18081 per `project.md`. Create section heading "Add task" (avoids duplicate "New task" with task title).
+
 ## Review (SA)
 
 ## Test (TEST)
@@ -51,3 +57,4 @@ Repo: frontend (new)
 | 2026-09-23 17:00 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-23 17:14 | BACKLOG | READY | SCRUM | DoR met |
 | 2026-09-23 17:15 | READY | IN_PROGRESS | FE | feature/TASK-004-task-management-ui |
+| 2026-09-23 17:17 | IN_PROGRESS | CODE_REVIEW | FE | task UI ready for SA review |
