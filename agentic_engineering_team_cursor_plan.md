@@ -384,6 +384,10 @@ Acceptance:
 Deliver:
 - `.cursor/skills/backend/SKILL.md`
 - `docs/standards/backend.md` for the product stack
+- ADR-0003 product stack: Java 21 + Spring Boot 4.0.x microservices (Maven, PostgreSQL per service, Flyway),
+  React + TypeScript (Vite) frontend; FE standards follow in Phase 8
+- `project.md` filled (layout `services/<name>-service/`, `frontend/`, commands, local notes)
+- `product/` initialised as its own git repo (branch `main`)
 
 BE flow: read task + design → inspect relevant product files → create branch
 `feature/TASK-###-slug` → implement → run tests → review own `git diff` → commit in product repo

@@ -46,7 +46,11 @@ product/
 
 ## Local environment notes
 
-- JDK 25 is installed; services compile with `--release 21`.
+- JDK 25 (Homebrew) is installed; services compile with `--release 21`. `/usr/bin/java` finds no runtime,
+  so export it before `./mvnw`:
+  `export JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home`
+- Maven writes to `~/.m2` and downloads from Maven Central: in Cursor, run `mvn`/`./mvnw` outside the
+  sandbox (full permissions), not only with network access.
 - Docker is required for Testcontainers. If Docker is not running, repository integration tests cannot
   run: say so in the Implementation notes instead of skipping them silently.
 

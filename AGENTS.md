@@ -15,7 +15,8 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phase 3 — SA Skill, analyze mode (done).** Next: Phase 4 — Backend Skill.
+**Phase 4 — Backend Skill (done).** Next: Phase 5 — SA Review Skill.
+Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript); details in `project.md`.
 Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
 `templates/examples/TASK-000-example.md`.
