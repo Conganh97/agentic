@@ -3,19 +3,19 @@ id: TASK-003
 title: Task service REST API and persistence
 type: TASK
 priority: MEDIUM
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 depends_on: []
 sprint:
 branch: feature/TASK-003-task-service-api
-merge_commit:
+merge_commit: 5500599
 release:
 review_iteration: 1
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:10
+updated: 2026-09-23 17:11
 ---
 
 ## Description
@@ -64,6 +64,14 @@ Reviewed: feature/TASK-003-task-service-api @ 41db5fa · Build/tests: `./mvnw -q
 | 4 | src/test/java/com/product/task/api/TaskControllerWebMvcTest.java | MAJOR | AC-3: add POST with missing/null `title` (e.g. `{}`) expecting 400 `application/problem+json`, not only blank whitespace. |
 | 5 | src/test/java/com/product/task/api/TaskControllerWebMvcTest.java | MAJOR | AC-4: add PATCH with `{ "status": "TODO" }` (revert from COMPLETED) so both allowed status values are exercised at the API layer. |
 
+### Round 2 — APPROVED
+Reviewed: feature/TASK-003-task-service-api @ 4242d6c · Build/tests: `./mvnw -q verify` PASS (15 run, 3 skipped — Docker unavailable)
+Previous round: #1–#5 resolved
+No comments.
+
+Merged 5500599.
+Push failed: task-service is not registered in project.md
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -78,3 +86,4 @@ Reviewed: feature/TASK-003-task-service-api @ 41db5fa · Build/tests: `./mvnw -q
 | 2026-09-23 17:08 | CODE_REVIEW | CHANGES_REQUESTED | SA | 5 MAJOR test gaps (AC-1, AC-3–AC-5) |
 | 2026-09-23 17:09 | CHANGES_REQUESTED | IN_PROGRESS | BE | address SA review round 1 test gaps |
 | 2026-09-23 17:10 | IN_PROGRESS | CODE_REVIEW | BE | WebMvc/service tests for AC-1, AC-3–AC-5 |
+| 2026-09-23 17:11 | CODE_REVIEW | MERGED | SA | approved round 2; merged 5500599 |
