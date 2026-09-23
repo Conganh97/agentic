@@ -3,7 +3,7 @@ id: TASK-003
 title: Task service REST API and persistence
 type: TASK
 priority: MEDIUM
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 depends_on: []
@@ -15,7 +15,7 @@ review_iteration: 1
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:11
+updated: 2026-09-23 17:13
 ---
 
 ## Description
@@ -74,6 +74,17 @@ Push failed: task-service is not registered in project.md
 
 ## Test (TEST)
 
+### Run 1 — INCOMPLETE
+- Tested: main @ 5500599 (contains merge `5500599`), service on port 18081
+- Build/tests: `cd product/services/task-service && ./mvnw -q verify` PASS (18 run, 3 skipped — Docker/Testcontainers unavailable)
+- AC-1 — not run (service did not start)
+- AC-2 — not run (service did not start)
+- AC-3 — not run (service did not start)
+- AC-4 — not run (service did not start)
+- AC-5 — not run (service did not start)
+- Exploratory: none (blocked by startup)
+- Blocker (INCOMPLETE only): `spring-boot:run` failed during Flyway migrate — `Connection to localhost:5432 refused` (PostgreSQL not listening). `/actuator/health` never reached UP within 60s. · Human: start PostgreSQL with database `task_service` and credentials per `application.yml` (or set `DATABASE_URL` / user / password), then re-run `/tester TASK-003`.
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -87,3 +98,4 @@ Push failed: task-service is not registered in project.md
 | 2026-09-23 17:09 | CHANGES_REQUESTED | IN_PROGRESS | BE | address SA review round 1 test gaps |
 | 2026-09-23 17:10 | IN_PROGRESS | CODE_REVIEW | BE | WebMvc/service tests for AC-1, AC-3–AC-5 |
 | 2026-09-23 17:11 | CODE_REVIEW | MERGED | SA | approved round 2; merged 5500599 |
+| 2026-09-23 17:13 | MERGED | TESTING | TEST | run 1 INCOMPLETE — PostgreSQL down |
