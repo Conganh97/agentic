@@ -15,7 +15,9 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phase 0 — Workspace Foundation (done).** Next: Phase 1 — Task Format and Workflow Rule.
+**Phase 1 — Task Format and Workflow Rule (done).** Next: Phase 2 — Role Contracts.
+Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
+`templates/examples/TASK-000-example.md`.
 
 Update this section whenever a phase starts or finishes.
 

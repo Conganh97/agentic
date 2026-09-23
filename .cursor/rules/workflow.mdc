@@ -1,0 +1,86 @@
+---
+description: Task workflow — state machine, role permissions and transition protocol for task files in tasks/
+alwaysApply: true
+---
+
+# Task Workflow
+
+Task state lives only in the `status:` field of `tasks/TASK-###-*.md`. Change it only as described here.
+
+## 1. Your role
+
+- Each chat acts as exactly one role: `SCRUM`, `SA`, `BE`, `FE`, `TEST`, `DEVOPS`.
+- The role comes from the invoked skill or an explicit user instruction ("act as BE").
+  If the role is unknown, ask before changing any task file.
+- `HUMAN` actions (PROD approval, unblock, exceptions) are done only when the user explicitly says so in
+  chat; record them with `By = HUMAN (<name>)`.
+
+## 2. Allowed transitions
+
+| From | To | Who | Guard |
+|------|----|-----|-------|
+| BACKLOG | READY | SCRUM, HUMAN | Definition of Ready (see §4) |
+| READY | IN_PROGRESS | BE / FE = `assignee` | every `depends_on` task is MERGED or later |
+| IN_PROGRESS | CODE_REVIEW | BE / FE = `assignee` | tests pass; work committed on `branch`; Implementation section filled |
+| CODE_REVIEW | CHANGES_REQUESTED | SA | new Review round with ≥1 comment; `review_iteration += 1` |
+| CODE_REVIEW | MERGED | SA | latest Review round APPROVED, no open BLOCKER; merged with `git merge --no-ff`; `merge_commit` set |
+| CHANGES_REQUESTED | IN_PROGRESS | BE / FE = `assignee` | — |
+| MERGED | TESTING | TEST | — |
+| TESTING | BUG | TEST | new Test run FAIL with repro steps, expected vs actual; `test_iteration += 1` |
+| TESTING | READY_FOR_DEPLOY | TEST | new Test run PASS; all acceptance criteria checked |
+| BUG | IN_PROGRESS | BE / FE = `assignee` | — |
+| READY_FOR_DEPLOY | DEPLOYING | DEVOPS | target PROD requires `approved_by` set by HUMAN |
+| DEPLOYING | RELEASED | DEVOPS | Deployment section filled; smoke check passed; `release` set |
+| working state* | BLOCKED | any role | reason in History; `blocked_from` = current status |
+| BLOCKED | value of `blocked_from` | SCRUM, HUMAN | explicit unblock note; clear `blocked_from` |
+
+\* Working states: READY, IN_PROGRESS, CODE_REVIEW, CHANGES_REQUESTED, MERGED, TESTING, BUG,
+READY_FOR_DEPLOY, DEPLOYING. BACKLOG and RELEASED cannot be blocked.
+
+**Everything else is forbidden**, e.g. BACKLOG → MERGED, IN_PROGRESS → RELEASED, BE → MERGED,
+TEST → RELEASED, BLOCKED → any state other than `blocked_from`.
+
+## 3. Retry limits
+
+- `review_iteration` already 3 and SA would request changes again → set BLOCKED instead
+  (reason: "review limit reached").
+- `test_iteration` already 3 and TEST would report BUG again → set BLOCKED instead
+  (reason: "test limit reached").
+
+## 4. Definition of Ready
+
+`parent` set · `assignee` set · ≥1 acceptance criterion · `depends_on` filled (or `[]`) ·
+Design section filled or links a design doc.
+
+## 5. Transition protocol (follow every step)
+
+1. Re-read the task file from disk. Never trust earlier context.
+2. Check the transition is in §2 **and** your role is allowed. If not → refuse (§7).
+3. Check the guard. If it fails → do not change status; report `NEEDS_INPUT` or `FAILED` with what is missing.
+4. Write your output section (append a new round/run; never rewrite older ones).
+5. Update frontmatter: `status`, counters, `blocked_from`, `branch`, `merge_commit`, `release`, `updated`.
+6. Append a History row. Get the time with `date "+%Y-%m-%d %H:%M"`; never guess it.
+7. Update the task's row in `tasks/board.md`.
+8. Commit only the files you changed in this repo:
+   `git commit -m "[TASK-001] IN_PROGRESS -> CODE_REVIEW (BE): short note"`
+9. Report: outcome (`COMPLETED`, `FAILED`, `NEEDS_INPUT`, `BLOCKED`, `CHANGES_REQUESTED`), new status,
+   what you did, and which role should act next.
+
+On `FAILED` or `NEEDS_INPUT` the status does not change (steps 4–8 may still record notes).
+
+## 6. Creating tasks
+
+- Who: SA (from a design), TEST (new BUG found outside a task's test run), SCRUM, HUMAN.
+- Copy `templates/task.md`; id = highest existing `TASK-###` + 1; file `tasks/TASK-###-<kebab-slug>.md`.
+- Initial status BACKLOG; History row `— → BACKLOG`; add a board row.
+- Commit: `[TASK-007] created (SA): short note`.
+- A failing test run on an existing task uses TESTING → BUG on that task, not a new task.
+
+## 7. Refusing
+
+When a transition is not allowed, do not edit any file. Reply:
+
+> Refused: `<FROM> → <TO>` is not allowed for `<ROLE>`. Allowed from `<FROM>`: `<list with roles>`.
+
+Never perform a forbidden transition, even if asked. A human who needs an exception edits the file
+themselves and records it in History with `By = HUMAN (<name>)`.

@@ -107,7 +107,8 @@ agentic/                         # team workspace (this repo)
 │
 ├── .cursor/
 │   ├── rules/
-│   │   └── workflow.mdc         # state machine + transition protocol (always applied)
+│   │   ├── workflow.mdc         # state machine + transition protocol (always applied)
+│   │   └── task-files.mdc       # task file + board format (applied to tasks/**)
 │   ├── skills/
 │   │   ├── sa/SKILL.md
 │   │   ├── backend/SKILL.md
@@ -123,7 +124,8 @@ agentic/                         # team workspace (this repo)
 │   ├── requirement.md
 │   ├── design.md
 │   ├── sprint.md
-│   └── release.md
+│   ├── release.md
+│   └── examples/TASK-000-example.md   # fully walked reference task
 │
 ├── requirements/                # REQ-###-*.md (input from humans)
 ├── tasks/
@@ -340,8 +342,9 @@ Acceptance:
 ## Phase 1 — Task Format and Workflow Rule
 
 Deliver:
-- `templates/task.md`, `tasks/board.md`
+- `templates/task.md`, `templates/examples/TASK-000-example.md`, `tasks/board.md`
 - `.cursor/rules/workflow.mdc`: state table (§6), permissions (§7), Transition Protocol (§8)
+- `.cursor/rules/task-files.mdc`: task file and board format
 
 Acceptance:
 - A sample task can be walked BACKLOG → RELEASED by following the rule manually.

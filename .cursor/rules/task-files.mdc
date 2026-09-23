@@ -1,0 +1,27 @@
+---
+description: Format rules for task files and the task board
+globs: tasks/**/*.md
+alwaysApply: false
+---
+
+# Task Files
+
+- Template: `templates/task.md`. Reference example: `templates/examples/TASK-000-example.md`.
+- Keep every frontmatter key, even when empty. Allowed values:
+  - `type`: EPIC | STORY | TASK | BUG | TECHNICAL_TASK
+  - `priority`: LOW | MEDIUM | HIGH | CRITICAL
+  - `assignee`: SCRUM | SA | BE | FE | TEST | DEVOPS
+  - `status`: see `.cursor/rules/workflow.mdc`
+- `depends_on` is a YAML list of task ids, e.g. `[TASK-002, TASK-003]`.
+- `updated` and History times use `YYYY-MM-DD HH:MM` from `date "+%Y-%m-%d %H:%M"`.
+- Keep section headings exactly as in the template, in the same order.
+- Sections are append-only: add `### Round N` / `### Run N`; never edit or delete earlier rounds.
+- History is append-only: one row per transition or creation.
+- Acceptance criteria are checkboxes `- [ ] AC-n ...`; only TEST checks them (`- [x]`).
+
+# Board (`tasks/board.md`)
+
+- One row per task; it is an index, the task file wins on any mismatch.
+- Update the row in the same commit as the task change.
+- Order rows by status (workflow order, BLOCKED last), then priority (CRITICAL first), then id.
+- Columns: ID (link to file) · Title · Type · Priority · Status · Assignee · Depends on · Updated.

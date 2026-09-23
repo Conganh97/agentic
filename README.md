@@ -13,8 +13,8 @@ software from requirement to release **using only Cursor, markdown files and git
 | Phase | Name | Status |
 |-------|------|--------|
 | 0 | Workspace Foundation | Done |
-| 1 | Task Format and Workflow Rule | Next |
-| 2 | Role Contracts | Planned |
+| 1 | Task Format and Workflow Rule | Done |
+| 2 | Role Contracts | Next |
 | 3 | SA Skill (Analysis & Design) | Planned |
 | 4 | Backend Skill | Planned |
 | 5 | SA Review Skill (MVP) | Planned |
