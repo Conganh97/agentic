@@ -21,12 +21,14 @@ orchestrator/
     ├── main/java/com/agentic/orchestrator/
     │   ├── workflow/      # TaskState + transition rules — pure Java, deterministic
     │   ├── domain/        # Task aggregate, enums, value objects — pure Java, no Spring, no I/O
-    │   ├── service/       # use cases; coordinate domain + repositories
+    │   ├── agent/         # agent contract: request/response, result schemas, validation, policy
+    │   ├── service/       # use cases; coordinate domain, agents and repositories
     │   └── repository/    # persistence interfaces + adapters (in-memory first)
     └── test/java/com/agentic/orchestrator/   # mirrors main
 ```
 
-- Dependencies point inward: `service → domain/workflow`, `repository → domain`, `domain → workflow`.
+- Dependencies point inward: `service → agent/domain/workflow`, `agent → domain/workflow`,
+  `repository → domain`, `domain → workflow`.
   `workflow` depends on nothing. `domain` and `workflow` never import from `service`, `repository`, or Spring.
 - No I/O, network, LLM calls, `Instant.now()`, or randomness inside `domain` and `workflow`.
   Inject them (e.g. `java.time.Clock`).

@@ -104,7 +104,7 @@ Agents exchange structured data only:
 ```
 
 Execution statuses: `COMPLETED, FAILED, NEEDS_INPUT, BLOCKED, CHANGES_REQUESTED`.
-Responses are validated against schemas. Full contract: `docs/architecture/agent-contract.md` (Phase 2).
+Responses are validated against schemas. Full contract: `docs/architecture/agent-contract.md`.
 
 ## 8. Guardrails
 

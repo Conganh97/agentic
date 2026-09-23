@@ -10,8 +10,8 @@ under a deterministic, auditable workflow owned by an Orchestrator.
 |-------|------|--------|
 | 0 | Repository Foundation | Done |
 | 1 | Workflow Orchestrator | Done |
-| 2 | Agent Contract | Next |
-| 3 | SA Agent | Planned |
+| 2 | Agent Contract | Done |
+| 3 | SA Agent | Next |
 | 4 | Backend Agent | Planned |
 | 5 | SA Code Review | Planned |
 | 6 | Git/GitLab Integration | Planned |
@@ -45,11 +45,11 @@ Additional infrastructure is added only when a phase requires it (see ADR-0001).
 ├── README.md
 ├── agentic_engineering_team_cursor_plan.md
 ├── docs/
-│   ├── architecture/   # system-overview.md, workflow.md
+│   ├── architecture/   # system-overview.md, workflow.md, agent-contract.md
 │   ├── adr/
 │   ├── requirements/
 │   └── standards/
-└── orchestrator/       # Task domain model + state machine (Java, Maven)
+└── orchestrator/       # Task state machine + agent contract (Java, Maven)
 ```
 
 `agents/`, `tools/`, `knowledge/`, `infrastructure/` are created when their phase starts.
