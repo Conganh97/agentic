@@ -3,7 +3,7 @@ id: TASK-004
 title: Task management web UI
 type: TASK
 priority: MEDIUM
-status: BACKLOG
+status: READY
 assignee: FE
 parent: REQ-001
 depends_on: [TASK-003]
@@ -15,7 +15,7 @@ review_iteration: 0
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:00
+updated: 2026-09-23 17:14
 ---
 
 ## Description
@@ -49,3 +49,4 @@ Repo: frontend (new)
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-23 17:00 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-23 17:14 | BACKLOG | READY | SCRUM | DoR met |
