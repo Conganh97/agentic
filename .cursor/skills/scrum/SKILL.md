@@ -105,6 +105,9 @@ subagent, and the SA reviewer is never the subagent that implemented the task.
 5. Verify from disk, never from the subagent's words: re-read the task frontmatter, `git log -3 --oneline`,
    `git status --porcelain` (team repo) and `git -C product status --porcelain` + current branch.
    - Status moved as expected, trees clean, product on `main` → progress; continue.
+   - `NEEDS_INPUT` only because a permission prompt was rejected/cancelled (not a guardrail deny) →
+     re-dispatch the same step once with a fresh subagent; if it happens again → *waiting*
+     ("human: approve <command>").
    - `NEEDS_INPUT`, `FAILED`, `BLOCKED`, or status unchanged → mark the task *waiting* with the reason.
    - Dirty tree, product not on `main`, or a commit rejected by guardrails → **stop the run** and report.
 6. Stop when: nothing actionable; dispatch limit reached; the same task produced no progress twice.

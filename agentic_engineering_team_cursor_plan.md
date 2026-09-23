@@ -462,10 +462,13 @@ Deliver:
 - `.cursor/skills/scrum/SKILL.md`, `templates/sprint.md`
 
 Scrum modes:
+- `run REQ-###`: orchestrate end-to-end in the main chat — SCRUM steps itself, every other role as a fresh
+  subagent per step; verify each step from disk; stop at human gates (requirement approval, PROD
+  approval, NEEDS_INPUT, BLOCKED, retry limits, guardrail rejections, dispatch limit)
 - `next`: pick the next actionable task and role (respect dependencies, priority, BLOCKED)
 - `ready`: check Definition of Ready, move BACKLOG → READY
 - `sprint`: create/organize `sprints/SPRINT-##.md`
-- `sync`: rebuild `tasks/board.md` from task files
+- `sync`: rebuild `tasks/board.md` from task files (`scripts/sync_board.py`; pre-commit rejects a stale board)
 - `report`: progress, blockers, cycle time, review/test iterations (computed from History)
 
 ---

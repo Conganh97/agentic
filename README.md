@@ -21,8 +21,8 @@ software from requirement to release **using only Cursor, markdown files and git
 | 6 | Guardrails | Done |
 | 7 | Test Skill | Done |
 | 8 | Frontend Skill | Done |
-| 9 | DevOps Skill | Next |
-| 10 | Scrum Skill | Planned |
+| 9 | DevOps Skill | Next (contract only) |
+| 10 | Scrum Skill + `/scrum run` orchestrator | Done |
 
 ## Start here
 
@@ -35,5 +35,7 @@ software from requirement to release **using only Cursor, markdown files and git
 
 1. Open this folder in Cursor.
 2. Clone your product repository into `product/` (it is git-ignored here) and fill in `project.md`.
-3. Enable the task workflow check once per clone: `git config core.hooksPath .githooks`
+3. Write a requirement in `requirements/REQ-###-*.md` (from `templates/requirement.md`), set
+   `status: APPROVED`, then run `/scrum run REQ-###` in a chat (or invoke each role skill yourself).
+4. Enable the task workflow check once per clone: `git config core.hooksPath .githooks`
    (needs `python3`). The agent shell guard in `.cursor/hooks.json` needs `jq` and loads automatically.
