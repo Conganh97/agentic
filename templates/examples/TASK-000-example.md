@@ -43,17 +43,21 @@ See `docs/design/REQ-000-design.md` §2. Add a controller in the web layer; no d
 
 ## Review (SA)
 ### Round 1 — CHANGES_REQUESTED
+Reviewed: feature/TASK-000-health-check @ `9c41e07` · Build/tests: PASS (3 tests)
 | # | File | Severity | Comment |
 |---|------|----------|---------|
 | 1 | src/web/HealthController | BLOCKER | Request headers are logged (may contain tokens) |
 | 2 | test/web/HealthControllerTest | MAJOR | No test for AC-2 (no auth) |
 
 ### Round 2 — APPROVED
+Reviewed: feature/TASK-000-health-check @ `b82d5f0` · Build/tests: PASS (4 tests)
 Previous round: #1 resolved, #2 resolved.
+No comments.
 Merged `1a7b2d4`.
 
 ### Round 3 — APPROVED
-Bug fix for test run 1 reviewed; regression test present.
+Reviewed: feature/TASK-000-health-check @ `e07a3c9` · Build/tests: PASS (5 tests)
+No comments. Bug fix for test run 1 reviewed; regression test present.
 Merged `3f2a9c1`.
 
 ## Test (TEST)

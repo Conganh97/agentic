@@ -24,6 +24,8 @@ services/<name>-service/
 ```
 
 Dependencies point inward: `api → service → domain/repository`. Controllers never use repositories directly.
+Create only the packages a task needs; trivial logic without dependencies (e.g. formatting) may stay in the
+controller until a service is justified.
 
 ## New service checklist
 
@@ -43,8 +45,11 @@ Dependencies point inward: `api → service → domain/repository`. Controllers 
 
 - Paths: `/api/v1/<resource>` (plural nouns, kebab-case). JSON only.
 - DTOs are Java `record`s; never expose entities.
-- Validate input with Jakarta Validation (`@Valid`, `@NotBlank`, ...).
-- Errors: RFC 9457 `ProblemDetail` from one `@RestControllerAdvice`; no stack traces in responses.
+- Validate input with Jakarta Validation (`@Valid`, `@NotBlank`, ...). Put constraints directly on
+  `@PathVariable`/`@RequestParam` parameters and do **not** add class-level `@Validated`: Spring MVC then
+  validates the method itself and raises `HandlerMethodValidationException`, which the default handler maps to 400.
+- Errors: RFC 9457 `ProblemDetail` from one `@RestControllerAdvice` that extends
+  `ResponseEntityExceptionHandler`; no stack traces in responses.
 - Status codes: 200/201/204 success, 400 validation, 401/403 auth, 404 missing, 409 conflict.
 - Breaking API changes need a new version path and an SA-approved design.
 
@@ -75,4 +80,5 @@ Dependencies point inward: `api → service → domain/repository`. Controllers 
 - Controllers: `@WebMvcTest` + `MockMvcTester`/`MockMvc`, services mocked with `@MockitoBean`.
 - Services/domain: plain unit tests (JUnit 5 + AssertJ + Mockito), no Spring context.
 - Repositories: `@DataJpaTest` with Testcontainers PostgreSQL (needs Docker).
+- Actuator/wiring checks: `@SpringBootTest` + `@AutoConfigureMockMvc` (mock servlet; no real port).
 - `./mvnw -q verify` must pass before CODE_REVIEW.
