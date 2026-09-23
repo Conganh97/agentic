@@ -3,19 +3,19 @@ id: TASK-001
 title: Greeting service with greeting endpoint
 type: TASK
 priority: MEDIUM
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-000
 depends_on: []
 sprint:
-branch:
+branch: feature/TASK-001-greeting-endpoint
 merge_commit:
 release:
 review_iteration: 0
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 13:50
+updated: 2026-09-23 13:45
 ---
 
 ## Description
@@ -45,3 +45,4 @@ New service `services/greeting-service`, package `com.product.greeting`, port 80
 |------|------|----|----|------|
 | 2026-09-23 13:50 | — | BACKLOG | HUMAN (test) | Phase 4 test task |
 | 2026-09-23 13:50 | BACKLOG | READY | HUMAN (test) | DoR satisfied |
+| 2026-09-23 13:45 | READY | IN_PROGRESS | BE | Branch `feature/TASK-001-greeting-endpoint` created |
