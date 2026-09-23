@@ -42,6 +42,8 @@ product/
 | FE install | `cd product/frontend && npm ci` |
 | FE tests | `cd product/frontend && npm test -- --run` |
 | FE lint / build | `cd product/frontend && npm run lint && npm run build` |
+| FE verify (before CODE_REVIEW) | `cd product/frontend && npm run lint && npm test -- --run && npm run build` |
+| FE dev server | `cd product/frontend && BACKEND_PORT=18081 npm run dev -- --port 15173` |
 | E2E tests | `cd product/frontend && npx playwright test` |
 
 ## Local environment notes
@@ -54,7 +56,8 @@ product/
   `SERVER_PORT=18081 ./mvnw -q spring-boot:run`. Check a port with `nc -z localhost <port>` (`lsof` cannot
   see root-owned listeners).
 - Maven writes to `~/.m2` and downloads from Maven Central: in Cursor, run `mvn`/`./mvnw` outside the
-  sandbox (full permissions), not only with network access.
+  sandbox (full permissions), not only with network access. Same for `npm` (cache in `~/.npm`).
+- Node 25 / npm 11 are installed.
 - Docker is required for Testcontainers. If Docker is not running, repository integration tests cannot
   run: say so in the Implementation notes instead of skipping them silently.
 

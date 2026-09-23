@@ -440,12 +440,16 @@ reviewed by SA, so every product change still passes SA review.
 
 Deliver:
 - `.cursor/skills/frontend/SKILL.md`, `docs/standards/frontend.md`
-- Same boundary and flow as Backend.
+- Same boundary and flow as Backend. The first FE task creates `product/frontend/` with `create-vite`
+  (react-ts); FE verify = `npm run lint && npm test -- --run && npm run build`.
 
 ## Phase 9 — DevOps Skill
 
 Deliver:
 - `.cursor/skills/devops/SKILL.md`, `docs/standards/devops.md`, `templates/release.md`
+
+Direction (decided by the human, details in an ADR when the phase starts): CI/CD with GitHub Actions;
+Docker Compose first, Kubernetes later; FE and BE may move to separate repos for deployment.
 
 Flow: build → package → deploy DEV/STG/UAT per `project.md` → smoke check → Deployment section.
 PROD only when `approved_by` is set by a human. Rollback steps recorded.
