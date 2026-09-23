@@ -3,7 +3,7 @@ id: TASK-003
 title: Task service REST API and persistence
 type: TASK
 priority: MEDIUM
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-001
 depends_on: []
@@ -15,7 +15,7 @@ review_iteration: 0
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:00
+updated: 2026-09-23 17:01
 ---
 
 ## Description
@@ -50,3 +50,4 @@ Repo: task-service (new)
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-23 17:00 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-23 17:01 | BACKLOG | READY | SCRUM | DoR met |
