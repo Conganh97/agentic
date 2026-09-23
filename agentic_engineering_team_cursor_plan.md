@@ -430,8 +430,11 @@ Acceptance:
 Deliver:
 - `.cursor/skills/tester/SKILL.md`, `docs/standards/testing.md`
 
-Test flow: MERGED → TESTING → write/run tests against AC → PASS → READY_FOR_DEPLOY, or FAIL → BUG with
+Test flow: MERGED → TESTING → build + automated tests on `main` → black-box acceptance check per AC
+(run the service, record command + actual output as evidence) → PASS → READY_FOR_DEPLOY, or FAIL → BUG with
 reproduction steps, expected vs actual, logs. Append recurring issues to `memory/lessons.md`.
+TEST does not commit to `product/`: automated tests (incl. bug regression tests) are written by BE/FE and
+reviewed by SA, so every product change still passes SA review.
 
 ## Phase 8 — Frontend Skill
 
