@@ -29,12 +29,14 @@ software from requirement to release **using only Cursor, markdown files and git
 1. `AGENTS.md` — rules for all agents.
 2. `agentic_engineering_team_cursor_plan.md` — full plan.
 3. `docs/architecture/system-overview.md` — how it works.
-4. `project.md` — configure your product repo.
+4. `project.md` — product repos (one per component), stack, commands.
 
 ## Setup
 
 1. Open this folder in Cursor.
-2. Clone your product repository into `product/` (it is git-ignored here) and fill in `project.md`.
+2. Install and log in to the GitHub CLI once (`brew install gh && gh auth login`) and check the
+   GitHub owner, repo name and visibility in `project.md`. Product repos (one per service, one for the
+   frontend) are created in `product/` (git-ignored here) and pushed by `/repo` (`scripts/repo.py`).
 3. Write a requirement in `requirements/REQ-###-*.md` (from `templates/requirement.md`), set
    `status: APPROVED`, then run `/scrum run REQ-###` in a chat (or invoke each role skill yourself).
 4. Enable the task workflow check once per clone: `git config core.hooksPath .githooks`

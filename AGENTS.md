@@ -11,14 +11,15 @@ There is no platform code and no database:
 - **State** lives in markdown: one file per task in `tasks/`, status in its YAML frontmatter.
 - **Agents** are Cursor sessions using role skills in `.cursor/skills/`.
 - **Audit** is the `## History` table in each task plus one git commit per state change.
-- **Product code** lives in a separate git repo in `product/` (see `project.md`).
+- **Product code** lives in one git repo per component under `product/` (ADR-0004, registry in
+ `project.md`), created and pushed only via `/repo` (`scripts/repo.py`).
 
 ## 2. Current phase
 
 **Phases 0–8 and 10 done (Scrum incl. `/scrum run` orchestrator).** Pending: Phase 9 — DevOps Skill
 (GitHub Actions + Docker Compose; needs a GitHub remote for `product/` and Docker).
 Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript); details in `project.md`.
-Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`.
+Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`; product repos: `.cursor/skills/repo/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
 `templates/examples/TASK-000-example.md`.
 
@@ -56,7 +57,7 @@ Update this section whenever a phase starts or finishes.
 
 | Path | Purpose |
 |------|---------|
-| `project.md` | Product repo path, stack, commands, environments |
+| `project.md` | Product repo registry, stack, commands, environments |
 | `requirements/` | Input requirements (`REQ-###-*.md`) |
 | `tasks/` | Task files and `board.md` (from Phase 1) |
 | `sprints/`, `releases/` | Sprint and release files (from Phase 9–10) |
@@ -67,11 +68,11 @@ Update this section whenever a phase starts or finishes.
 | `memory/` | Decisions and lessons learned (from Phase 3) |
 | `.cursor/rules/`, `.cursor/skills/`, `.cursor/hooks.json` | Workflow rule, role skills, guardrails |
 | `scripts/`, `.githooks/` | Task workflow check (pre-commit) |
-| `product/` | Product code (separate git repo, ignored here) |
+| `product/` | Product repos, one per component (ignored here) |
 
 ## 6. Commit conventions
 
 - Team repo, state change: `[TASK-001] IN_PROGRESS -> CODE_REVIEW (BE): short note`
 - Team repo, other: `docs: ...`, `chore: ...`
-- Product repo: `feat(TASK-001): ...`, `fix(TASK-001): ...`, `test(TASK-001): ...`; branches
+- Product repos: `feat(TASK-001): ...`, `fix(TASK-001): ...`, `test(TASK-001): ...`; branches
   `feature/TASK-001-slug`, `fix/TASK-001-slug`, `test/TASK-001-slug` (TEST), `ops/TASK-001-slug` (DEVOPS)

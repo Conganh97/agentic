@@ -18,18 +18,19 @@ Role: `TEST`. Follow `AGENTS.md`, `.cursor/rules/workflow.mdc` (transition proto
 **Reads**
 - The task file (Acceptance Criteria, Design, Implementation, Review, earlier Test runs, `merge_commit`)
 - The parent requirement if it exists, `docs/standards/testing.md`, `project.md`, `memory/lessons.md`
-- `git -C product show --stat <merge_commit>`; code only where needed to understand behaviour
+- `<repo>` = the task's `Repo:` component path (`project.md` registry); `git -C <repo> show --stat <merge_commit>`;
+  code only where needed to understand behaviour
 
 **Writes**
 - Task: `## Test (TEST)`, acceptance criteria checkboxes, `test_iteration`, frontmatter, History, board
 - New BUG task files for defects outside this task's scope (workflow §6)
 - `memory/lessons.md` for defects likely to recur
-- `product/`: nothing. Build and run only.
+- Product repos: nothing. Build and run only.
 
 **Transitions**: MERGED → TESTING · TESTING → BUG (limit applies) · TESTING → READY_FOR_DEPLOY ·
 create BUG task → BACKLOG · working state → BLOCKED
 
-**Forbidden**: editing or committing anything in `product/`; merging, deploying, reviewing; checking an
+**Forbidden**: editing or committing anything in product repos; merging, deploying, reviewing; checking an
 acceptance criterion without evidence in the Test run.
 
 ---
@@ -38,17 +39,17 @@ acceptance criterion without evidence in the Test run.
 
 ### 1. Gate
 - Read the task from disk. Status must be MERGED or TESTING, else refuse (workflow §7).
-- `merge_commit` set and contained in `main`: `git -C product merge-base --is-ancestor <merge_commit> main`.
-- `git -C product status --porcelain` empty, else `NEEDS_INPUT`; then `git -C product checkout main`.
+- `merge_commit` set and contained in `main`: `git -C <repo> merge-base --is-ancestor <merge_commit> main`.
+- `git -C <repo> status --porcelain` empty, else `NEEDS_INPUT`; then `git -C <repo> checkout main && git -C <repo> pull -q --ff-only`.
 
 ### 2. Start
 MERGED → TESTING per the protocol; commit `[TASK-###] MERGED -> TESTING (TEST): run N`.
 (TESTING already → continue with step 3; the run number is the next `### Run N`.)
 
 ### 3. Build and automated tests
-- Record `git -C product rev-parse --short=7 HEAD` as the tested sha.
+- Record `git -C <repo> rev-parse --short=7 HEAD` as the tested sha.
 - Run the build/test command from `project.md` in every service/app touched by the task
-  (`git -C product show --stat <merge_commit>`), respecting its local notes. Failure → FAIL.
+  (`git -C <repo> show --stat <merge_commit>`), respecting its local notes. Failure → FAIL.
 
 ### 4. Acceptance checks
 - Start, all checks and stop must run in **one** shell invocation: background processes are killed when the
@@ -64,7 +65,7 @@ MERGED → TESTING per the protocol; commit `[TASK-###] MERGED -> TESTING (TEST)
 - In-scope exploratory checks per `docs/standards/testing.md` (boundaries, invalid input, no regression of
   earlier behaviour, known pitfalls).
 - Stop the service (kill the PID you started) and confirm with `nc -z` that the port is free again.
-  `product/` stays clean.
+  `<repo>` stays clean.
 - Open MINOR review comments and earlier INCOMPLETE runs hint at what to explore; they are not AC.
 
 ### 5. Verdict

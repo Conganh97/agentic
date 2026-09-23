@@ -115,7 +115,8 @@ agentic/                         # team workspace (this repo)
 │   │   ├── frontend/SKILL.md
 │   │   ├── tester/SKILL.md
 │   │   ├── devops/SKILL.md
-│   │   └── scrum/SKILL.md
+│   │   ├── scrum/SKILL.md
+│   │   └── repo/SKILL.md        # create/push product repos (ADR-0004)
 │   ├── hooks.json               # guardrails
 │   └── hooks/                   # hook scripts (bash)
 │
@@ -147,7 +148,7 @@ agentic/                         # team workspace (this repo)
 ├── scripts/
 │   └── check-transitions.sh     # used by git pre-commit hook
 │
-└── product/                     # product repo (separate git, git-ignored)
+└── product/                     # product repos, one per component (git-ignored, ADR-0004)
 ```
 
 Create folders only when their phase starts.
@@ -335,7 +336,7 @@ Deliver:
 - `AGENTS.md`, `README.md`
 - `docs/architecture/system-overview.md`
 - ADR-0002 (markdown-driven, Cursor-native team)
-- `project.md` (product repo path, stack, build/test commands, environments)
+- `project.md` (product repo registry, stack, build/test commands, environments)
 - `.gitignore` with `product/`
 
 Acceptance:

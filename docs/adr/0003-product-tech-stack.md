@@ -13,7 +13,7 @@ reviews are consistent.
 
 - **Backend:** Java 21, Spring Boot 4.0.x (Maven, one Maven project per service with its own wrapper),
   Spring Cloud 2025.1.x only when a cross-service feature needs it.
-- **Architecture:** microservices in one product repo (`services/<name>-service/`), database per service
+- **Architecture:** microservices (`services/<name>-service/`; one repo per component since ADR-0004), database per service
   (PostgreSQL + Flyway), synchronous REST (`/api/v1/...`) between services; messaging only via a new ADR.
 - **Frontend:** React + TypeScript (Vite), TanStack Query, React Router (when there is more than one
   route), Vitest + React Testing Library, oxlint + Prettier. Lives in `frontend/`.
@@ -30,6 +30,6 @@ reviews are consistent.
 
 ## Alternatives considered
 
-- Repo per service — rejected for now: more coordination for agents, no benefit at current size.
+- Repo per service — rejected at first (more coordination); adopted later by ADR-0004.
 - Spring Boot 3.5 — rejected: open-source support ends mid-2026.
 - Spring Boot 4.1 — deferred: no GA Spring Cloud release train compatible yet.

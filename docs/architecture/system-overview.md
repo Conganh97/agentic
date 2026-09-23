@@ -19,7 +19,7 @@ every agent follows, state comes from markdown files, and git records every chan
          ▼          ▼          ▼         ▼
         SA        BE / FE     TEST     DEVOPS      (Cursor chats using role skills)
          │          │
-         │          └──► product/ (separate git repo, feature branches)
+         │          └──► product/ (one git repo per component, feature branches)
          └──► review ⇄ fix loop ──► MERGED ──► TESTING ⇄ BUG ──► DEPLOY ──► RELEASED
 ```
 

@@ -1,6 +1,6 @@
 ---
 name: backend
-description: Backend developer agent for Java Spring Boot microservices. Implements a backend task on a feature branch in product/, runs tests, records the implementation and hands it to SA review. Use when the user invokes /backend, e.g. "/backend TASK-003".
+description: Backend developer agent for Java Spring Boot microservices. Implements a backend task on a feature branch in its service repo, runs tests, records the implementation and hands it to SA review. Use when the user invokes /backend, e.g. "/backend TASK-003".
 disable-model-invocation: true
 ---
 
@@ -11,20 +11,21 @@ Role: `BE`. Follow `AGENTS.md` and `.cursor/rules/workflow.mdc` (transition prot
 ## Contract
 
 **Reads**: the task file (Description, AC, Design, latest Review round / Test run) · linked design doc
-section · `docs/standards/backend.md` · `project.md` · only the `product/` files found relevant by search,
+section · `docs/standards/backend.md` · `project.md` · only the `<repo>` files found relevant by search,
 and their tests · frontmatter of `depends_on` tasks.
 
 **Writes**
-- `product/services/**`: code and tests on the task branch; commits `feat(TASK-###): ...` /
-  `fix(TASK-###): ...`. Push only if `project.md` has a remote.
+- `<repo>` = the service repo of the task (`product/services/<name>-service`, see `project.md` registry):
+  code and tests on the task branch; commits `feat(TASK-###): ...` / `fix(TASK-###): ...`; branch pushed
+  via `scripts/repo.py`.
 - Task: `## Implementation (BE/FE)`, frontmatter (`status`, `branch`, `updated`), History, board.
 
 **Transitions**: READY → IN_PROGRESS · CHANGES_REQUESTED → IN_PROGRESS · BUG → IN_PROGRESS ·
 IN_PROGRESS → CODE_REVIEW · working state → BLOCKED
 
-**Forbidden**: committing to `main` in `product/`; merging; approving; setting MERGED; editing Review or
+**Forbidden**: committing to `main` in any product repo; pushing `main`; merging; approving; setting MERGED; editing Review or
 Test sections or checking AC; changing APIs, data model or architecture beyond the design;
-editing `product/frontend/`.
+editing other component repos (e.g. `product/frontend/`).
 
 ---
 
@@ -34,8 +35,10 @@ editing `product/frontend/`.
 - Read the task from disk. `assignee` must be `BE`; status must be READY, CHANGES_REQUESTED, BUG, or
   IN_PROGRESS (resume). Otherwise refuse (workflow rule §7).
 - READY: every `depends_on` task must be MERGED or later (read their frontmatter).
-- `product/` must be a git repo with a clean working tree (`git -C product status --porcelain` empty),
-  and `project.md` must have the backend commands. Otherwise → `NEEDS_INPUT`, no changes.
+- Find `<repo>` in the `project.md` registry. Not registered and the design introduces this service →
+  create it with the repo skill (`/repo create <name>-service be`). Not registered otherwise → `NEEDS_INPUT`.
+- `<repo>` must have a clean working tree (`git -C <repo> status --porcelain` empty), and `project.md`
+  must have the backend commands. Otherwise → `NEEDS_INPUT`, no changes. One task changes one repo.
 
 ### 2. Pick the branch
 | Coming from | Branch |
@@ -45,7 +48,7 @@ editing `product/frontend/`.
 | BUG | new `fix/TASK-###-<slug>` from `main` (the feature branch is already merged) |
 | IN_PROGRESS | existing `branch` |
 
-`git -C product checkout main` (pull first if a remote exists), then create or check out the branch.
+`git -C <repo> checkout main && git -C <repo> pull -q --ff-only`, then create or check out the branch.
 
 ### 3. Start
 If status is not IN_PROGRESS yet: transition to IN_PROGRESS per the protocol (set `branch`, History,
@@ -66,12 +69,13 @@ board, commit `[TASK-###] <FROM> -> IN_PROGRESS (BE): ...`).
 - Run `./mvnw -q verify` in every service you touched. All must pass.
 - Still failing after 3 fix attempts → keep IN_PROGRESS, commit work in progress on the branch, report
   `FAILED` with the error.
-- Self-review `git -C product diff main...HEAD`: only task-related changes, no secrets, no debug code,
+- Self-review `git -C <repo> diff main...HEAD`: only task-related changes, no secrets, no debug code,
   no commented-out code, matches the design/API contract, every review comment addressed.
 
 ### 6. Commit (product repo)
-`git -C product add <files> && git -C product commit -m "feat(TASK-###): <summary>"` (use `fix(...)` for BUG; review fixes keep the prefix of the current iteration).
-Then `git -C product checkout main` so the next role starts from a clean `main`.
+`git -C <repo> add <files> && git -C <repo> commit -m "feat(TASK-###): <summary>"` (use `fix(...)` for BUG; review fixes keep the prefix of the current iteration).
+Push the branch: `python3 scripts/repo.py push <name>-service --branch <branch>` (failure → note it in
+Notes, continue). Then `git -C <repo> checkout main` so the next role starts from a clean `main`.
 
 ### 7. Hand over
 - Append an iteration to `## Implementation (BE/FE)` (format below).

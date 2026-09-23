@@ -21,8 +21,10 @@ Dependencies point inward: `app → features → components/api`. Components nev
 
 ## Creating the app (first FE task only)
 
-- Remove the placeholder first (`git -C product rm frontend/.gitkeep`), then
-  `cd product && npm create vite@latest frontend -- --template react-ts --no-interactive`, then in `frontend/`:
+- The repo `product/frontend` already exists (repo skill) with `README.md` and `.gitignore`. Scaffold into a
+  temporary folder and copy in (create-vite refuses a non-empty folder):
+  `d=$(mktemp -d) && npm create vite@latest "$d/app" -- --template react-ts --no-interactive && cp -R "$d/app/." product/frontend/`,
+  then in `product/frontend/`:
   `npm install @tanstack/react-query` and
   `npm install -D vitest jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event prettier`.
   Add `react-router` only when the app has more than one route.

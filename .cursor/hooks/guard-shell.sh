@@ -23,6 +23,12 @@ if [[ "$lower" =~ git([[:space:]]+-c[[:space:]]+[^[:space:]]+)*[[:space:]]+push 
   fi
 fi
 
+[[ "$lower" =~ (^|[[:space:];&|])gh[[:space:]]+repo[[:space:]]+(delete|rename|archive) ]] \
+  && deny "deleting, renaming or archiving GitHub repositories is not allowed"
+
+[[ "$lower" =~ git[^\;\&\|]*push[^\;\&\|]*(--delete|[[:space:]]-d[[:space:]]|[[:space:]]:)[^\;\&\|]*(main|master)([[:space:]]|$) ]] \
+  && deny "deleting a remote main branch is not allowed"
+
 [[ "$lower" =~ (^|[[:space:];&|])git[[:space:]]+(-c[[:space:]]+[^[:space:]]+[[:space:]]+)*commit[^\;\&\|]*(--no-verify|[[:space:]]-[a-z]*n[a-z]*([[:space:]]|$)) ]] \
   && deny "git commit --no-verify bypasses the task workflow check"
 

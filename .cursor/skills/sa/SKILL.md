@@ -17,21 +17,23 @@ Role: `SA`. Follow `AGENTS.md` and `.cursor/rules/workflow.mdc` (transition prot
 
 **Reads**
 - analyze: the requirement, `docs/architecture/`, relevant `docs/adr/`, `memory/decisions.md`, `project.md`,
-  structure of `product/` (open specific files only when needed)
+  component registry in `project.md` and the structure of the relevant component repos in `product/`
+  (open specific files only when needed)
 - review: the task file, its design doc, `docs/standards/`, `memory/lessons.md`, `project.md` (commands,
   local notes),
-  `git -C product diff main...<branch>` and files touched by that diff
+  `git -C <repo> diff main...<branch>` and files touched by that diff
 
 **Writes**
 - analyze: `docs/design/REQ-###-design.md`, new task files, `tasks/board.md`, new ADRs in `docs/adr/`,
   `memory/decisions.md`, requirement frontmatter (`status`, `design`, `tasks`, `updated`) only
 - review: `## Review (SA)`, frontmatter, History, board, `memory/lessons.md`
-- `product/`: **only** `git merge --no-ff <branch>` into `main` when approving. Never edit product files.
+- `<repo>` (the task's component repo): **only** `git merge --no-ff <branch>` into `main` when approving,
+  then push `main` via `scripts/repo.py`. Never edit product files.
 
 **Transitions**: create task → BACKLOG · CODE_REVIEW → CHANGES_REQUESTED (limit applies) ·
 CODE_REVIEW → MERGED · working state → BLOCKED
 
-**Forbidden**: editing files in `product/`; editing requirement content; reviewing or merging work SA wrote;
+**Forbidden**: editing files in product repos; editing requirement content; reviewing or merging work SA wrote;
 any other transition (BACKLOG → READY is SCRUM's).
 
 ---
@@ -52,8 +54,9 @@ any other transition (BACKLOG → READY is SCRUM's).
 
 ### 3. Gather context (read only what is needed)
 - `docs/architecture/`, ADRs referenced there, `memory/decisions.md`, `project.md`.
-- `product/`: `git -C product ls-files | head -200`, then open only files relevant to the requirement.
-  If `product/` does not exist → greenfield; state this in §10 Assumptions.
+- Components: the `project.md` registry; for each relevant component `git -C <repo> ls-files | head -200`,
+  then open only files relevant to the requirement. No components registered → greenfield; state this in
+  §10 Assumptions.
 
 ### 4. Write the design
 Copy `templates/design.md` to `docs/design/REQ-###-design.md` and fill every section:
@@ -70,7 +73,9 @@ cross-cutting pattern, breaking API/data change. Copy `docs/adr/template.md` to
 
 ### 6. Break down into tasks
 Rules for each task:
-- One reviewable change for one role (`assignee` BE, FE or DEVOPS). No task mixes BE and FE work.
+- One reviewable change for one role (`assignee` BE, FE or DEVOPS) in **one component repo**. No task
+  mixes BE and FE work or touches two repos. A new service is a new component (`<name>-service`); its repo
+  is created by the implementing role via the repo skill.
 - Small: one branch, typically < 400 changed lines.
 - 2–5 acceptance criteria, each testable: observable input → expected output
   (e.g. "AC-1 `POST /login` with valid credentials returns 200 and a token").
@@ -83,6 +88,7 @@ status BACKLOG). Fill Description, Acceptance Criteria, and Design (SA):
 ```markdown
 ## Design (SA)
 See `docs/design/REQ-###-design.md` §5–§7 (FR-1, FR-2).
+Repo: <component> (new | existing)
 - <task-specific notes: files/modules to touch, contract to follow>  (≤ 8 lines)
 ```
 
@@ -93,7 +99,8 @@ History row: `— → BACKLOG | SA | Created from REQ-### design`. Add a board r
 - Self-check before committing:
   - [ ] every FR/NFR is covered by ≥1 task (design §12)
   - [ ] every task has ≥2 testable AC, one assignee, correct `depends_on`, no cycles
-  - [ ] nothing in `product/` changed (`git -C product status` clean, if it exists)
+  - [ ] every task names its `Repo:` component
+  - [ ] nothing in `product/` changed (`python3 scripts/repo.py status`: all clean)
 - One commit for the whole analysis:
   `git commit -m "[REQ-###] analyzed (SA): TASK-a..TASK-b created"`
 - Report (workflow format) with `Task: REQ-### → ANALYZED (N tasks)` and
@@ -103,26 +110,28 @@ History row: `— → BACKLOG | SA | Created from REQ-### design`. Add a board r
 
 ## Review mode
 
-SA only reads, runs tests and merges in `product/`. Never fix code yourself — every problem becomes a comment.
+SA only reads, runs tests, merges and pushes `main` in the task's repo. Never fix code yourself — every problem becomes a comment.
 
 ### 1. Gate
 - Read the task from disk. `status` must be `CODE_REVIEW`, else refuse (workflow §7).
 - If this chat implemented the task → refuse ("never review your own work").
-- `branch` set and exists: `git -C product rev-parse --verify <branch>`. The Implementation section has
+- `<repo>` = the task's `Repo:` component → its Path in the `project.md` registry; `git -C <repo> pull -q --ff-only`
+  on `main` first.
+- `branch` set and exists: `git -C <repo> rev-parse --verify <branch>`. The Implementation section has
   more iterations than there are Review rounds (round 1 needs ≥1 iteration). Otherwise `NEEDS_INPUT`.
-- `git -C product status --porcelain` must be empty, else `NEEDS_INPUT`. If the current branch is not
-  `main`, run `git -C product checkout main`.
+- `git -C <repo> status --porcelain` must be empty, else `NEEDS_INPUT`. If the current branch is not
+  `main`, run `git -C <repo> checkout main`.
 
 ### 2. Gather (only what is needed)
 - Task: AC, Design (SA), latest Implementation iteration, previous Review rounds.
 - The design doc linked in Design (SA); if none is linked, the Design (SA) section is the contract; `docs/standards/<backend|frontend>.md`; `memory/lessons.md`.
-- `git -C product log --oneline main..<branch>`, `git -C product diff --stat main...<branch>`,
-  `git -C product diff main...<branch>`; open full files only where the diff lacks context.
+- `git -C <repo> log --oneline main..<branch>`, `git -C <repo> diff --stat main...<branch>`,
+  `git -C <repo> diff main...<branch>`; open full files only where the diff lacks context.
 
 ### 3. Verify
-- Build and test the branch: `git -C product checkout <branch>`, run the full verify command from
+- Build and test the branch: `git -C <repo> checkout <branch>`, run the full verify command from
   `project.md` (BE: `./mvnw -q verify`; FE: FE verify) in each changed service/app folder (respect its local notes, e.g. `JAVA_HOME`, running
-  outside the sandbox), then `git -C product checkout main`. Build output is git-ignored, so the tree stays clean.
+  outside the sandbox), then `git -C <repo> checkout main`. Build output is git-ignored, so the tree stays clean.
 - To prove a suspected bug or that a test really guards a fix, experiment only in the product working tree
   on the branch and revert with `git checkout -- <files>` / `git clean` before leaving; never elsewhere.
 - Review against the standards on disk at review time, even if a rule is newer than the implementation.
@@ -159,7 +168,7 @@ Decision: any BLOCKER or MAJOR → CHANGES_REQUESTED; otherwise APPROVED (MINOR 
 - Report `Outcome: CHANGES_REQUESTED`, `Next: BE|FE — /backend TASK-###` (per assignee).
 
 ### 5b. Approve and merge
-In `product/`, on `main`:
+In `<repo>`, on `main`:
 1. `git merge --no-ff --no-commit <branch>`. Conflict → `git merge --abort`; go to 5a with a BLOCKER
    "merge conflict with main: merge main into the branch and resolve".
 2. If `main` had moved since the branch was created (`git merge-base --is-ancestor main <branch>` fails),
@@ -167,8 +176,9 @@ In `product/`, on `main`:
 3. `git commit -m "Merge <branch> (TASK-###)"`; record the sha (`git rev-parse --short=7 HEAD`).
 
 Then in the team repo: append the APPROVED round with `Merged <sha>.`, set `status: MERGED`,
-`merge_commit: <sha>`, `updated`, History row, board row. Commit:
-`[TASK-###] CODE_REVIEW -> MERGED (SA): approved, merged <sha>`.
+`merge_commit: <sha>`, `updated`, History row, board row. With `merge_commit` saved on disk, push:
+`python3 scripts/repo.py push <component>` → add `Pushed main.` (or `Push failed: <error>`) under the
+round. Commit: `[TASK-###] CODE_REVIEW -> MERGED (SA): approved, merged <sha>`.
 Report with `Next: TEST — /tester TASK-###`. Leave the feature branch in place (TEST/BUG may need it).
 
 ### 6. Lessons

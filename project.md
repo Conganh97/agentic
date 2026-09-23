@@ -2,22 +2,30 @@
 
 Agents read this file to learn how to work with the product. Stack decision: `docs/adr/0003-product-tech-stack.md`.
 
-## Repository
+## Repositories
 
-- Path: `product/` (separate git repo, git-ignored by the team repo)
-- Remote: none (local-only; set a git URL here to enable pushing branches as backup)
-- Main branch: `main`
-- Merge: SA merges locally with `git merge --no-ff` after approval in the task file (no PR/MR)
+One git repository + GitHub remote per component (ADR-0004). `product/` is only a folder holding them and
+is git-ignored by the team repo. In skills, `<repo>` means the component's Path from the registry below.
 
-## Layout
+- GitHub owner: `Conganh97`
+- Repo name: `product-<component>`
+- Visibility: `private`
+- Main branch: `main` in every repo. SA merges locally with `git merge --no-ff` after approval in the task
+  file (no PR/MR), then pushes `main`.
+- Create / push only via `python3 scripts/repo.py` (skill `.cursor/skills/repo/SKILL.md`); raw
+  `git push` to `main` in `product/` is blocked by the shell guard.
 
 ```
 product/
 ├── services/
-│   └── <name>-service/     # one Spring Boot app per service: pom.xml, mvnw, src/
-├── frontend/               # React app (Vite)
-└── README.md
+│   └── <name>-service/     # own repo: one Spring Boot app (pom.xml, mvnw, src/)
+└── frontend/               # own repo: React app (Vite)
 ```
+
+Registry (written by `scripts/repo.py create`; do not edit by hand):
+
+| Component | Type | Path | Remote |
+|-----------|------|------|--------|
 
 ## Stack
 

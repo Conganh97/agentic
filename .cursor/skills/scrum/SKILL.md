@@ -30,7 +30,7 @@ frontmatter, `sprints/`.
 working state → BLOCKED
 
 **Forbidden**: editing Description, AC, Design, Implementation, Review, Test, Deployment; any file in
-`product/`; unblocking on its own initiative; doing another role's work itself (in `run`, other roles
+product repos; unblocking on its own initiative; doing another role's work itself (in `run`, other roles
 are always subagents).
 
 ---
@@ -86,14 +86,14 @@ From task frontmatter and History only: count per status; blocked tasks with rea
 
 Invoke `run` in the user's main chat (subagents cannot start subagents). You stay SCRUM. Every other
 role runs as a **fresh subagent** (Task tool, `generalPurpose`, foreground,
-one at a time — `product/` has a single working tree). One subagent = one role on one task; never reuse a
+one at a time — agents share the product working trees). One subagent = one role on one task; never reuse a
 subagent, and the SA reviewer is never the subagent that implemented the task.
 
 ### 1. Gate
 - `REQ-###` given: requirement file exists and `status` is `APPROVED` or `ANALYZED`. `DRAFT` → stop,
   `NEEDS_INPUT` ("human must approve REQ-###").
 - Team repo: `git status --porcelain` empty and hooks enabled (`git config core.hooksPath` = `.githooks`).
-  `product/`: clean. Otherwise `NEEDS_INPUT`.
+  Product repos: `python3 scripts/repo.py status` all clean on `main`. Otherwise `NEEDS_INPUT`.
 - Limit: at most 30 dispatches per run (the user may give another number).
 
 ### 2. Loop
@@ -103,19 +103,19 @@ subagent, and the SA reviewer is never the subagent that implemented the task.
    do not dispatch; mark the task *waiting* ("deploy: human/DevOps") and continue.
 4. Other roles → dispatch with the prompt below.
 5. Verify from disk, never from the subagent's words: re-read the task frontmatter, `git log -3 --oneline`,
-   `git status --porcelain` (team repo) and `git -C product status --porcelain` + current branch.
-   - Status moved as expected, trees clean, product on `main` → progress; continue.
+   `git status --porcelain` (team repo) and `python3 scripts/repo.py status` (product repos).
+   - Status moved as expected, trees clean, product repos on `main` → progress; continue.
    - `NEEDS_INPUT` only because a permission prompt was rejected/cancelled (not a guardrail deny) →
      re-dispatch the same step once with a fresh subagent; if it happens again → *waiting*
      ("human: approve <command>").
    - `NEEDS_INPUT`, `FAILED`, `BLOCKED`, or status unchanged → mark the task *waiting* with the reason.
-   - Dirty tree, product not on `main`, or a commit rejected by guardrails → **stop the run** and report.
+   - Dirty tree, a product repo not on `main`, or a commit rejected by guardrails → **stop the run** and report.
 6. Stop when: nothing actionable; dispatch limit reached; the same task produced no progress twice.
 
 ### 3. Dispatch prompt (fill in `< >`)
 
 ```
-Workspace: <team repo path> (branch <current branch> — stay on it). Product repo: <path>/product.
+Workspace: <team repo path> (branch <current branch> — stay on it). Product repos: <path>/product (registry in project.md).
 You are invoked as `<command>`. Read and follow <.cursor/skills/<skill>/SKILL.md> exactly, with AGENTS.md,
 .cursor/rules/workflow.mdc and project.md (commands and local environment notes). You did not do any
 earlier step of this task in another role.

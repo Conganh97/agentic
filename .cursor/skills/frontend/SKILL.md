@@ -1,6 +1,6 @@
 ---
 name: frontend
-description: Frontend developer agent for the React + TypeScript app. Implements a UI task on a feature branch in product/, runs lint/tests/build, records the implementation and hands it to SA review. Use when the user invokes /frontend, e.g. "/frontend TASK-004".
+description: Frontend developer agent for the React + TypeScript app. Implements a UI task on a feature branch in the frontend repo, runs lint/tests/build, records the implementation and hands it to SA review. Use when the user invokes /frontend, e.g. "/frontend TASK-004".
 disable-model-invocation: true
 ---
 
@@ -16,14 +16,14 @@ files found relevant by search, and their tests · frontmatter of `depends_on` t
 (controller/DTOs in `product/services/`) read-only, when the design does not spell out the contract.
 
 **Writes**
-- `product/frontend/**`: code and tests on the task branch; commits `feat(TASK-###): ...` /
-  `fix(TASK-###): ...`. Push only if `project.md` has a remote.
+- `<repo>` = `product/frontend` (own repo, see `project.md` registry): code and tests on the task branch;
+  commits `feat(TASK-###): ...` / `fix(TASK-###): ...`; branch pushed via `scripts/repo.py`.
 - Task: `## Implementation (BE/FE)`, frontmatter (`status`, `branch`, `updated`), History, board.
 
 **Transitions**: READY → IN_PROGRESS · CHANGES_REQUESTED → IN_PROGRESS · BUG → IN_PROGRESS ·
 IN_PROGRESS → CODE_REVIEW · working state → BLOCKED
 
-**Forbidden**: committing to `main` in `product/`; merging; approving; setting MERGED; editing Review or
+**Forbidden**: committing to `main` in any product repo; pushing `main`; merging; approving; setting MERGED; editing Review or
 Test sections or checking AC; changing the API contract or architecture beyond the design;
 editing `product/services/`.
 
@@ -35,7 +35,9 @@ editing `product/services/`.
 - Read the task from disk. `assignee` must be `FE`; status must be READY, CHANGES_REQUESTED, BUG, or
   IN_PROGRESS (resume). Otherwise refuse (workflow rule §7).
 - READY: every `depends_on` task must be MERGED or later (read their frontmatter).
-- `product/` must be a git repo with a clean working tree, and `project.md` must have the FE commands.
+- `frontend` not in the `project.md` registry → create it with the repo skill
+  (`/repo create frontend fe`); the app itself is scaffolded on the task branch (step 4).
+- `<repo>` must have a clean working tree, and `project.md` must have the FE commands.
   Otherwise → `NEEDS_INPUT`, no changes.
 
 ### 2. Pick the branch
@@ -46,7 +48,7 @@ editing `product/services/`.
 | BUG | new `fix/TASK-###-<slug>` from `main` (the feature branch is already merged) |
 | IN_PROGRESS | existing `branch` |
 
-`git -C product checkout main` (pull first if a remote exists), then create or check out the branch.
+`git -C <repo> checkout main && git -C <repo> pull -q --ff-only`, then create or check out the branch.
 
 ### 3. Start
 If status is not IN_PROGRESS yet: transition to IN_PROGRESS per the protocol (set `branch`, History,
@@ -55,7 +57,7 @@ board, commit `[TASK-###] <FROM> -> IN_PROGRESS (FE): ...`).
 ### 4. Implement
 - Know exactly what to change: the AC, the design section, and, for loops, every comment of the latest
   Review round or the bug in the latest Test run.
-- `product/frontend/` missing → create the app per the standards ("Creating the app"). Otherwise
+- No `package.json` in `<repo>` yet → create the app per the standards ("Creating the app"). Otherwise
   `npm ci` first.
 - Find relevant code by search; open only those files. Smallest change that satisfies all AC and the
   design; follow `docs/standards/frontend.md`.
@@ -69,12 +71,14 @@ board, commit `[TASK-###] <FROM> -> IN_PROGRESS (FE): ...`).
 - In `product/frontend/`: `npm run lint && npm run format:check && npm test -- --run && npm run build`. All must pass.
 - Still failing after 3 fix attempts → keep IN_PROGRESS, commit work in progress on the branch, report
   `FAILED` with the error.
-- Self-review `git -C product diff main...HEAD`: only task-related changes (no `dist/`, no
+- Self-review `git -C <repo> diff main...HEAD`: only task-related changes (no `dist/`, no
   `node_modules/`), no secrets, no `console.log`, no commented-out code, every review comment addressed.
 
 ### 6. Commit (product repo)
-`git -C product add <files> && git -C product commit -m "feat(TASK-###): <summary>"` (use `fix(...)` for
-BUG; review fixes keep the prefix of the current iteration). Then `git -C product checkout main`.
+`git -C <repo> add <files> && git -C <repo> commit -m "feat(TASK-###): <summary>"` (use `fix(...)` for
+BUG; review fixes keep the prefix of the current iteration). Push the branch:
+`python3 scripts/repo.py push frontend --branch <branch>` (failure → note it, continue). Then
+`git -C <repo> checkout main`.
 
 ### 7. Hand over
 - Append an iteration to `## Implementation (BE/FE)` (format below).
