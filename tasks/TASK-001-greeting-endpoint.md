@@ -3,19 +3,19 @@ id: TASK-001
 title: Greeting service with greeting endpoint
 type: TASK
 priority: MEDIUM
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-000
 depends_on: []
 sprint:
 branch: feature/TASK-001-greeting-endpoint
-merge_commit:
+merge_commit: 83f6471
 release:
 review_iteration: 0
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 13:53
+updated: 2026-09-23 14:10
 ---
 
 ## Description
@@ -52,6 +52,13 @@ New service `services/greeting-service`, package `com.product.greeting`, port 80
 
 ## Review (SA)
 
+### Round 1 — APPROVED
+Reviewed: feature/TASK-001-greeting-endpoint @ 89299f8 · Build/tests: `./mvnw -q verify` (services/greeting-service) PASS (4 tests)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | services/greeting-service/src/test/java/com/product/greeting/api/GreetingControllerTest.java:25 | MINOR | `isLenientlyEqualTo` accepts extra fields, so the test would not catch a response body that differs from AC-1's exact `{"message":"Hello, <name>!"}`; prefer `isStrictlyEqualTo` in future work. |
+Merged 83f6471.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -63,3 +70,4 @@ New service `services/greeting-service`, package `com.product.greeting`, port 80
 | 2026-09-23 13:50 | BACKLOG | READY | HUMAN (test) | DoR satisfied |
 | 2026-09-23 13:45 | READY | IN_PROGRESS | BE | Branch `feature/TASK-001-greeting-endpoint` created |
 | 2026-09-23 13:53 | IN_PROGRESS | CODE_REVIEW | BE | greeting-service implemented @ 89299f8; verify pass (4 tests) |
+| 2026-09-23 14:10 | CODE_REVIEW | MERGED | SA | Round 1 approved (1 MINOR); merged 83f6471 |
