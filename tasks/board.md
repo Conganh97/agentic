@@ -5,4 +5,4 @@ Index of all tasks. Source of truth is each task file. Rules: `.cursor/rules/tas
 | ID | Title | Type | Priority | Status | Assignee | Depends on | Updated |
 |----|-------|------|----------|--------|----------|------------|---------|
 | [TASK-001](TASK-001-greeting-endpoint.md) | Greeting service with greeting endpoint | TASK | MEDIUM | MERGED | BE | — | 2026-09-23 14:10 |
-| [TASK-002](TASK-002-greeting-language.md) | Greeting language parameter | TASK | MEDIUM | READY | BE | TASK-001 | 2026-09-23 14:10 |
+| [TASK-002](TASK-002-greeting-language.md) | Greeting language parameter | TASK | MEDIUM | IN_PROGRESS | BE | TASK-001 | 2026-09-23 14:11 |

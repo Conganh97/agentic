@@ -3,19 +3,19 @@ id: TASK-002
 title: Greeting language parameter
 type: TASK
 priority: MEDIUM
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-000
 depends_on: [TASK-001]
 sprint:
-branch:
+branch: feature/TASK-002-greeting-language
 merge_commit:
 release:
 review_iteration: 0
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 14:10
+updated: 2026-09-23 14:11
 ---
 
 ## Description
@@ -45,3 +45,4 @@ Extend `services/greeting-service` (TASK-001).
 |------|------|----|----|------|
 | 2026-09-23 14:10 | — | BACKLOG | HUMAN (test) | Phase 5 test task |
 | 2026-09-23 14:10 | BACKLOG | READY | HUMAN (test) | DoR satisfied |
+| 2026-09-23 14:11 | READY | IN_PROGRESS | BE | Started on `feature/TASK-002-greeting-language` |
