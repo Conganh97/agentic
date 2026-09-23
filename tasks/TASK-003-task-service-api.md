@@ -3,7 +3,7 @@ id: TASK-003
 title: Task service REST API and persistence
 type: TASK
 priority: MEDIUM
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 depends_on: []
@@ -15,7 +15,7 @@ review_iteration: 1
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:09
+updated: 2026-09-23 17:10
 ---
 
 ## Description
@@ -46,6 +46,12 @@ Repo: task-service (new)
 - Tests: `./mvnw -q verify` in `task-service` → pass (10 run, 3 skipped without Docker)
 - Notes: local git repo only — `gh auth login` then `python3 scripts/repo.py create task-service --type be` to register GitHub remote; push failed (not registered). Testcontainers integration tests skipped (Docker unavailable).
 
+### Iteration 2 (review round 1)
+- Branch: `feature/TASK-003-task-service-api` @ 4242d6c
+- Changed: `src/test/java/com/product/task/api/TaskControllerWebMvcTest.java`, `src/test/java/com/product/task/service/TaskServiceTest.java`
+- Tests: `./mvnw -q verify` in `task-service` → pass (15 run, 3 skipped without Docker)
+- Notes: SA comments #1–#5 addressed (404 PATCH/DELETE, PUT 404 ProblemDetail, missing title POST, PATCH TODO, list order via `TaskServiceTest`); push failed (task-service not in `project.md` registry).
+
 ## Review (SA)
 
 ### Round 1 — CHANGES_REQUESTED
@@ -71,3 +77,4 @@ Reviewed: feature/TASK-003-task-service-api @ 41db5fa · Build/tests: `./mvnw -q
 | 2026-09-23 17:07 | IN_PROGRESS | CODE_REVIEW | BE | task-service API ready for SA |
 | 2026-09-23 17:08 | CODE_REVIEW | CHANGES_REQUESTED | SA | 5 MAJOR test gaps (AC-1, AC-3–AC-5) |
 | 2026-09-23 17:09 | CHANGES_REQUESTED | IN_PROGRESS | BE | address SA review round 1 test gaps |
+| 2026-09-23 17:10 | IN_PROGRESS | CODE_REVIEW | BE | WebMvc/service tests for AC-1, AC-3–AC-5 |
