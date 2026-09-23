@@ -45,7 +45,8 @@ Update this section whenever a phase starts or finishes.
 ## 4. How to work
 
 1. One phase at a time; do not build future phases early.
-2. One chat = one role on one task.
+2. One chat = one role on one task. Exception: `/scrum run` — the main chat stays SCRUM and delegates
+ every other role to a fresh subagent per step (one subagent = one role on one task).
 3. Keep changes small; show the diff; commit after each stable step.
 4. Create folders only when their phase starts.
 5. Architectural decisions go into an ADR in `docs/adr/`.

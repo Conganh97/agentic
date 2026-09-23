@@ -60,7 +60,7 @@ Design section filled or links a design doc.
 4. Write your output section (append a new round/run; never rewrite older ones).
 5. Update frontmatter: `status`, counters, `blocked_from`, `branch`, `merge_commit`, `release`, `updated`.
 6. Append a History row. Get the time with `date "+%Y-%m-%d %H:%M"`; never guess it.
-7. Update the task's row in `tasks/board.md` and keep the sort order defined in `task-files.mdc`.
+7. Update the board: `python3 scripts/sync_board.py` (never edit board rows by hand).
 8. Commit only the files you changed in this repo:
    `git commit -m "[TASK-001] IN_PROGRESS -> CODE_REVIEW (BE): short note"`
 9. Report to the user in this format:
@@ -80,7 +80,7 @@ A commit that records notes without a status change adds no History row and uses
 
 - Who: SA (from a design), TEST (new BUG found outside a task's test run), SCRUM, HUMAN.
 - Copy `templates/task.md`; id = highest existing `TASK-###` + 1; file `tasks/TASK-###-<kebab-slug>.md`.
-- Initial status BACKLOG; History row `— → BACKLOG`; add a board row.
+- Initial status BACKLOG; History row `— → BACKLOG`; sync the board (step 7).
 - Commit: `[TASK-007] created (SA): short note`. When SA creates several tasks from one requirement,
   use one commit: `[REQ-001] analyzed (SA): TASK-003..TASK-007 created`.
 - A failing test run on an existing task uses TESTING → BUG on that task, not a new task.
