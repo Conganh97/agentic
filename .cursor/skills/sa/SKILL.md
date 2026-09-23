@@ -11,7 +11,7 @@ Role: `SA`. Follow `AGENTS.md` and `.cursor/rules/workflow.mdc` (transition prot
 | Invocation | Mode | Status |
 |------------|------|--------|
 | `/sa analyze REQ-###` | Requirement → design doc + BACKLOG task files | Detailed (Phase 3) |
-| `/sa review TASK-###` | Review a task in CODE_REVIEW | Contract only; detailed in Phase 5 |
+| `/sa review TASK-###` | Review a task in CODE_REVIEW; request changes or merge | Detailed (Phase 5) |
 
 ## Contract
 
@@ -100,17 +100,85 @@ History row: `— → BACKLOG | SA | Created from REQ-### design`. Add a board r
 
 ---
 
-## Review mode (contract — detailed in Phase 5)
+## Review mode
 
-Append to the task's `## Review (SA)` one round per review:
+SA only reads, runs tests and merges in `product/`. Never fix code yourself — every problem becomes a comment.
+
+### 1. Gate
+- Read the task from disk. `status` must be `CODE_REVIEW`, else refuse (workflow §7).
+- If this chat implemented the task → refuse ("never review your own work").
+- `branch` set and exists: `git -C product rev-parse --verify <branch>`. Implementation section has a
+  new iteration since the last review round. Otherwise `NEEDS_INPUT`.
+- `git -C product status --porcelain` must be empty and the current branch `main`; else `NEEDS_INPUT`.
+
+### 2. Gather (only what is needed)
+- Task: AC, Design (SA), latest Implementation iteration, previous Review rounds.
+- The design doc linked in Design (SA), if any; `docs/standards/<backend|frontend>.md`; `memory/lessons.md`.
+- `git -C product log --oneline main..<branch>`, `git -C product diff --stat main...<branch>`,
+  `git -C product diff main...<branch>`; open full files only where the diff lacks context.
+
+### 3. Verify
+- Build and test the branch: `git -C product checkout <branch>`, run the build/test command from
+  `project.md` for each changed service/app, then `git -C product checkout main`.
+- A failing build or test is a BLOCKER. Environment problems (e.g. Docker not running) → note them;
+  they are not the implementer's fault, but untested AC must be called out.
+
+### 4. Review checklist
+| Area | Check |
+|------|-------|
+| AC coverage | every AC is implemented **and** has a test that would fail without it |
+| Design | matches the task Design / API contract; no unapproved API, data or architecture change |
+| Correctness | edge cases, error handling, null/empty input, concurrency where relevant |
+| Standards | `docs/standards/*` rules; commit messages `feat/fix(TASK-###)` |
+| Security | input validated; no secrets, injection, sensitive data in logs or responses |
+| Tests | meaningful assertions, behaviour-named, no disabled or flaky tests |
+| Scope | only task-related changes; no debug or commented-out code |
+| Previous rounds | every earlier comment resolved, or explicitly accepted |
+| Lessons | known pitfalls from `memory/lessons.md` not repeated |
+
+Severity:
+- **BLOCKER**: AC not met, build/test failure, security issue, data loss, design violation.
+- **MAJOR**: bug in an edge case, missing test for an AC, standards violation that affects maintainability.
+- **MINOR**: naming, style, small cleanup. Never blocks approval.
+
+Decision: any BLOCKER or MAJOR → CHANGES_REQUESTED; otherwise APPROVED (MINOR comments are recorded).
+
+### 5a. Request changes
+- `review_iteration` already `3` → do not request changes; set `BLOCKED` (`blocked_from: CODE_REVIEW`,
+  reason "review limit reached"), write the round anyway, commit, report `BLOCKED`. Stop.
+- Append the round (format below), `status: CHANGES_REQUESTED`, `review_iteration += 1`, `updated`,
+  History row, board row.
+- Commit: `[TASK-###] CODE_REVIEW -> CHANGES_REQUESTED (SA): <n> comments (<BLOCKER/MAJOR summary>)`.
+- Report `Outcome: CHANGES_REQUESTED`, `Next: BE|FE — /backend TASK-###` (per assignee).
+
+### 5b. Approve and merge
+In `product/`, on `main`:
+1. `git merge --no-ff --no-commit <branch>`. Conflict → `git merge --abort`; go to 5a with a BLOCKER
+   "merge conflict with main: merge main into the branch and resolve".
+2. If `main` had moved since the branch was created (`git merge-base --is-ancestor main <branch>` fails),
+   run the build/test again on the merged tree. Failure → `git merge --abort`; go to 5a.
+3. `git commit -m "Merge <branch> (TASK-###)"`; record the sha (`git rev-parse --short HEAD`).
+
+Then in the team repo: append the APPROVED round with `Merged <sha>.`, set `status: MERGED`,
+`merge_commit: <sha>`, `updated`, History row, board row. Commit:
+`[TASK-###] CODE_REVIEW -> MERGED (SA): approved, merged <sha>`.
+Report with `Next: TEST — /tester TASK-###`. Leave the feature branch in place (TEST/BUG may need it).
+
+### 6. Lessons
+When a finding is generic (likely to recur in other tasks), append one row to `memory/lessons.md` in the
+same commit: `| <date> | TASK-### review round N | <lesson> | BE / FE / all |`.
+
+### Round format
 
 ```markdown
 ### Round N — CHANGES_REQUESTED | APPROVED
+Reviewed: <branch> @ <sha> · Build/tests: <command> PASS | FAIL (<n> tests)
 Previous round: #1 resolved, #2 not resolved (see #1 below)   ← omit in round 1
 | # | File | Severity | Comment |
 |---|------|----------|---------|
-| 1 | path | BLOCKER / MAJOR / MINOR | what and why |
+| 1 | path:line | BLOCKER / MAJOR / MINOR | what is wrong, why, and what is expected |
 Merged <sha>.   ← only when APPROVED
 ```
 
-Never edit earlier rounds; resolution status is recorded in the next round.
+No comments → write `No comments.` instead of the table. Never edit earlier rounds; resolution status
+is recorded in the next round.
