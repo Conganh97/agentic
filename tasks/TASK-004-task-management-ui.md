@@ -3,7 +3,7 @@ id: TASK-004
 title: Task management web UI
 type: TASK
 priority: MEDIUM
-status: CODE_REVIEW
+status: CHANGES_REQUESTED
 assignee: FE
 parent: REQ-001
 depends_on: [TASK-003]
@@ -11,11 +11,11 @@ sprint:
 branch: feature/TASK-004-task-management-ui
 merge_commit:
 release:
-review_iteration: 0
+review_iteration: 1
 test_iteration: 0
 blocked_from:
 approved_by:
-updated: 2026-09-23 17:17
+updated: 2026-09-23 17:18
 ---
 
 ## Description
@@ -47,6 +47,13 @@ Repo: frontend (new)
 
 ## Review (SA)
 
+### Round 1 — CHANGES_REQUESTED
+Reviewed: feature/TASK-004-task-management-ui @ c919214 · Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (7 tests)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | src/features/tasks/TaskForm.tsx:34,45 | MAJOR | Create and inline-edit forms both use fixed `id="task-title"` / `id="task-description"`; when a row is in edit mode, labels and ids collide on one page. Use `useId()` (or unique per-instance ids) so each field has a single associated label. |
+| 2 | src/features/tasks/TaskListPage.test.tsx:179 | MAJOR | AC-5 requires All, Todo, and Completed filters with the correct API query; only Todo (`status=TODO`) is asserted. Add tests that Completed requests `status=COMPLETED` and All calls `/api/v1/tasks` without a `status` query param. |
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -58,3 +65,4 @@ Repo: frontend (new)
 | 2026-09-23 17:14 | BACKLOG | READY | SCRUM | DoR met |
 | 2026-09-23 17:15 | READY | IN_PROGRESS | FE | feature/TASK-004-task-management-ui |
 | 2026-09-23 17:17 | IN_PROGRESS | CODE_REVIEW | FE | task UI ready for SA review |
+| 2026-09-23 17:18 | CODE_REVIEW | CHANGES_REQUESTED | SA | 2 MAJOR: duplicate form ids; incomplete filter tests |
