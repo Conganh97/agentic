@@ -18,7 +18,8 @@ Role: `SA`. Follow `AGENTS.md` and `.cursor/rules/workflow.mdc` (transition prot
 **Reads**
 - analyze: the requirement, `docs/architecture/`, relevant `docs/adr/`, `memory/decisions.md`, `project.md`,
   structure of `product/` (open specific files only when needed)
-- review: the task file, its design doc, `docs/standards/`, `memory/lessons.md`,
+- review: the task file, its design doc, `docs/standards/`, `memory/lessons.md`, `project.md` (commands,
+  local notes),
   `git -C product diff main...<branch>` and files touched by that diff
 
 **Writes**
@@ -107,8 +108,8 @@ SA only reads, runs tests and merges in `product/`. Never fix code yourself — 
 ### 1. Gate
 - Read the task from disk. `status` must be `CODE_REVIEW`, else refuse (workflow §7).
 - If this chat implemented the task → refuse ("never review your own work").
-- `branch` set and exists: `git -C product rev-parse --verify <branch>`. Implementation section has a
-  new iteration since the last review round. Otherwise `NEEDS_INPUT`.
+- `branch` set and exists: `git -C product rev-parse --verify <branch>`. The Implementation section has
+  more iterations than there are Review rounds (round 1 needs ≥1 iteration). Otherwise `NEEDS_INPUT`.
 - `git -C product status --porcelain` must be empty and the current branch `main`; else `NEEDS_INPUT`.
 
 ### 2. Gather (only what is needed)
@@ -119,7 +120,8 @@ SA only reads, runs tests and merges in `product/`. Never fix code yourself — 
 
 ### 3. Verify
 - Build and test the branch: `git -C product checkout <branch>`, run the build/test command from
-  `project.md` for each changed service/app, then `git -C product checkout main`.
+  `project.md` in each changed service/app folder (respect its local notes, e.g. `JAVA_HOME`, running
+  outside the sandbox), then `git -C product checkout main`. Build output is git-ignored, so the tree stays clean.
 - A failing build or test is a BLOCKER. Environment problems (e.g. Docker not running) → note them;
   they are not the implementer's fault, but untested AC must be called out.
 
@@ -157,7 +159,7 @@ In `product/`, on `main`:
    "merge conflict with main: merge main into the branch and resolve".
 2. If `main` had moved since the branch was created (`git merge-base --is-ancestor main <branch>` fails),
    run the build/test again on the merged tree. Failure → `git merge --abort`; go to 5a.
-3. `git commit -m "Merge <branch> (TASK-###)"`; record the sha (`git rev-parse --short HEAD`).
+3. `git commit -m "Merge <branch> (TASK-###)"`; record the sha (`git rev-parse --short=7 HEAD`).
 
 Then in the team repo: append the APPROVED round with `Merged <sha>.`, set `status: MERGED`,
 `merge_commit: <sha>`, `updated`, History row, board row. Commit:
@@ -165,7 +167,7 @@ Then in the team repo: append the APPROVED round with `Merged <sha>.`, set `stat
 Report with `Next: TEST — /tester TASK-###`. Leave the feature branch in place (TEST/BUG may need it).
 
 ### 6. Lessons
-When a finding is generic (likely to recur in other tasks), append one row to `memory/lessons.md` in the
+When a finding of any severity is generic (likely to recur in other tasks; not a one-off typo), append one row to `memory/lessons.md` in the
 same commit: `| <date> | TASK-### review round N | <lesson> | BE / FE / all |`.
 
 ### Round format
@@ -180,5 +182,6 @@ Previous round: #1 resolved, #2 not resolved (see #1 below)   ← omit in round 
 Merged <sha>.   ← only when APPROVED
 ```
 
-No comments → write `No comments.` instead of the table. Never edit earlier rounds; resolution status
+No comments → write `No comments.` instead of the table. An APPROVED round may still contain a table
+of MINOR comments, followed by the `Merged <sha>.` line. Never edit earlier rounds; resolution status
 is recorded in the next round.
