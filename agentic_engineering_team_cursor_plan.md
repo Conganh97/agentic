@@ -413,10 +413,14 @@ Acceptance:
 ## Phase 6 — Guardrails
 
 Deliver:
-- `scripts/check-transitions.sh` + git `pre-commit` hook in the team repo: rejects commits where a task's
-  `status` changes by a transition not in §6, or History is not appended.
-- `.cursor/hooks.json` `beforeShellExecution`: deny `git push --force`, direct push to `main` in
-  `product/`, destructive commands (`rm -rf`, `DROP`, `TRUNCATE`); ask for approval on PROD deploy commands.
+- `scripts/check_transitions.py` + versioned git hook `.githooks/pre-commit`
+  (`git config core.hooksPath .githooks`): rejects commits where a task's `status` changes by a transition
+  not in §6 or by a role not allowed, History is edited or not appended with exactly one matching row,
+  counters/limits, `blocked_from`, `merge_commit`, `release` are wrong, `approved_by` is set without a
+  HUMAN History row, a new task does not start in BACKLOG, or a task file is deleted.
+- `.cursor/hooks.json` `beforeShellExecution` → `.cursor/hooks/guard-shell.sh` (fail closed): deny
+  `git push --force`, direct push to `main` in `product/`, `git commit --no-verify`, destructive commands
+  (`rm -rf`, `DROP`, `TRUNCATE`); ask for approval on PROD deploy commands.
 
 Acceptance:
 - An invalid transition commit is rejected; a forbidden shell command is blocked.

@@ -18,8 +18,9 @@ software from requirement to release **using only Cursor, markdown files and git
 | 3 | SA Skill (Analysis & Design) | Done |
 | 4 | Backend Skill | Done |
 | 5 | SA Review Skill (MVP) | Done |
-| 6 | Guardrails | Next |
-| 7–10 | Test, Frontend, DevOps, Scrum Skills | Planned |
+| 6 | Guardrails | Done |
+| 7 | Test Skill | Next |
+| 8–10 | Frontend, DevOps, Scrum Skills | Planned |
 
 ## Start here
 
@@ -32,3 +33,5 @@ software from requirement to release **using only Cursor, markdown files and git
 
 1. Open this folder in Cursor.
 2. Clone your product repository into `product/` (it is git-ignored here) and fill in `project.md`.
+3. Enable the task workflow check once per clone: `git config core.hooksPath .githooks`
+   (needs `python3`). The agent shell guard in `.cursor/hooks.json` needs `jq` and loads automatically.

@@ -15,7 +15,7 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phase 5 — SA Review Skill, MVP loop (done).** Next: Phase 6 — Guardrails.
+**Phase 6 — Guardrails (done).** Next: Phase 7 — Test Skill.
 Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript); details in `project.md`.
 Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
@@ -37,6 +37,8 @@ Update this section whenever a phase starts or finishes.
 - Always read files and run `git` to learn state; never assume it.
 - Read only the files your role needs (plan §12); never load the whole repository.
 - Never write secrets into markdown, commits, or chat.
+- Never bypass or edit guardrails (`.githooks/`, `.cursor/hooks*`, `--no-verify`); report a blocked
+ command or rejected commit to the user instead of working around it.
 - No external tracker (no Jira, no GitHub/GitLab issues or PRs). Planning, tracking, review, merge
   approval and releases are recorded only in markdown files in this repo.
 
@@ -62,6 +64,7 @@ Update this section whenever a phase starts or finishes.
 | `docs/standards/` | Product standards (from Phase 4) |
 | `memory/` | Decisions and lessons learned (from Phase 3) |
 | `.cursor/rules/`, `.cursor/skills/`, `.cursor/hooks.json` | Workflow rule, role skills, guardrails |
+| `scripts/`, `.githooks/` | Task workflow check (pre-commit) |
 | `product/` | Product code (separate git repo, ignored here) |
 
 ## 6. Commit conventions
