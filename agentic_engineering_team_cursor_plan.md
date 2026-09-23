@@ -192,8 +192,9 @@ Branch, summary, changed files, how tested.
 
 ## Review (SA)
 ### Round 1 — CHANGES_REQUESTED | APPROVED
-| # | File | Severity (BLOCKER/MAJOR/MINOR) | Comment | Resolved |
-|---|------|------|---------|----------|
+Previous round: #1 resolved, ...        (from round 2 on)
+| # | File | Severity (BLOCKER/MAJOR/MINOR) | Comment |
+|---|------|------|---------|
 
 ## Test (TEST)
 ### Run 1 — PASS | FAIL

@@ -43,16 +43,18 @@ See `docs/design/REQ-000-design.md` §2. Add a controller in the web layer; no d
 
 ## Review (SA)
 ### Round 1 — CHANGES_REQUESTED
-| # | File | Severity | Comment | Resolved |
-|---|------|----------|---------|----------|
-| 1 | src/web/HealthController | BLOCKER | Request headers are logged (may contain tokens) | yes |
-| 2 | test/web/HealthControllerTest | MAJOR | No test for AC-2 (no auth) | yes |
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | src/web/HealthController | BLOCKER | Request headers are logged (may contain tokens) |
+| 2 | test/web/HealthControllerTest | MAJOR | No test for AC-2 (no auth) |
 
 ### Round 2 — APPROVED
-All round 1 comments resolved.
+Previous round: #1 resolved, #2 resolved.
+Merged `1a7b2d4`.
 
 ### Round 3 — APPROVED
-Bug fix reviewed; regression test present. Merged `3f2a9c1`.
+Bug fix for test run 1 reviewed; regression test present.
+Merged `3f2a9c1`.
 
 ## Test (TEST)
 ### Run 1 — FAIL

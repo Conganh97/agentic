@@ -63,8 +63,14 @@ Design section filled or links a design doc.
 7. Update the task's row in `tasks/board.md`.
 8. Commit only the files you changed in this repo:
    `git commit -m "[TASK-001] IN_PROGRESS -> CODE_REVIEW (BE): short note"`
-9. Report: outcome (`COMPLETED`, `FAILED`, `NEEDS_INPUT`, `BLOCKED`, `CHANGES_REQUESTED`), new status,
-   what you did, and which role should act next.
+9. Report to the user in this format:
+   ```
+   Outcome: COMPLETED | FAILED | NEEDS_INPUT | BLOCKED | CHANGES_REQUESTED
+   Task:    TASK-001  <FROM> → <TO>   (or "unchanged")
+   Done:    <1–3 lines>
+   Commit:  <sha> <message>   (or "none")
+   Next:    <ROLE> — <what they should do>   (NEEDS_INPUT: the question for the human)
+   ```
 
 On `FAILED` or `NEEDS_INPUT` the status does not change (steps 4–8 may still record notes).
 

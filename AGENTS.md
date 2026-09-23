@@ -15,7 +15,8 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phase 1 — Task Format and Workflow Rule (done).** Next: Phase 2 — Role Contracts.
+**Phase 2 — Role Contracts (done).** Next: Phase 3 — SA Skill (Analysis & Design).
+Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
 `templates/examples/TASK-000-example.md`.
 
@@ -65,4 +66,5 @@ Update this section whenever a phase starts or finishes.
 
 - Team repo, state change: `[TASK-001] IN_PROGRESS -> CODE_REVIEW (BE): short note`
 - Team repo, other: `docs: ...`, `chore: ...`
-- Product repo: `feat(TASK-001): ...`, `fix(TASK-001): ...`; branches `feature/TASK-001-slug`, `fix/TASK-001-slug`
+- Product repo: `feat(TASK-001): ...`, `fix(TASK-001): ...`, `test(TASK-001): ...`; branches
+  `feature/TASK-001-slug`, `fix/TASK-001-slug`, `test/TASK-001-slug` (TEST), `ops/TASK-001-slug` (DEVOPS)
