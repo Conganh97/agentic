@@ -3,7 +3,7 @@ id: TASK-003
 title: News and static page APIs
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: shop-service
 depends_on: [TASK-001]
 sprint:
 branch: feature/TASK-003-news-pages-api
-merge_commit:
+merge_commit: a8b6f11
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:00
+updated: 2026-09-24 10:03
 ---
 
 ## Description
@@ -59,6 +59,12 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-10, FR-11, FR-12). Repo: shop-
 - Notes: Flyway V4/V5 because V1–V3 already used. Seeded 3 original articles (placeholder `/placeholders/article.svg`) and 7 design slugs. List newest-first; `prevSlug`=older, `nextSlug`=newer by `published_at`. Pagination matches catalog (`page` 1, `size` 24 max 60). Contact caps: name 80, email 254, phone 30, message 2000; validate-and-ack only (no persist/send). Settings from `SHOP_*` with design §7 defaults. No catalog changes. Branch pushed.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-003-news-pages-api @ 571eb47 · Build/tests: ./mvnw -q verify PASS (53 tests)
+No comments.
+
+Merged a8b6f11.
+Pushed main.
 
 ## Test (TEST)
 
@@ -71,3 +77,4 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-10, FR-11, FR-12). Repo: shop-
 | 2026-09-24 09:55 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] READY_FOR_DEPLOY |
 | 2026-09-24 09:57 | READY | IN_PROGRESS | BE | branch feature/TASK-003-news-pages-api |
 | 2026-09-24 10:00 | IN_PROGRESS | CODE_REVIEW | BE | product commit 571eb47; Implementation Iteration 1 |
+| 2026-09-24 10:03 | CODE_REVIEW | MERGED | SA | merge_commit=a8b6f11; reviews/TASK-003-round-1.md APPROVED; --no-ff on main |
