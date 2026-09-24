@@ -3,7 +3,7 @@ id: TASK-004
 title: Customer account APIs
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 10:59
+updated: 2026-09-24 11:00
 ---
 
 ## Description
@@ -77,3 +77,4 @@ Pushed main.
 | 2026-09-24 10:53 | READY | IN_PROGRESS | BE | branch feature/TASK-004-customer-account-api |
 | 2026-09-24 10:56 | IN_PROGRESS | CODE_REVIEW | BE | product a7a64d9; Implementation Iteration 1 |
 | 2026-09-24 10:59 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit=ed63e6a --no-ff |
+| 2026-09-24 11:00 | MERGED | TESTING | TEST | run 1; tested sha ed63e6a is ancestor of main containing merge_commit ed63e6a |
