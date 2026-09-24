@@ -3,7 +3,7 @@ id: TASK-002
 title: Catalog and search APIs
 type: TASK
 priority: CRITICAL
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:41
+updated: 2026-09-24 09:47
 ---
 
 ## Description
@@ -53,6 +53,11 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-2, FR-3, FR-4). Repo: shop-ser
 - `featured=true` query used later by home.
 
 ## Implementation (BE/FE)
+### Iteration 1 (initial)
+- Branch: `feature/TASK-002-catalog-search-api` @ bf747cb
+- Changed: `services/shop-service/src/main/resources/db/migration/V2__catalog.sql`, `V3__catalog_seed.sql`, `api/CategoryController.java`, `api/ProductController.java`, `api/*Response.java`, `service/CatalogService.java`, `service/ProductSpecifications.java`, `domain/{Category,Product,ProductImage}.java`, `repository/{Category,Product}Repository.java`, `CatalogApiTest.java`, `CategoryControllerTest.java`, `ProductControllerTest.java`, `CatalogServiceTest.java`, `ProductRepositoryTest.java`, `ShopApplicationTests.java`
+- Tests: `./mvnw -q verify` in `services/shop-service` → pass (30 tests)
+- Notes: TASK-001 already used Flyway V1 baseline, so tables are V2 and seed is V3. Blank `q` is treated as no text filter; unknown `category` is 404 per AC-002. Search is SQL contains with `\`-escaped `%`/`_`. Parent slug filters that exact category only (not descendants). `GET /categories/{slug}` added from design §6. Seed: 18 products, 4 featured, `/placeholders/product.svg` only. Boot 4 `@DataJpaTest` needs `spring-boot-data-jpa-test` (not on classpath); seed/repo check uses `@SpringBootTest` + Testcontainers. Branch pushed.
 
 ## Review (SA)
 
@@ -66,3 +71,4 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-2, FR-3, FR-4). Repo: shop-ser
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 09:39 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] READY_FOR_DEPLOY |
 | 2026-09-24 09:41 | READY | IN_PROGRESS | BE | branch feature/TASK-002-catalog-search-api |
+| 2026-09-24 09:47 | IN_PROGRESS | CODE_REVIEW | BE | product commit bf747cb; Implementation Iteration 1 |
