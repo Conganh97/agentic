@@ -26,6 +26,8 @@ Registry (written by `scripts/repo.py create`; do not edit by hand):
 
 | Component | Type | Path | Remote |
 |-----------|------|------|--------|
+| shop-service | BE | `product/services/shop-service` | https://github.com/Conganh97/product-shop-service |
+| frontend | FE | `product/frontend` | https://github.com/Conganh97/product-frontend |
 
 ## Stack
 
