@@ -3,7 +3,7 @@ id: TASK-005
 title: Cart APIs and guest merge
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 11:13
+updated: 2026-09-24 11:18
 ---
 
 ## Description
@@ -79,3 +79,4 @@ Pushed main.
 | 2026-09-24 11:05 | READY | IN_PROGRESS | BE | branch feature/TASK-005-cart-api |
 | 2026-09-24 11:09 | IN_PROGRESS | CODE_REVIEW | BE | product ac3c4f2; Implementation Iteration 1; ./mvnw -q verify pass (88 tests) |
 | 2026-09-24 11:13 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=ded64f8 (--no-ff); ./mvnw -q verify PASS (88 tests) |
+| 2026-09-24 11:18 | MERGED | TESTING | TEST | run 1; tested sha ded64f8 is ancestor of main containing merge_commit ded64f8 |
