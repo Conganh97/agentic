@@ -1,14 +1,18 @@
 # Agentic Engineering Team (Cursor-native)
 
-A role-based AI team (Scrum, SA, Backend, Frontend, Test, DevOps) that delivers software from
+A role-based AI team (Scrum, SA, UX/UI, Backend, Frontend, Test, DevOps) that delivers software from
 requirement to release **using only Cursor, markdown and git**. No Jira, no GitHub PRs, no platform
 database: task state is YAML in `tasks/`, audit is History + one git commit per transition.
 
 ```
-HUMAN writes REQ  →  approve  →  /scrum run REQ-###
-                                      │
-                    SA design + tasks → BE/FE implement → SA review + merge
-                                      → TEST accept → (Phase 9) deploy
+HUMAN writes REQ → approve → /scrum run REQ-###
+        │
+        ├─ SA: design + tasks (+ sprint if >5 unfinished)
+        ├─ UX/UI ∥ BE          (UI work: spec + Figma; APIs in parallel)
+        ├─ FE implements the UX contract
+        ├─ UX/UI review → SA review + merge
+        ├─ TEST accept
+        └─ READY_FOR_DEPLOY → (Phase 9) deploy
 ```
 
 Product code lives in **one GitHub repo per component** under `product/` (ADR-0004). The team repo
@@ -30,6 +34,9 @@ only holds skills, rules, designs, tasks and the component registry in `project.
 | 9 | DevOps (GitHub Actions + Docker Compose) | **Not built** (contract only) |
 | 10 | Scrum + `/scrum run` orchestrator | Done |
 | — | `/repo` create/push product repos | Done (ADR-0004) |
+| — | UX/UI role + Figma MCP (ADR-0008) | Done |
+| — | Stack policy: Java 21 + Spring, React locked; SA chooses the rest (ADR-0009) | Done |
+| — | Sprints on `/scrum run` when unfinished tasks > 5 | Done |
 | — | Workflow hardening (FAILED ≠ BUG, deps, artifacts, req hash, human gates) | Done |
 
 ## One-time setup
@@ -62,6 +69,9 @@ Do these once per machine / clone.
    - Node 25 / npm 11
    - Docker running if a service uses Testcontainers
 
+6. Figma (UX/UI visual review): Cursor Settings → Tools & MCP → **Connect** next to `figma`,
+   or `/add-plugin figma`. Config is `.cursor/mcp.json` (`https://mcp.figma.com/mcp`).
+
 `product/` is git-ignored here. Do not clone product repos by hand — `/repo create` does that.
 
 ## How to deliver a requirement
@@ -90,11 +100,14 @@ until the requirement is done or a human gate is hit. Typical path:
 
 | Step | Who | What happens |
 |------|-----|----------------|
-| Analyze | SA | Design in `docs/design/`, BACKLOG tasks, registry of needed repos |
-| Ready | Scrum | Definition of Ready → `READY` |
-| Implement | BE / FE | Feature branch in the component repo, tests, push branch via `/repo` |
-| Review | SA | Approve or request changes (max 3 rounds). On approve: `--no-ff` merge, push `main` |
-| Test | TEST | Black-box against ACs. Pass → `READY_FOR_DEPLOY`. Fail → `BUG` (max 3 rounds) |
+| Analyze | SA | Design in `docs/design/`, stack choices (§5), BACKLOG tasks |
+| Sprint | Scrum | If unfinished tasks > 5: `sprints/SPRINT-##.md`, only that increment is pulled |
+| Design | UX/UI | Markdown in `docs/design/ux/` + Figma file (when UI work exists) |
+| Ready | Scrum | Definition of Ready (+ sprint scope) → `READY` |
+| Implement | BE / FE | Feature branch in the component repo; FE follows UX/Figma + SA kit |
+| UX review | UX/UI | FE `CODE_REVIEW` vs spec/Figma, before SA |
+| Review | SA | Approve or request changes (max 3). On approve: `--no-ff` merge, push `main` |
+| Test | TEST | Black-box against ACs. Pass → `READY_FOR_DEPLOY`. Fail → `BUG` (max 3) |
 | Deploy | DEVOPS | **Not implemented yet.** The run marks the task *waiting* |
 
 Or invoke each role yourself (one chat = one role on one task):
@@ -147,8 +160,10 @@ Skills live in `.cursor/skills/<name>/SKILL.md`. They do not auto-invoke (`disab
 | `/scrum sprint` / `sprint close` | Scrum | Plan or close `sprints/SPRINT-##.md` |
 | `/scrum sync` | Scrum | Regenerate `tasks/board.md` |
 | `/scrum report [REQ-###]` | Scrum | Progress from History |
-| `/sa analyze REQ-###` | SA | Design + BACKLOG tasks |
+| `/sa analyze REQ-###` | SA | Design + stack choices + BACKLOG tasks |
 | `/sa review TASK-###` | SA | Review, request changes, or merge |
+| `/uxui TASK-###` | UX/UI | Markdown design contract + Figma file |
+| `/uxui review TASK-###` | UX/UI | Review FE against spec/Figma |
 | `/backend TASK-###` | BE | Implement in `product/services/<name>-service` |
 | `/frontend TASK-###` | FE | Implement in `product/frontend` |
 | `/tester TASK-###` | TEST | Accept a merged task |
@@ -206,44 +221,142 @@ hits auth, migration, breaking API, or similar.
 See `project.md` and ADR-0009. **Locked:** Java 21 + Spring, React. Everything else is SA’s
 choice in the requirement design (UI kit, DB, …).
 
-## Where things live
+## Project map
 
-| Path | Purpose |
-|------|---------|
-| `requirements/` | Input requirements (`REQ-###-*.md`) |
-| `tasks/` | One file per task; `board.md` is generated |
-| `bugs/` | Product defects (`BUG-###`) opened from a failing TEST run |
-| `reviews/` | SA review rounds (`TASK-###-round-N.md`) |
-| `tests/` | TEST run reports (`TASK-###-run-N.md`) |
-| `runs/` | `/scrum run` journal (`RUN-###.md`, `journal.md`) |
-| `docs/design/` | SA designs |
-| `docs/design/ux/` | UX/UI contract + Figma link |
-| `docs/adr/` | Architecture decisions (stack: 0003; UI kit: 0006) |
-| `docs/standards/` | BE / FE / testing / artifact contracts |
-| `memory/` | Decision index and lessons |
-| `project.md` | Repos, stack, commands, local notes |
-| `.cursor/skills/` | Role skills |
-| `.cursor/rules/workflow.mdc` | Transition protocol |
-| `templates/` | Requirement, task, design, bug, review, test report, run, sprint |
-| `scripts/repo.py` | Create / push product repos |
-| `scripts/sync_board.py` | Regenerate the board |
-| `scripts/deps.py` | Dependency graph, cycles, actionable tasks |
-| `scripts/next.py` | Deterministic next step (resume) |
-| `scripts/scrum_report.py` | `/scrum report` numbers |
-| `scripts/req.py` | Requirement hash / revision / completion |
-| `scripts/run_log.py` | Append `runs/journal.md` |
-| `scripts/parallel.py` | Safe BE/FE parallel pairs |
-| `scripts/gate_scan.py` | Human-gate keywords |
-| `scripts/check_transitions.py` | Pre-commit state-machine guard |
+This repo is the **team control plane**. Product code is not here (`product/` is git-ignored).
+
+```
+agentic/
+├── AGENTS.md, README.md, project.md
+├── requirements/     tasks/     sprints/     bugs/
+├── reviews/          tests/     runs/        releases/
+├── docs/             memory/    templates/   scripts/
+├── .cursor/          .githooks/ product/
+└── plans (*.md at repo root)
+```
+
+### Root files
+
+| File | What it is |
+|------|------------|
+| `README.md` | This guide: how to run the team and what each part is |
+| `AGENTS.md` | Hard rules every agent must follow (state, roles, commits, no secrets) |
+| `project.md` | Product registry, locked vs SA-chosen stack, commands, local env notes |
+| `agentic_engineering_team_cursor_plan.md` | Original build plan (phases 0–10) |
+| `agentic_engineering_team_uxui_update.md` | Spec that added the UX/UI role |
+| `agentic_engineering_team_remaining_improvements.md` | Later improvement notes |
+
+### Work items (state)
+
+| Path | What it is |
+|------|------------|
+| `requirements/REQ-###-*.md` | Human input. SA analyzes only after `status: APPROVED`. Hash/revision via `req.py` |
+| `tasks/TASK-###-*.md` | **Source of truth.** YAML `status` is the state machine. One file per task |
+| `tasks/board.md` | Index generated by `sync_board.py` — do not edit rows by hand |
+| `sprints/SPRINT-##.md` | Increment when unfinished tasks > 5. `/scrum run` only pulls `sprint:` matching ACTIVE |
+| `bugs/BUG-###-*.md` | Product defect from a FAIL test run (not a workflow crash) |
+| `reviews/TASK-###-round-N.md` | SA review evidence required for MERGED / CHANGES_REQUESTED |
+| `tests/TASK-###-run-N.md` | TEST evidence required for READY_FOR_DEPLOY / BUG |
+| `runs/RUN-###.md` + `journal.md` | `/scrum run` audit (one file per run + append-only log) |
+| `releases/` | Release notes (used when DevOps ships; empty until Phase 9) |
+
+### Docs and memory
+
+| Path | What it is |
+|------|------------|
+| `docs/architecture/system-overview.md` | How markdown + git + skills replace an orchestrator service |
+| `docs/design/REQ-###-design.md` | SA architecture, API, data, **stack table §5**, task breakdown |
+| `docs/design/ux/` | UX/UI machine contract: spec, tokens, pages, reviews + Figma URL |
+| `docs/adr/` | Decisions. Locked stack: 0003/0009. Repos: 0004. UX/UI: 0008. 0006 superseded |
+| `docs/standards/backend.md` | Java package-by-feature layout, REST, CORS |
+| `docs/standards/frontend.md` | React `app/pages/features/shared` layout, quality bar |
+| `docs/standards/ux-ui.md` | When UX/UI runs, Figma MCP, what FE must implement |
+| `docs/standards/testing.md` | Acceptance vs unit tests; BUG vs FAILED |
+| `docs/standards/artifacts.md` | Required files for each handoff (`/scrum run` checks these) |
+| `memory/decisions.md` | Index of ADRs (append-only) |
+| `memory/lessons.md` | Recurring review/test pitfalls (SA/TEST/UX read this) |
+
+### Templates (copy, never edit in place for a real item)
+
+| File | Used for |
+|------|----------|
+| `templates/requirement.md` | New REQ |
+| `templates/task.md` | New TASK (frontmatter includes `work_type`, `requires_uxui`, `figma`) |
+| `templates/design.md` | SA design |
+| `templates/ux-spec.md` / `ux-page.md` / `ux-review.md` | UX/UI artifacts |
+| `templates/review-round.md` | SA review file |
+| `templates/test-report.md` | TEST run file |
+| `templates/bug.md` | Product bug |
+| `templates/sprint.md` | Sprint |
+| `templates/run.md` | `/scrum run` journal file |
+| `templates/examples/TASK-000-example.md` | Filled example of a full task lifecycle |
+
+### Agents and guardrails
+
+| Path | What it is |
+|------|------------|
+| `.cursor/skills/scrum/` | Orchestrator: run / next / ready / sprint / report |
+| `.cursor/skills/sa/` | Analyze REQ → design+tasks; review+merge |
+| `.cursor/skills/ux-ui/` | Design contract + Figma; review FE |
+| `.cursor/skills/backend/` | Java 21 Spring implementation |
+| `.cursor/skills/frontend/` | React implementation from UX/Figma |
+| `.cursor/skills/tester/` | Black-box accept after MERGED |
+| `.cursor/skills/devops/` | Deploy contract (Phase 9 not built) |
+| `.cursor/skills/repo/` | Create/push product GitHub repos |
+| `.cursor/rules/workflow.mdc` | Allowed transitions, who may change `status`, evidence |
+| `.cursor/rules/task-files.mdc` | Task file format (frontmatter, History) |
+| `.cursor/hooks.json` + `hooks/guard-shell.sh` | Blocks dangerous shell (`rm -rf`, force-push, raw `git push` to product `main`) |
+| `.cursor/mcp.json` | Official Figma remote MCP (`https://mcp.figma.com/mcp`) |
+| `.githooks/pre-commit` | `check_transitions.py` + `req.py check` + board freshness |
+
+### Scripts
+
+| Script | What it is |
+|--------|------------|
+| `scripts/next.py` | Deterministic next step (analyze → sprint → review → implement → test → deploy) |
+| `scripts/sprint.py` | Large-work policy: need sprint? proposed scope? (`SMALL_MAX=5`, `SPRINT_CAP=6`) |
+| `scripts/deps.py` | Task graph, cycles, “deps MERGED or later” |
+| `scripts/parallel.py` | Which READY tasks may run at the same time (different repos, no dep edge) |
+| `scripts/sync_board.py` | Rebuild `tasks/board.md` |
+| `scripts/check_transitions.py` | Pre-commit: illegal status changes, review/test limits, merge sha |
+| `scripts/req.py` | Requirement `content_hash` / `revision` / all-children-released |
+| `scripts/gate_scan.py` | Flags auth/migration/breaking-API text → `human_gate` required |
+| `scripts/repo.py` | Create/push component repos; write the `project.md` registry |
+| `scripts/run_log.py` | Append a row to `runs/journal.md` |
+| `scripts/scrum_report.py` | Counts, blockers, cycle time |
 | `scripts/test_workflow.py` | Unit tests for the guards above |
-| `product/` | Product repos (ignored by this repo) |
 
-Hard rules for agents: `AGENTS.md`. Full plan: `agentic_engineering_team_cursor_plan.md`.
-Architecture sketch: `docs/architecture/system-overview.md`.
+### Product code
+
+`product/` is **not** committed here. Each component is its own git repo + private GitHub remote
+(`product-<name>`). Layout after `/repo create`:
+
+```
+product/services/<name>-service/   # Java 21 + Spring, package by feature
+product/frontend/                  # React, src/{app,pages,features,shared}
+```
+
+Create/push only via `scripts/repo.py`. `main` only after an SA `--no-ff` merge recorded as
+`merge_commit`.
+
+### Roles (who owns what)
+
+| Role | Owns | Does not |
+|------|------|----------|
+| HUMAN | Write/approve REQ, `approved_by`, unblock | Agent work |
+| SCRUM | Board, sprint, READY, `/scrum run` | Code, designs, reviews |
+| SA | Architecture, stack choice, tasks, merge | Product file edits |
+| UX/UI | `docs/design/ux/` + Figma | Product implementation |
+| BE / FE | Feature branches in their repo | Merge, approve own work |
+| TEST | Acceptance vs AC | Commits in `product/` |
+| DEVOPS | Deploy (not built yet) | PROD without `approved_by` |
+
+Hard rules: `AGENTS.md`. Architecture: `docs/architecture/system-overview.md`.
 
 ## What you still do by hand
 
 - Write and **approve** requirements.
 - Install `gh` and log in once; confirm owner / visibility in `project.md`.
+- Connect Figma MCP once (Settings → Tools & MCP) so UX/UI can create files you can review.
 - Unblock tasks and set `approved_by` for PROD.
 - Phase 9 (CI + Docker Compose deploy) is not built — a run stops at `READY_FOR_DEPLOY`.
