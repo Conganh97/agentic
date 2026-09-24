@@ -3,7 +3,7 @@ id: TASK-007
 title: Home, catalog, category and search UI
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: frontend
 depends_on: [TASK-002, TASK-006]
 sprint:
 branch: feature/TASK-007-home-catalog-search-ui
-merge_commit:
+merge_commit: 4aa99e5
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:01
+updated: 2026-09-24 10:06
 ---
 
 ## Description
@@ -59,6 +59,16 @@ See `docs/design/REQ-001-design.md` §13 (FR-1, FR-2, FR-4, FR-14). Repo: fronte
 - Notes: header `TextInput` + submit “Tìm” goes to `/search?q=` (not a popover). Hero/trust copy: “Mồi câu cho mọi mặt nước”, “Phụ kiện đủ bộ cho buổi câu”, “Giao nhanh nội thành”; “Tư vấn chọn mồi”, “Đổi trả 7 ngày”, “Giao toàn quốc”, “Giá niêm yết rõ”. Parent category slugs have no products (TASK-002); home bait/gear sections filter `GET /products?size=24` by child slugs and omit featured ids. Home makes 3 catalog GETs (categories, featured, all) — ProductCard has no `featured` flag so NFR-2 ≤2 cannot hold without dropping a section. Empty search: `IconSearchOff` + “Không tìm thấy sản phẩm”. `/products/:slug` stays TASK-008 placeholder. Branch pushed.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-007-home-catalog-search-ui @ ddc0147 · Build/tests: npm run lint && npm run format:check && npm test -- --run && npm run build PASS (23 tests)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | src/components/CategoryNav.tsx:3 | MINOR | `components/` imports `useCategoriesQuery` from `features/catalog`. Keep shell presentational: pass the tree in or colocate the nav under the feature (`app → features → components/api`). |
+| 2 | src/features/catalog/HomePage.tsx:817 | MINOR | Bait/gear sections use `categories.data?.[0]` / `[1]`. Prefer parent slugs (`moi-cau-ca`, `phu-kien-do-cau`) so section titles do not depend on API order. |
+| 3 | src/components/HeaderSearch.tsx:368 | MINOR | Visible `TextInput` label in the 64px header row will crowd mobile. Use a visually hidden label (or the §13 `ActionIcon` overlay) and keep `aria-label` / `useId`. |
+
+Merged 4aa99e5.
+Pushed main.
 
 ## Test (TEST)
 
@@ -71,3 +81,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-1, FR-2, FR-4, FR-14). Repo: fronte
 | 2026-09-24 09:55 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002, TASK-006] READY_FOR_DEPLOY |
 | 2026-09-24 09:57 | READY | IN_PROGRESS | FE | branch feature/TASK-007-home-catalog-search-ui |
 | 2026-09-24 10:01 | IN_PROGRESS | CODE_REVIEW | FE | product ddc0147; Iteration 1; 23 tests pass |
+| 2026-09-24 10:06 | CODE_REVIEW | MERGED | SA | reviews/TASK-007-round-1.md APPROVED; merge_commit=4aa99e5 (--no-ff, two parents) |
