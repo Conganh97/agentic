@@ -3,7 +3,7 @@ id: TASK-004
 title: Frontend shell and authentication screens
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -18,7 +18,7 @@ figma: https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma?node-id=1-15
 depends_on: [TASK-001, TASK-002]
 sprint:
 branch: feature/TASK-004-luma-auth-ui
-merge_commit:
+merge_commit: 154bf4f19514e9fde423eff32eb900247263e787
 release:
 review_iteration: 0
 uxui_review_iteration: 1
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:29
+updated: 2026-09-24 15:31
 ---
 
 ## Description
@@ -87,6 +87,15 @@ onto `MantineProvider`. Do not invent a second look.
 
 ## Review (SA)
 
+### Round 1 — APPROVED
+Reviewed: `feature/TASK-004-luma-auth-ui` @ `1561b12` · Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (11)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | fieldErrors.ts | MINOR | 400 maps the same `detail` onto username, email, and password; UX asks for the invalid field only. Harmless until a 400 names one field. |
+| 2 | AuthPanel.tsx | MINOR | Demo hint uses `type.meta` rather than the spec’s `type.caption`. |
+
+Merged `154bf4f19514e9fde423eff32eb900247263e787`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -102,4 +111,5 @@ onto `MantineProvider`. Do not invent a second look.
 | 2026-09-24 15:22 | CODE_REVIEW | CHANGES_REQUESTED | UX/UI | review 1 CHANGES_REQUESTED; docs/design/ux/reviews/TASK-004-review-1.md; MAJOR `/` grain/image slot; uxui_review_iteration 1 |
 | 2026-09-24 15:24 | CHANGES_REQUESTED | IN_PROGRESS | FE | branch feature/TASK-004-luma-auth-ui |
 | 2026-09-24 15:26 | IN_PROGRESS | CODE_REVIEW | FE | product 1561b12; FE verify pass (11); Implementation iteration 2 |
+| 2026-09-24 15:31 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit=154bf4f19514e9fde423eff32eb900247263e787 (--no-ff, two parents); FE verify PASS (11); uxui_review APPROVED |
 
