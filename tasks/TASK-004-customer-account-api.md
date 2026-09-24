@@ -3,14 +3,14 @@ id: TASK-004
 title: Customer account APIs
 type: TASK
 priority: CRITICAL
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
 repo: shop-service
 depends_on: [TASK-001]
 sprint:
-branch:
+branch: feature/TASK-004-customer-account-api
 merge_commit:
 release:
 review_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 10:48
+updated: 2026-09-24 10:53
 ---
 
 ## Description
@@ -63,3 +63,4 @@ See `docs/design/REQ-001-design.md` §5–§7 (FR-7, FR-8, NFR-3). Repo: shop-se
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 10:15 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] READY_FOR_DEPLOY; waiting approved_by (human_gate: auth) |
 | 2026-09-24 10:48 | READY | READY | HUMAN (os_anhbc) | approved auth gate; run remaining REQ-001 tasks |
+| 2026-09-24 10:53 | READY | IN_PROGRESS | BE | branch feature/TASK-004-customer-account-api |
