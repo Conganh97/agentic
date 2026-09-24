@@ -45,3 +45,4 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 10:27 | RUN-001 | TEST | REQ-001 | TASK-008 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-008-run-1.md PASS; AC-001..AC-005 checked; team c8859d6 |
 | 2026-09-24 10:32 | RUN-001 | FE | REQ-001 | TASK-011 | READY | IN_PROGRESS | start news/pages UI | branch feature/TASK-011-news-pages-contact-ui |
 | 2026-09-24 10:32 | RUN-001 | FE | REQ-001 | TASK-011 | IN_PROGRESS | CODE_REVIEW | implementation completed | product 49a6757; team f348844; Iteration 1; 37 tests |
+| 2026-09-24 10:36 | RUN-001 | SA | REQ-001 | TASK-011 | CODE_REVIEW | MERGED | approved round 1 | reviews/TASK-011-round-1.md APPROVED; merge_commit 580b15c --no-ff; team 307c79e |
