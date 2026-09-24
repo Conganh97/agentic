@@ -14,3 +14,5 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 15:08 | RUN-001 | TEST | REQ-001 | TASK-002 | MERGED | TESTING | merge_commit ancestor of main | 3656696 |
 | 2026-09-24 15:08 | RUN-001 | TEST | REQ-001 | TASK-002 | TESTING | READY_FOR_DEPLOY | run 1 PASS AC-001..004 | 27a9dec tests/TASK-002-run-1.md |
 | 2026-09-24 15:08 | RUN-001 | SCRUM | REQ-001 | TASK-002 | READY_FOR_DEPLOY | READY_FOR_DEPLOY | deploy waiting Phase 9 | devops skill contract-only |
+| 2026-09-24 15:18 | RUN-001 | BE | REQ-001 | TASK-003 | IN_PROGRESS | CODE_REVIEW | posts likes profiles seed | 0a12304 product f599ae5 |
+| 2026-09-24 15:18 | RUN-001 | FE | REQ-001 | TASK-004 | IN_PROGRESS | CODE_REVIEW | auth shell FE verify 11 | 5558485 product c78d7d5 |
