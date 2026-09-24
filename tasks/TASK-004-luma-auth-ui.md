@@ -3,7 +3,7 @@ id: TASK-004
 title: Frontend shell and authentication screens
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:24
+updated: 2026-09-24 15:26
 ---
 
 ## Description
@@ -69,6 +69,12 @@ onto `MantineProvider`. Do not invent a second look.
 - Tests: FE verify → pass (11)
 - Notes: registered `product-frontend` (GitHub name already existed); Mantine tokens + session `credentials: 'include'`; pushed origin
 
+### Iteration 2 (2026-09-24 15:26)
+- Branch: `feature/TASK-004-luma-auth-ui` @ 1561b12
+- Changed: `src/pages/EntryPage.tsx`, `src/index.css`, `src/pages/AuthStates.test.tsx`, `public/entry-atmosphere.svg`
+- Tests: FE verify → pass (11)
+- Notes: MAJOR #1 — grain on `::before` so Mantine `bg` cannot clear it; `/` image slot + 60% canvas scrim; desktop full-bleed + 400px left copy; pushed origin
+
 ## UX/UI Review
 
 ### Iteration 1 (2026-09-24 15:22)
@@ -91,4 +97,5 @@ onto `MantineProvider`. Do not invent a second look.
 | 2026-09-24 15:18 | IN_PROGRESS | CODE_REVIEW | FE | product c78d7d5; FE verify pass (11); Implementation iteration 1 |
 | 2026-09-24 15:22 | CODE_REVIEW | CHANGES_REQUESTED | UX/UI | review 1 CHANGES_REQUESTED; docs/design/ux/reviews/TASK-004-review-1.md; MAJOR `/` grain/image slot; uxui_review_iteration 1 |
 | 2026-09-24 15:24 | CHANGES_REQUESTED | IN_PROGRESS | FE | branch feature/TASK-004-luma-auth-ui |
+| 2026-09-24 15:26 | IN_PROGRESS | CODE_REVIEW | FE | product 1561b12; FE verify pass (11); Implementation iteration 2 |
 
