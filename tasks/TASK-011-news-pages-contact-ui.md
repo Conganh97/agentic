@@ -3,14 +3,14 @@ id: TASK-011
 title: News, policy pages and contact UI
 type: TASK
 priority: CRITICAL
-status: READY
+status: IN_PROGRESS
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
 repo: frontend
 depends_on: [TASK-003, TASK-006]
 sprint:
-branch:
+branch: feature/TASK-011-news-pages-contact-ui
 merge_commit:
 release:
 review_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:15
+updated: 2026-09-24 10:28
 ---
 
 ## Description
@@ -66,3 +66,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-10, FR-11, FR-12). Repo: frontend (
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 10:15 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-003, TASK-006] READY_FOR_DEPLOY |
+| 2026-09-24 10:28 | READY | IN_PROGRESS | FE | branch feature/TASK-011-news-pages-contact-ui |
