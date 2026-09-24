@@ -68,3 +68,5 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 11:26 | RUN-002 | TEST | REQ-001 | TASK-010 | MERGED | TESTING | start run 1 | tested sha f4b6275 ancestor of main |
 | 2026-09-24 11:26 | RUN-002 | TEST | REQ-001 | TASK-010 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-010-run-1.md PASS; AC-001..AC-005 checked; team c7d7610 |
 | 2026-09-24 11:26 | RUN-002 | SCRUM | REQ-001 | TASK-009 | BACKLOG | READY | DoR met | deps [TASK-005, TASK-006] READY_FOR_DEPLOY |
+| 2026-09-24 11:30 | RUN-002 | FE | REQ-001 | TASK-009 | READY | IN_PROGRESS | start cart UI | branch feature/TASK-009-cart-checkout-ui |
+| 2026-09-24 11:30 | RUN-002 | FE | REQ-001 | TASK-009 | IN_PROGRESS | CODE_REVIEW | implementation completed | product 79a9a63; team 178733f; Iteration 1; 48 tests |
