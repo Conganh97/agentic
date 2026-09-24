@@ -25,3 +25,7 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 09:55 | RUN-001 | TEST | REQ-001 | TASK-002 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-002-run-1.md PASS; AC-001..AC-005 checked; team 820b4cc |
 | 2026-09-24 09:55 | RUN-001 | SCRUM | REQ-001 | TASK-003 | BACKLOG | READY | DoR met | deps [TASK-001] READY_FOR_DEPLOY; AC-001..AC-005; design linked |
 | 2026-09-24 09:55 | RUN-001 | SCRUM | REQ-001 | TASK-007 | BACKLOG | READY | DoR met | deps [TASK-002, TASK-006] READY_FOR_DEPLOY; AC-001..AC-005; design linked |
+| 2026-09-24 10:01 | RUN-001 | BE | REQ-001 | TASK-003 | READY | IN_PROGRESS | start news APIs | branch feature/TASK-003-news-pages-api |
+| 2026-09-24 10:01 | RUN-001 | FE | REQ-001 | TASK-007 | READY | IN_PROGRESS | start catalog UI | branch feature/TASK-007-home-catalog-search-ui |
+| 2026-09-24 10:01 | RUN-001 | BE | REQ-001 | TASK-003 | IN_PROGRESS | CODE_REVIEW | implementation completed | product 571eb47; team 0ad47e5; Iteration 1; verify 53 tests |
+| 2026-09-24 10:01 | RUN-001 | FE | REQ-001 | TASK-007 | IN_PROGRESS | CODE_REVIEW | implementation completed | product ddc0147; team 2fbb1b9; Iteration 1; 23 tests |
