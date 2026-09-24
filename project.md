@@ -27,6 +27,7 @@ Registry (written by `scripts/repo.py create`; do not edit by hand):
 | Component | Type | Path | Remote |
 |-----------|------|------|--------|
 | luma-service | BE | `product/services/luma-service` | https://github.com/Conganh97/product-luma-service |
+| frontend | FE | `product/frontend` | https://github.com/Conganh97/product-frontend |
 
 ## Stack
 

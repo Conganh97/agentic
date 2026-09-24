@@ -3,7 +3,7 @@ id: TASK-004
 title: Frontend shell and authentication screens
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -17,7 +17,7 @@ uxui_review:
 figma:
 depends_on: [TASK-001, TASK-002]
 sprint:
-branch:
+branch: feature/TASK-004-luma-auth-ui
 merge_commit:
 release:
 review_iteration: 0
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:08
+updated: 2026-09-24 15:11
 ---
 
 ## Description
@@ -77,3 +77,5 @@ onto `MantineProvider`. Do not invent a second look.
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo frontend; requires_uxui; human_gate=auth; deps TASK-001, TASK-002 |
 | 2026-09-24 14:53 | BACKLOG | BACKLOG | HUMAN (os_anhbc) | approved_by set; auth gate for REQ-001 run |
 | 2026-09-24 15:08 | BACKLOG | READY | SCRUM | DoR met; deps TASK-001 MERGED, TASK-002 READY_FOR_DEPLOY |
+| 2026-09-24 15:11 | READY | IN_PROGRESS | FE | branch feature/TASK-004-luma-auth-ui |
+
