@@ -3,7 +3,7 @@ id: TASK-010
 title: Account sign-in and register UI
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:16
+updated: 2026-09-24 11:21
 ---
 
 ## Description
@@ -78,3 +78,4 @@ Pushed main.
 | 2026-09-24 11:06 | READY | IN_PROGRESS | FE | branch feature/TASK-010-account-ui |
 | 2026-09-24 11:10 | IN_PROGRESS | CODE_REVIEW | FE | product db64a0b; Implementation Iteration 1 |
 | 2026-09-24 11:16 | CODE_REVIEW | MERGED | SA | reviews/TASK-010-round-1.md APPROVED; merge_commit=f4b6275 (--no-ff, two parents) |
+| 2026-09-24 11:21 | MERGED | TESTING | TEST | run 1; tested sha f4b6275 is ancestor of main containing merge_commit f4b6275 |
