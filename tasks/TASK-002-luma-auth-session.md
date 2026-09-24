@@ -3,7 +3,7 @@ id: TASK-002
 title: luma-service members and session
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -18,7 +18,7 @@ figma:
 depends_on: []
 sprint:
 branch: feature/TASK-002-luma-auth-session
-merge_commit:
+merge_commit: b110ab945924d95a525c6ae5ce652ab8ff8aa17a
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:01
+updated: 2026-09-24 15:03
 ---
 
 ## Description
@@ -73,6 +73,16 @@ NFR-3, NFR-4, NFR-7. `requirement_revision: 3`, `content_hash: 54839e9b074480c8`
 
 ## Review (SA)
 
+### Round 1 — APPROVED
+Reviewed: `feature/TASK-002-luma-auth-session` @ `d8dffdd` · Build/tests: `./mvnw -q verify` PASS
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | AuthController.java | MINOR | `LUMA_SESSION` is written both by the servlet session (`application.yaml`) and by `ResponseCookie`; browsers may see two `Set-Cookie` headers. Harmless while they agree. |
+| 2 | AuthService.java | MINOR | Application layer imports `auth.api` request/response records; prefer application DTOs if the layering is tightened later. |
+| 3 | SecurityConfig.java | MINOR | Default `UserDetailsService` still auto-configures (generated password in logs). Unused for these endpoints; exclude it when convenient. |
+
+Merged `b110ab945924d95a525c6ae5ce652ab8ff8aa17a`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -84,3 +94,4 @@ NFR-3, NFR-4, NFR-7. `requirement_revision: 3`, `content_hash: 54839e9b074480c8`
 | 2026-09-24 14:53 | BACKLOG | READY | HUMAN (os_anhbc) | DoR met; deps []; approved auth gate |
 | 2026-09-24 14:56 | READY | IN_PROGRESS | BE | branch feature/TASK-002-luma-auth-session |
 | 2026-09-24 15:01 | IN_PROGRESS | CODE_REVIEW | BE | product d8dffdd feat(TASK-002): members and session authentication; ./mvnw -q verify pass (11) |
+| 2026-09-24 15:03 | CODE_REVIEW | MERGED | SA | Round 1 APPROVED; merge_commit=b110ab945924d95a525c6ae5ce652ab8ff8aa17a (two-parent --no-ff); ./mvnw -q verify PASS |
