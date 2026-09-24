@@ -13,7 +13,7 @@ work_type: FRONTEND
 requires_uxui: true
 uxui_task: TASK-001
 uxui_design: docs/design/ux/REQ-001-ux.md
-uxui_review:
+uxui_review: docs/design/ux/reviews/TASK-004-review-2.md
 figma: https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma?node-id=1-15
 depends_on: [TASK-001, TASK-002]
 sprint:
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:26
+updated: 2026-09-24 15:29
 ---
 
 ## Description
@@ -80,6 +80,10 @@ onto `MantineProvider`. Do not invent a second look.
 ### Iteration 1 (2026-09-24 15:22)
 - Review: `docs/design/ux/reviews/TASK-004-review-1.md` CHANGES_REQUESTED
 - Compared: spec + running UI on `feature/TASK-004-luma-auth-ui` @ c78d7d5 (Figma MCP rate-limited)
+
+### Iteration 2 (2026-09-24 15:29)
+- Review: `docs/design/ux/reviews/TASK-004-review-2.md` APPROVED
+- Compared: spec + running `/` on `feature/TASK-004-luma-auth-ui` @ 1561b12 (tablet 844 + desktop 1280); MAJOR #1 closed (Figma MCP still rate-limited)
 
 ## Review (SA)
 
