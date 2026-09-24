@@ -2,8 +2,8 @@
 id: REQ-001
 title: Luma — Instagram-like photo social
 status: APPROVED
-revision: 1
-content_hash: 4274262045c0e766
+revision: 2
+content_hash: a3ec577de0e2a3bb
 priority: HIGH
 owner: os_anhbc
 design:
@@ -59,7 +59,7 @@ product, not a placeholder catalog.
 ## Constraints
 
 - Stack policy ADR-0009: BE Java 21 + Spring; FE React. SA chooses UI kit, DB, session style, and the rest.
-- Local only (DEV). No production deploy in this requirement.
+- Local only (DEV). No PROD release in this requirement.
 - Session-based access is required for post / like; public feed and public profiles may be readable without a session.
 - Images: accept an HTTPS URL or a local file that the API stores and serves. No third-party CDN required.
 - UX must look like a consumer photo app (Instagram-class density and hierarchy), not an admin CRUD form.
