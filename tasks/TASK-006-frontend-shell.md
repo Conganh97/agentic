@@ -3,7 +3,7 @@ id: TASK-006
 title: Frontend scaffold and AppShell
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: frontend
 depends_on: []
 sprint:
 branch: feature/TASK-006-frontend-shell
-merge_commit:
+merge_commit: cb0c07f
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:25
+updated: 2026-09-24 09:31
 ---
 
 ## Description
@@ -61,6 +61,12 @@ See `docs/design/REQ-001-design.md` §13 and NFR-1. Repo: frontend (new, ADR-000
 - Notes: shop name/hotline/email/Zalo from design defaults (`Mồi Câu Shop`); header second row is static (no `/shop/settings` fetch yet); Sản phẩm mega is a stub `Menu` (Tất cả sản phẩm); account signed-out buttons only; no catalog/account forms; `IconMenu2` used as mobile navbar heading beside Mantine `Burger`; leftover workspace `var/` from create-vite path resolution was not deleted (`rm -rf` blocked by guard-shell)
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-006-frontend-shell @ 1a1957a · Build/tests: npm run lint && npm run format:check && npm test -- --run && npm run build PASS (18 tests)
+No comments.
+
+Merged cb0c07f.
+Pushed main.
 
 ## Test (TEST)
 
@@ -73,3 +79,4 @@ See `docs/design/REQ-001-design.md` §13 and NFR-1. Repo: frontend (new, ADR-000
 | 2026-09-24 09:20 | BACKLOG | READY | SCRUM | DoR met; deps [] |
 | 2026-09-24 09:21 | READY | IN_PROGRESS | FE | branch feature/TASK-006-frontend-shell |
 | 2026-09-24 09:25 | IN_PROGRESS | CODE_REVIEW | FE | product 1a1957a; Iteration 1; 18 tests pass |
+| 2026-09-24 09:31 | CODE_REVIEW | MERGED | SA | merge_commit=cb0c07f; reviews/TASK-006-round-1.md APPROVED; --no-ff on main |
