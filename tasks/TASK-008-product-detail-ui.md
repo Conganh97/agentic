@@ -3,7 +3,7 @@ id: TASK-008
 title: Product detail UI
 type: TASK
 priority: CRITICAL
-status: BACKLOG
+status: READY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:15
+updated: 2026-09-24 10:15
 ---
 
 ## Description
@@ -65,3 +65,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-3). Repo: frontend (existing).
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-24 10:15 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002, TASK-006] READY_FOR_DEPLOY |
