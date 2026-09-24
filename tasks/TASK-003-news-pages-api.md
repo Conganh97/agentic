@@ -3,14 +3,14 @@ id: TASK-003
 title: News and static page APIs
 type: TASK
 priority: CRITICAL
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
 repo: shop-service
 depends_on: [TASK-001]
 sprint:
-branch:
+branch: feature/TASK-003-news-pages-api
 merge_commit:
 release:
 review_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:55
+updated: 2026-09-24 09:57
 ---
 
 ## Description
@@ -64,3 +64,4 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-10, FR-11, FR-12). Repo: shop-
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 09:55 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] READY_FOR_DEPLOY |
+| 2026-09-24 09:57 | READY | IN_PROGRESS | BE | branch feature/TASK-003-news-pages-api |
