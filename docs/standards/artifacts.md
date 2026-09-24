@@ -15,5 +15,6 @@ only after the artifacts below exist on disk.
 | SA → TEST | Latest `reviews/TASK-###-round-N.md` **APPROVED** · `merge_commit` on `main` (skip TEST for `work_type: UX_UI`) |
 | TEST → Scrum | `tests/TASK-###-run-N.md` · AC results · `bugs/BUG-###-*.md` on FAIL |
 | Scrum (each dispatch) | Append `runs/journal.md` · current `runs/RUN-###.md` |
+| Scrum (large work) | ACTIVE `sprints/SPRINT-##.md` · tasks stamped `sprint:` (`scripts/sprint.py`) |
 
-Commands: `python3 scripts/scrum_report.py` · `python3 scripts/next.py` · `python3 scripts/req.py check`.
+Commands: `python3 scripts/scrum_report.py` · `python3 scripts/next.py` · `python3 scripts/sprint.py` · `python3 scripts/req.py check`.

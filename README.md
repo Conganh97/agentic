@@ -140,9 +140,9 @@ Skills live in `.cursor/skills/<name>/SKILL.md`. They do not auto-invoke (`disab
 
 | Command | Role | When |
 |---------|------|------|
-| `/scrum run [REQ-###]` | Scrum | Orchestrate a requirement end-to-end |
+| `/scrum run [REQ-###]` | Scrum | Orchestrate; plans a sprint first if unfinished tasks > 5 |
 | `/scrum next [REQ-###]` | Scrum | Recommend the next step (no writes) |
-| `/scrum ready TASK-###` | Scrum | BACKLOG → READY if Definition of Ready holds |
+| `/scrum ready TASK-###` | Scrum | BACKLOG → READY if DoR + sprint scope hold |
 | `/scrum unblock TASK-### <note>` | Scrum | Only when you ask |
 | `/scrum sprint` / `sprint close` | Scrum | Plan or close `sprints/SPRINT-##.md` |
 | `/scrum sync` | Scrum | Regenerate `tasks/board.md` |

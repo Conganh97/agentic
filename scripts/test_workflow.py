@@ -250,6 +250,59 @@ body
         self.assertTrue(nxt.skip_test({"work_type": "UX_UI", "status": "MERGED", "assignee": "UX/UI"}))
         self.assertFalse(nxt.skip_test({"work_type": "BACKEND", "status": "MERGED"}))
 
+    def test_sprint_policy(self):
+        import sprint as sp
+
+        small = {
+            f"TASK-00{i}": {
+                "id": f"TASK-00{i}",
+                "status": "BACKLOG",
+                "depends_on": [],
+                "priority": "HIGH",
+                "sprint": "",
+            }
+            for i in range(1, 4)
+        }
+        self.assertFalse(sp.needs_sprint(small))
+        self.assertEqual(sp.evaluate(small, [])["action"], None)
+
+        big = {
+            f"TASK-{i:03d}": {
+                "id": f"TASK-{i:03d}",
+                "status": "BACKLOG",
+                "depends_on": [] if i <= 2 else [f"TASK-{i-1:03d}"],
+                "priority": "HIGH",
+                "sprint": "",
+            }
+            for i in range(1, 8)
+        }
+        ev = sp.evaluate(big, [])
+        self.assertTrue(ev["needed"])
+        self.assertEqual(ev["action"], "plan")
+        self.assertEqual(ev["proposed"], ["TASK-001", "TASK-002"])
+
+        inflight = dict(big)
+        inflight["TASK-001"] = {**big["TASK-001"], "status": "IN_PROGRESS"}
+        self.assertIsNone(sp.evaluate(inflight, [])["action"])
+
+        active = [{"id": "SPRINT-01", "status": "ACTIVE"}]
+        scoped = {
+            "TASK-001": {"id": "TASK-001", "status": "MERGED", "depends_on": [], "priority": "HIGH", "sprint": "SPRINT-01"},
+            "TASK-002": {"id": "TASK-002", "status": "BACKLOG", "depends_on": [], "priority": "HIGH", "sprint": ""},
+            "TASK-003": {"id": "TASK-003", "status": "BACKLOG", "depends_on": [], "priority": "HIGH", "sprint": ""},
+            "TASK-004": {"id": "TASK-004", "status": "BACKLOG", "depends_on": [], "priority": "HIGH", "sprint": ""},
+            "TASK-005": {"id": "TASK-005", "status": "BACKLOG", "depends_on": [], "priority": "HIGH", "sprint": ""},
+            "TASK-006": {"id": "TASK-006", "status": "BACKLOG", "depends_on": [], "priority": "HIGH", "sprint": ""},
+        }
+        ev2 = sp.evaluate(scoped, active)
+        self.assertEqual(ev2["action"], "close")
+        big_left = dict(scoped)
+        big_left["TASK-007"] = {"id": "TASK-007", "status": "BACKLOG", "depends_on": [], "priority": "HIGH", "sprint": ""}
+        self.assertEqual(sp.evaluate(big_left, active)["action"], "close_and_plan")
+        self.assertTrue(sp.in_run_scope({"status": "IN_PROGRESS", "sprint": ""}, ev2))
+        self.assertFalse(sp.in_run_scope({"status": "BACKLOG", "sprint": ""}, {"needed": True, "active": "SPRINT-01"}))
+        self.assertTrue(sp.in_run_scope({"status": "BACKLOG", "sprint": "SPRINT-01"}, {"needed": True, "active": "SPRINT-01"}))
+
     def test_merged_ui_needs_uxui_review(self):
         old = task(status="CODE_REVIEW")
         new = task(

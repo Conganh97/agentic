@@ -1,19 +1,20 @@
 ---
 id: SPRINT-01
 status: PLANNED        # PLANNED | ACTIVE | CLOSED
-start: YYYY-MM-DD
-end: YYYY-MM-DD
-updated: YYYY-MM-DD HH:MM
+requirement:           # REQ-### or empty = mixed
+start:
+end:
+updated:
 ---
 
 # SPRINT-01
 
 ## Goal
-<one sentence: what is usable at the end of the sprint>
+<one usable increment — not “finish the whole requirement”>
 
 ## Scope
 | Task | Title | Priority | Assignee | Status at start | Status at end |
 |------|-------|----------|----------|-----------------|---------------|
 
 ## Outcome
-<filled when CLOSED: done / not done, blockers, review/test iterations, lessons>
+<CLOSED only: done / carry-over / blockers>

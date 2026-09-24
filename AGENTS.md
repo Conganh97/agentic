@@ -16,8 +16,8 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phases 0–8, 10 done.** UX/UI role (ADR-0008) + Figma MCP. Stack policy ADR-0009: Java 21 + Spring
-and React are locked; SA chooses the rest. Pending: Phase 9 DevOps.
+**Phases 0–8, 10 done.** UX/UI (ADR-0008) + Figma MCP. Stack ADR-0009. `/scrum run` uses sprints when
+unfinished tasks > 5 (`scripts/sprint.py`). Pending: Phase 9 DevOps.
 Skills: `.cursor/skills/{sa,ux-ui,backend,frontend,tester,devops,scrum,repo}/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`.
 

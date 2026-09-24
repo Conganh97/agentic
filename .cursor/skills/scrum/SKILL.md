@@ -14,7 +14,7 @@ Role: `SCRUM`. Follow `AGENTS.md` and `.cursor/rules/workflow.mdc` (transition p
 | `/scrum next [REQ-###]` | Recommend the next step (no file changes) |
 | `/scrum ready TASK-###` | Check Definition of Ready + deps; move BACKLOG → READY |
 | `/scrum unblock TASK-### <note>` | Return a BLOCKED task to `blocked_from` (only when the user asks) |
-| `/scrum sprint [close]` | Create or close `sprints/SPRINT-##.md` (planning only; not required for `/scrum run`) |
+| `/scrum sprint [close]` | Plan / close a sprint. **Required** before `/scrum run` pulls BACKLOG when work is large |
 | `/scrum sync` | `python3 scripts/sync_board.py` and commit if the board changed |
 | `/scrum report [REQ-###]` | Run `python3 scripts/scrum_report.py [REQ-###]` and paste the output |
 
@@ -48,13 +48,14 @@ run. First match wins (finish work before starting new work):
 |---|-----------|----------------|
 | 1 | Requirement `APPROVED` (no design yet) | SA → `/sa analyze REQ-###` |
 | 2 | Requirement `revision` > task `requirement_revision` | stop — BLOCKED `requirement_changed` |
-| 3 | CODE_REVIEW and UX/UI review still required | UX/UI → `/uxui review TASK-###` |
-| 4 | CODE_REVIEW (UX/UI approved or not required) | SA → `/sa review TASK-###` |
-| 5 | MERGED or TESTING (skip `work_type: UX_UI` MERGED) | TEST → `/tester TASK-###` |
-| 6 | CHANGES_REQUESTED, BUG or IN_PROGRESS | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
-| 7 | READY and `deps.py` lists it as actionable | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
-| 8 | BACKLOG that meets DoR **and** deps MERGED-or-later | SCRUM → `/scrum ready TASK-###` |
-| 9 | READY_FOR_DEPLOY or DEPLOYING | DEVOPS → `/devops deploy TASK-### <ENV>` |
+| 3 | Large work, no ACTIVE sprint, nothing in-flight | SCRUM → `/scrum sprint` |
+| 4 | CODE_REVIEW and UX/UI review still required | UX/UI → `/uxui review TASK-###` |
+| 5 | CODE_REVIEW (UX/UI approved or not required) | SA → `/sa review TASK-###` |
+| 6 | MERGED or TESTING (skip `work_type: UX_UI` MERGED) | TEST → `/tester TASK-###` |
+| 7 | CHANGES_REQUESTED, BUG or IN_PROGRESS | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
+| 8 | READY, deps met, in sprint scope | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
+| 9 | BACKLOG, DoR + deps, in sprint scope | SCRUM → `/scrum ready TASK-###` |
+| 10 | READY_FOR_DEPLOY or DEPLOYING | DEVOPS → `/devops deploy TASK-### <ENV>` |
 
 Independent READY tasks in **different** component repos (no shared `depends_on` edge, `deps.py`
 actionable) may be recommended together for parallel dispatch. Same repo → sequential.
@@ -72,6 +73,7 @@ Waiting: <tasks blocked, FAILED, gated, or needing human input>
 ## `ready TASK-###`
 Re-read the task; check workflow §4 (parent, assignee, ≥1 real `AC-###`, `depends_on` list with no
 cycles/`python3 scripts/deps.py`, Design filled or linked, **every dep MERGED or later**).
+If an ACTIVE sprint exists, the task's `sprint:` must match it (or refuse).
 Pass → BACKLOG → READY per the protocol; commit `[TASK-###] BACKLOG -> READY (SCRUM): DoR met`.
 Fail → `NEEDS_INPUT` listing what is missing.
 
@@ -80,11 +82,27 @@ Only when the user explicitly asks in chat. BLOCKED → `blocked_from`, clear `b
 `By = HUMAN (<name>)` if the user decided, else `SCRUM`, note = the user's reason.
 
 ## `sprint` / `sprint close`
-Planning only. `/scrum run` does **not** require a sprint.
-- New: copy `templates/sprint.md` to `sprints/SPRINT-##.md` (next number), goal from the user, scope =
-  READY/BACKLOG tasks chosen by priority with the user; set `sprint: SPRINT-##` on those tasks.
-  Commit `chore: SPRINT-## planned`.
-- Close: fill "Status at end" and Outcome from task files; `status: CLOSED`. Commit `chore: SPRINT-## closed`.
+
+Source of truth: `python3 scripts/sprint.py [REQ-###]` (`SMALL_MAX=5`, `SPRINT_CAP=6`).
+
+| Unfinished tasks | `/scrum run` |
+|------------------|--------------|
+| ≤ 5 | No sprint. Pull BACKLOG as today. |
+| > 5 | Must have an **ACTIVE** sprint. Only `sprint: SPRINT-##` tasks are readied/started. In-flight work always continues. |
+
+**Plan** (`action: plan` or `/scrum sprint`):
+1. Proposed ids = first dependency layer (`sprint.py plan`). Human may replace the list / goal.
+2. Copy `templates/sprint.md` → `sprints/SPRINT-##.md` (next id, `status: ACTIVE`).
+3. Goal = one usable increment (not “finish the REQ”).
+4. Set `sprint: SPRINT-##` on scoped tasks (no History row). `sync_board.py`.
+5. Commit `chore: SPRINT-## planned (TASK-a..TASK-c)`.
+
+**Close** (`action: close_and_plan` or `/scrum sprint close`):
+1. All scoped tasks MERGED-or-later. Fill Outcome / Status at end. `status: CLOSED`.
+2. Commit `chore: SPRINT-## closed`.
+3. Leftover > 5 → plan the next sprint in the same step. Leftover ≤ 5 → just close; run them without a sprint.
+
+Do not ready tasks outside the ACTIVE sprint. Do not close while anything in the sprint is in-flight.
 
 ## `report [REQ-###]`
 Run `python3 scripts/scrum_report.py [REQ-###]` and show the output. Do not hand-count. Never set a
@@ -110,6 +128,8 @@ not re-analyze or re-implement finished work.
   Product repos: `python3 scripts/repo.py status` all clean on `main`. Otherwise `NEEDS_INPUT`.
 - `python3 scripts/deps.py` must report no cycles and no missing refs. Cycles → `NEEDS_INPUT`.
 - Limit: at most 30 dispatches per run (the user may give another number).
+- Sprint: `python3 scripts/sprint.py [REQ-###]`. `action: plan` / `close_and_plan` → do `/scrum sprint`
+  yourself before any new BACKLOG pull. In-flight is not blocked.
 
 ### 2. Loop (read → validate → next → dispatch → validate)
 
@@ -128,7 +148,7 @@ record / continue
 ```
 
 1. Compute `next` within the scope (fresh).
-2. SCRUM step (`ready`) → do it yourself.
+2. SCRUM step (`ready` or `sprint`) → do it yourself.
 3. Human gate (`human_gate` set, no `approved_by`) or DEVOPS while the skill is contract-only, or
    PROD without `approved_by` → do not dispatch; mark *waiting*; continue.
 4. Two independent READY tasks: only if `python3 scripts/parallel.py` lists the pair. Same `repo`

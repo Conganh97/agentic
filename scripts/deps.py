@@ -67,6 +67,7 @@ def load_tasks(root: pathlib.Path | None = None) -> dict[str, dict]:
             "work_type": fields.get("work_type", ""),
             "requires_uxui": fields.get("requires_uxui", ""),
             "uxui_review": fields.get("uxui_review", ""),
+            "sprint": fields.get("sprint", ""),
         }
     return tasks
 

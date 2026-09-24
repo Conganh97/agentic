@@ -10,6 +10,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import deps  # noqa: E402
+import sprint  # noqa: E402
 from req import frontmatter  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -103,12 +104,21 @@ def next_step(req_id: str | None = None) -> dict:
                 }
 
     ordered = sorted(tasks.values(), key=rank)
+    ev = sprint.evaluate(tasks)
 
     def first(pred):
         for t in ordered:
             if pred(t):
                 return t
         return None
+
+    if ev.get("action") in {"plan", "close", "close_and_plan"}:
+        return {
+            "next": ev.get("active") or "sprint",
+            "role": "SCRUM",
+            "run": "/scrum sprint" if ev["action"] != "close" else "/scrum sprint close",
+            "why": ev["why"],
+        }
 
     t = first(needs_uxui_review)
     if t:
@@ -133,12 +143,17 @@ def next_step(req_id: str | None = None) -> dict:
     t = first(
         lambda x: x["status"] == "READY"
         and deps.deps_ready(tasks, x["id"])
+        and sprint.in_run_scope(x, ev)
         and not (x.get("human_gate") and not x.get("approved_by"))
     )
     if t:
         role, skill = command_for(t)
         return {"next": t["id"], "role": role, "run": skill, "why": "READY, deps met"}
-    t = first(lambda x: x["status"] == "BACKLOG" and deps.deps_ready(tasks, x["id"]))
+    t = first(
+        lambda x: x["status"] == "BACKLOG"
+        and deps.deps_ready(tasks, x["id"])
+        and sprint.in_run_scope(x, ev)
+    )
     if t:
         return {"next": t["id"], "role": "SCRUM", "run": f"/scrum ready {t['id']}", "why": "DoR + deps"}
     t = first(lambda x: x["status"] in {"READY_FOR_DEPLOY", "DEPLOYING"})
