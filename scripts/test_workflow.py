@@ -249,6 +249,22 @@ body
         }))
         self.assertTrue(nxt.skip_test({"work_type": "UX_UI", "status": "MERGED", "assignee": "UX/UI"}))
         self.assertFalse(nxt.skip_test({"work_type": "BACKEND", "status": "MERGED"}))
+        self.assertTrue(nxt.needs_pqa_visual_review({
+            "status": "CODE_REVIEW", "work_type": "FRONTEND", "uxui_review": "",
+        }))
+
+    def test_pqa_plan_and_accept_gates(self):
+        import next as nxt
+        self.assertTrue(nxt.needs_sa_analyze({"status": "APPROVED"}, "REQ-999"))
+        self.assertTrue(nxt.needs_pqa_plan({"status": "ANALYZING", "pqa_plan": ""}, "REQ-001"))
+        self.assertFalse(nxt.req_analyzed({"status": "ANALYZING"}))
+        self.assertTrue(nxt.req_analyzed({"status": "ANALYZED"}))
+        tasks = {
+            "TASK-001": {"id": "TASK-001", "status": "MERGED", "work_type": "UX_UI", "assignee": "UX/UI"},
+            "TASK-002": {"id": "TASK-002", "status": "READY_FOR_DEPLOY", "work_type": "BACKEND"},
+        }
+        self.assertTrue(nxt.needs_pqa_accept({"status": "ANALYZED", "pqa_accept": ""}, tasks))
+        self.assertFalse(nxt.needs_pqa_accept({"status": "ANALYZING", "pqa_accept": ""}, tasks))
 
     def test_sprint_policy(self):
         import sprint as sp
@@ -316,7 +332,7 @@ body
             ],
         )
         errors = ct.check("tasks/TASK-001-x.md", old, new, {"TASK-001": "MERGED"})
-        self.assertTrue(any("UX/UI review" in e for e in errors))
+        self.assertTrue(any("PQA visual review" in e or "UX/UI review" in e for e in errors))
 
 
 if __name__ == "__main__":

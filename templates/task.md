@@ -45,8 +45,10 @@ updated:
 ## Implementation (BE/FE)
 
 ## UX/UI Review
+PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approve its own look.
 
 ## Review (SA)
+Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
 ## Test (TEST)
 

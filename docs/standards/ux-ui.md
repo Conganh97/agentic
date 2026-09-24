@@ -16,7 +16,10 @@ Playwright-only (`requires_uxui: false`).
 Small REQ: one spec + tokens + one Figma file.
 
 Must define: brand/tokens, reusable components, named flows, per-page layout + 4 states,
-responsive **layout change**, a11y, real image slots. Kit-default pages are not done.
+responsive **layout change**, a11y, real image slots, **density** (fold contents at 390 / 1280).
+Kit-default or sparse (chrome + empty canvas) pages are not done.
+
+PQA reviews the contract and the FE (ADR-0010). UX/UI does not approve its own look.
 
 ## FE
 

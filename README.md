@@ -1,17 +1,19 @@
 # Agentic Engineering Team (Cursor-native)
 
-A role-based AI team (Scrum, SA, UX/UI, Backend, Frontend, Test, DevOps) that delivers software from
-requirement to release **using only Cursor, markdown and git**. No Jira, no GitHub PRs, no platform
-database: task state is YAML in `tasks/`, audit is History + one git commit per transition.
+A role-based AI team (Scrum, SA, Product QA, UX/UI, Backend, Frontend, Test, DevOps) that delivers
+software from requirement to release **using only Cursor, markdown and git**. No Jira, no GitHub PRs,
+no platform database: task state is YAML in `tasks/`, audit is History + one git commit per transition.
 
 ```
 HUMAN writes REQ → approve → /scrum run REQ-###
         │
-        ├─ SA: design + tasks (+ sprint if >5 unfinished)
+        ├─ SA ⇄ PQA plan loop → ANALYZED (+ sprint if >5 unfinished)
         ├─ UX/UI ∥ BE          (UI work: spec + Figma; APIs in parallel)
+        ├─ PQA reviews UX contract (not SA)
         ├─ FE implements the UX contract
-        ├─ UX/UI review → SA review + merge
-        ├─ TEST accept
+        ├─ PQA visual review → SA code review + merge
+        ├─ TEST accept (per task)
+        ├─ PQA accept increment (or fail → SA fix tasks / side sprint)
         └─ READY_FOR_DEPLOY → (Phase 9) deploy
 ```
 
@@ -35,6 +37,7 @@ only holds skills, rules, designs, tasks and the component registry in `project.
 | 10 | Scrum + `/scrum run` orchestrator | Done |
 | — | `/repo` create/push product repos | Done (ADR-0004) |
 | — | UX/UI role + Figma MCP (ADR-0008) | Done |
+| — | Product QA: plan loop, UX review, increment accept (ADR-0010) | Done |
 | — | Stack policy: Java 21 + Spring, React locked; SA chooses the rest (ADR-0009) | Done |
 | — | Sprints on `/scrum run` when unfinished tasks > 5 | Done |
 | — | Workflow hardening (FAILED ≠ BUG, deps, artifacts, req hash, human gates) | Done |
@@ -95,20 +98,21 @@ In a **new chat**, invoke:
 /scrum run REQ-###
 ```
 
-The main chat stays SCRUM. It dispatches a **fresh subagent per role per step** (SA, BE, FE, TEST)
+The main chat stays SCRUM. It dispatches a **fresh subagent per role per step** (SA, PQA, BE, FE, TEST)
 until the requirement is done or a human gate is hit. Typical path:
 
 | Step | Who | What happens |
 |------|-----|----------------|
-| Analyze | SA | Design in `docs/design/`, stack choices (§5), BACKLOG tasks |
+| Analyze | SA ⇄ PQA | Design `DRAFT` + tasks; PQA plan loop; then `ANALYZED` |
 | Sprint | Scrum | If unfinished tasks > 5: `sprints/SPRINT-##.md`, only that increment is pulled |
-| Design | UX/UI | Markdown in `docs/design/ux/` + Figma file (when UI work exists) |
-| Ready | Scrum | Definition of Ready (+ sprint scope) → `READY` |
-| Implement | BE / FE | Feature branch in the component repo; FE follows UX/Figma + SA kit |
-| UX review | UX/UI | FE `CODE_REVIEW` vs spec/Figma, before SA |
-| Review | SA | Approve or request changes (max 3). On approve: `--no-ff` merge, push `main` |
+| Design | UX/UI | Markdown in `docs/design/ux/` + Figma (dense, sellable). PQA reviews the contract |
+| Ready | Scrum | Definition of Ready (+ sprint scope) → `READY` (REQ must be `ANALYZED`) |
+| Implement | BE / FE | Feature branch; FE follows UX/Figma + SA kit |
+| UX review | PQA | FE / UX_UI `CODE_REVIEW` vs spec/Figma + density bar, before SA |
+| Review | SA | **Code** only. Approve or request changes (max 3). `--no-ff` merge (not UX_UI) |
 | Test | TEST | Black-box against ACs. Pass → `READY_FOR_DEPLOY`. Fail → `BUG` (max 3) |
-| Deploy | DEVOPS | **Not implemented yet.** The run marks the task *waiting* |
+| Accept | PQA | Whole increment. Fail → SA fix tasks / optional side sprint |
+| Deploy | DEVOPS | **Not implemented yet.** After PQA accept the run marks deploy *waiting* |
 
 Or invoke each role yourself (one chat = one role on one task):
 
@@ -160,10 +164,12 @@ Skills live in `.cursor/skills/<name>/SKILL.md`. They do not auto-invoke (`disab
 | `/scrum sprint` / `sprint close` | Scrum | Plan or close `sprints/SPRINT-##.md` |
 | `/scrum sync` | Scrum | Regenerate `tasks/board.md` |
 | `/scrum report [REQ-###]` | Scrum | Progress from History |
-| `/sa analyze REQ-###` | SA | Design + stack choices + BACKLOG tasks |
-| `/sa review TASK-###` | SA | Review, request changes, or merge |
+| `/sa analyze REQ-###` | SA | Design + stack + tasks; REQ stays `ANALYZING` until PQA plan |
+| `/sa review TASK-###` | SA | Code review, request changes, or merge (not UX_UI) |
+| `/pqa plan REQ-###` | PQA | Approve or bounce the SA plan |
+| `/pqa review TASK-###` | PQA | UX contract merge or FE visual review |
+| `/pqa accept REQ-###` | PQA | Increment accept after every task is done |
 | `/uxui TASK-###` | UX/UI | Markdown design contract + Figma file |
-| `/uxui review TASK-###` | UX/UI | Review FE against spec/Figma |
 | `/backend TASK-###` | BE | Implement in `product/services/<name>-service` |
 | `/frontend TASK-###` | FE | Implement in `product/frontend` |
 | `/tester TASK-###` | TEST | Accept a merged task |
@@ -267,10 +273,11 @@ agentic/
 | `docs/architecture/system-overview.md` | How markdown + git + skills replace an orchestrator service |
 | `docs/design/REQ-###-design.md` | SA architecture, API, data, **stack table §5**, task breakdown |
 | `docs/design/ux/` | UX/UI machine contract: spec, tokens, pages, reviews + Figma URL |
-| `docs/adr/` | Decisions. Locked stack: 0003/0009. Repos: 0004. UX/UI: 0008. 0006 superseded |
+| `docs/adr/` | Decisions. Locked stack: 0003/0009. Repos: 0004. UX/UI: 0008. PQA: 0010. 0006 superseded |
 | `docs/standards/backend.md` | Java package-by-feature layout, REST, CORS |
 | `docs/standards/frontend.md` | React `app/pages/features/shared` layout, quality bar |
-| `docs/standards/ux-ui.md` | When UX/UI runs, Figma MCP, what FE must implement |
+| `docs/standards/ux-ui.md` | When UX/UI runs, Figma MCP, density, what FE must implement |
+| `docs/standards/product-qa.md` | Plan loop, visual review, increment accept (PQA) |
 | `docs/standards/testing.md` | Acceptance vs unit tests; BUG vs FAILED |
 | `docs/standards/artifacts.md` | Required files for each handoff (`/scrum run` checks these) |
 | `memory/decisions.md` | Index of ADRs (append-only) |
@@ -284,6 +291,7 @@ agentic/
 | `templates/task.md` | New TASK (frontmatter includes `work_type`, `requires_uxui`, `figma`) |
 | `templates/design.md` | SA design |
 | `templates/ux-spec.md` / `ux-page.md` / `ux-review.md` | UX/UI artifacts |
+| `templates/pqa-plan.md` / `pqa-accept.md` | PQA plan and increment accept |
 | `templates/review-round.md` | SA review file |
 | `templates/test-report.md` | TEST run file |
 | `templates/bug.md` | Product bug |

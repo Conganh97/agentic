@@ -18,9 +18,10 @@ Add role `UX/UI` (`/uxui`, `/uxui review`) without new task states.
 - UX/UI owns journeys, IA, design system, page specs, responsive behavior, UI states, and a11y.
 - FE implements the markdown contract in `docs/design/ux/`. FE must not silently redefine the look.
 - UX/UI and BE may run in parallel when independent. FE `depends_on` the UX/UI task.
-- After FE reaches `CODE_REVIEW`, `/uxui review` runs before `/sa review` when `requires_uxui` /
-  `work_type: FRONTEND`. UX/UI may set `CHANGES_REQUESTED` (uses `uxui_review_iteration`, not SA
-  `review_iteration`).
+- After FE reaches `CODE_REVIEW`, **PQA** (`/pqa review`) runs before `/sa review` when
+  `requires_uxui` / `work_type: FRONTEND` (ADR-0010). PQA sets `CHANGES_REQUESTED` via
+  `uxui_review_iteration`. UX/UI does not approve its own FE.
+- PQA, not SA, merges `work_type: UX_UI`.
 - Backend-only / infra / DevOps tasks skip UX/UI.
 - Visual review is **Figma** via the official remote MCP (`.cursor/mcp.json` → `https://mcp.figma.com/mcp`).
   Markdown remains the machine contract and the status database. If MCP is not connected, UX/UI

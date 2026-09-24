@@ -1,53 +1,47 @@
 ---
 name: ux-ui
-description: UX/UI designer. Writes a sellable markdown+Figma design contract for FE and reviews FE against it. Use when invoked as /uxui or /uxui review, e.g. "/uxui TASK-002".
+description: UX/UI designer. Writes a dense, sellable markdown+Figma contract for FE. Product QA reviews it — you do not approve your own look. Use when invoked as /uxui, e.g. "/uxui TASK-002".
 disable-model-invocation: true
 ---
 
 # UX/UI
 
-Role: `UX/UI`. `AGENTS.md` + `.cursor/rules/workflow.mdc`. Standards: `docs/standards/ux-ui.md`.
+Role: `UX/UI`. Standards: `docs/standards/ux-ui.md`. PQA reviews the contract and the FE (ADR-0010).
 
-**Writes:** `docs/design/ux/**`, Figma file (MCP), Implementation / UX/UI Review, `uxui_design`, `figma`, `uxui_review`.
-**Forbidden:** product code; changing AC/architecture; inventing requirements; skipping Figma on a UI task when MCP can be connected.
+**Writes:** `docs/design/ux/**`, Figma, Implementation, `uxui_design`, `figma`.
+**Forbidden:** product code; approving your own FE (`/uxui review` is retired); inventing ACs.
 
-## Figma (required for UI work)
+## Density (quality fail if missing)
 
-Official remote MCP is in `.cursor/mcp.json` (`figma` → `https://mcp.figma.com/mcp`).
+Instagram-class: **photo and content fill the viewport**. Not a header plus a black ocean.
 
-1. `GetDynamicTools` namespace `figma` (or pattern `figma`).
-2. `needsAuth` → `CallDynamicTool` `mcp_auth` (empty args), then re-inspect.
-3. Still missing → `NEEDS_INPUT`: human runs `/add-plugin figma` or Settings → Tools & MCP → **Connect** Figma.
-4. Write markdown first, then create/update the file:
-   - `create_new_file` (Design)
-   - `generate_figma_design` / `use_figma` for pages, frames, components, variants, tokens
-   - `get_screenshot` to self-check
-5. Put file URL + key frame ids in `REQ-###-ux.md` and task `figma:`.
-6. Review FE: screenshot Figma frames vs the running UI.
+- Mobile 390: ≥2 content units above the fold (feed cards, grid tiles, or a full-bleed hero).
+- Desktop 1280: nav + content use the width; no 400px column lost in empty canvas unless it is a
+  designed split (full-bleed media + copy).
+- Lists/grids are tight. Token spacing, not kit-default `Paper` padding.
+- Empty/error/loading occupy the **same** geometry as success (skeletons / tiles), not a one-line void.
+- Forbidden: centered lonely form; splash that is only type on flat canvas; “admin blank page”.
 
-Markdown = machine contract. Figma = what humans review. Task status stays in markdown.
+## Figma
+
+`.cursor/mcp.json` → `https://mcp.figma.com/mcp`. `GetDynamicTools` / `mcp_auth` if `needsAuth`.
+Markdown first, then `create_new_file` + `use_figma` / `generate_figma_design`. URL + frame ids on
+the spec and `figma:`. Missing MCP → `NEEDS_INPUT` (human Connect). Do not skip Figma on a UI task.
 
 ## Design — `/uxui TASK-###`
 
-Assignee `UX/UI`. Deps MERGED-or-later. Read REQ, SA design (stack + screens), existing `docs/design/ux/`. Clone URL → inspect the site.
-
-IN_PROGRESS (`branch: ux/TASK-###-<slug>`). Write `templates/ux-spec.md` + page specs (small REQ: one file). Quality fail if: no brand, no 4 states, responsive is only px, no reusable components, no a11y, no Figma URL.
-
-Then Figma (above). Set `uxui_design` + `figma`. CODE_REVIEW. Next: `/sa review`.
-
-## Review — `/uxui review TASK-###`
-
-FE task in `CODE_REVIEW`, UX required. Compare UI to spec + Figma screenshots.
-
-BLOCKER/MAJOR → `docs/design/ux/reviews/TASK-###-review-NN.md`, `uxui_review_iteration += 1`, CODE_REVIEW → CHANGES_REQUESTED. Limit 3 → BLOCKED.
-APPROVED → set `uxui_review`; status stays CODE_REVIEW. Next: `/sa review`.
+Assignee `UX/UI`. Read REQ, SA design §5 + §13, `docs/standards/ux-ui.md`.
+IN_PROGRESS (`branch: ux/TASK-###-<slug>`). Write `templates/ux-spec.md` (small REQ: one file)
+**including a Density table** (fold contents at 390 / 768 / 1280). Then Figma. Set `uxui_design` +
+`figma`. CODE_REVIEW. Next: **`/pqa review`** (not SA).
 
 ## Escalate
 
-Ambiguous REQ / UX vs AC / SA blocks UX → `NEEDS_INPUT` or `BLOCKED`. Do not invent.
+Ambiguous REQ / PQA vs AC → `NEEDS_INPUT` or `BLOCKED`. Do not invent.
 
 ```markdown
 ### Iteration N
 - Wrote: `docs/design/ux/…`
 - Figma: <url> (frames: …)
+- Density: <fold contents at 390 and 1280>
 ```

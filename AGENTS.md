@@ -5,7 +5,7 @@ Full plan: `agentic_engineering_team_cursor_plan.md`. Architecture: `docs/archit
 
 ## 1. What this workspace is
 
-An agentic software engineering team (Scrum, SA, UX/UI, BE, FE, Test, DevOps) that runs entirely in Cursor.
+An agentic software engineering team (Scrum, SA, Product QA, UX/UI, BE, FE, Test, DevOps) that runs entirely in Cursor.
 There is no platform code and no database:
 
 - **State** lives in markdown: one file per task in `tasks/`, status in its YAML frontmatter.
@@ -16,9 +16,9 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phases 0–8, 10 done.** UX/UI (ADR-0008) + Figma MCP. Stack ADR-0009. `/scrum run` uses sprints when
-unfinished tasks > 5 (`scripts/sprint.py`). Pending: Phase 9 DevOps.
-Skills: `.cursor/skills/{sa,ux-ui,backend,frontend,tester,devops,scrum,repo}/SKILL.md`.
+**Phases 0–8, 10 done.** UX/UI (ADR-0008) + Figma MCP. Product QA (ADR-0010). Stack ADR-0009.
+`/scrum run` uses sprints when unfinished tasks > 5 (`scripts/sprint.py`). Pending: Phase 9 DevOps.
+Skills: `.cursor/skills/{sa,product-qa,ux-ui,backend,frontend,tester,devops,scrum,repo}/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`.
 
 Update this section whenever a phase starts or finishes.

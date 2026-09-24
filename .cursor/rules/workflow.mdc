@@ -9,7 +9,7 @@ Task state lives only in the `status:` field of `tasks/TASK-###-*.md`. Change it
 
 ## 1. Your role
 
-- Each chat acts as exactly one role: `SCRUM`, `SA`, `UX/UI`, `BE`, `FE`, `TEST`, `DEVOPS`.
+- Each chat acts as exactly one role: `SCRUM`, `SA`, `PQA`, `UX/UI`, `BE`, `FE`, `TEST`, `DEVOPS`.
 - The role comes from the invoked skill or an explicit user instruction ("act as BE").
   If the role is unknown, ask before changing any task file.
 - `HUMAN` actions (PROD approval, unblock, exceptions, human gates) are done only when the user
@@ -23,8 +23,8 @@ Task state lives only in the `status:` field of `tasks/TASK-###-*.md`. Change it
 | READY | IN_PROGRESS | BE / FE / UX/UI = `assignee` | every `depends_on` is MERGED or later |
 | IN_PROGRESS | CODE_REVIEW | BE / FE / UX/UI = `assignee` | tests pass (or UX artifacts written); work on `branch`; Implementation iteration filled |
 | IN_PROGRESS | FAILED | BE / FE / UX/UI = `assignee` | execution failed (build/git/env); `failed_from` + `failure` set |
-| CODE_REVIEW | CHANGES_REQUESTED | SA, UX/UI | SA: Review round + `review_iteration += 1`. UX/UI (UI tasks only): `docs/design/ux/reviews/` + `uxui_review_iteration += 1` |
-| CODE_REVIEW | MERGED | SA | latest Review **APPROVED**; UI tasks also need approved `uxui_review`; `--no-ff` merge (product) or team sha (`work_type: UX_UI`); `merge_commit` is a git sha |
+| CODE_REVIEW | CHANGES_REQUESTED | SA, PQA | SA (code): Review round + `review_iteration += 1`. PQA (UX_UI or FE visual): `docs/design/ux/reviews/` + `uxui_review_iteration += 1` |
+| CODE_REVIEW | MERGED | SA, PQA | SA: code Review **APPROVED** + `--no-ff` (not `UX_UI`). PQA: `work_type: UX_UI` only; `uxui_review` APPROVED; `merge_commit` = team sha. FE also needs PQA `uxui_review` before SA merges |
 | CHANGES_REQUESTED | IN_PROGRESS | BE / FE / UX/UI = `assignee` | — |
 | MERGED | TESTING | TEST | `merge_commit` is an ancestor of `main` |
 | TESTING | BUG | TEST | Test run FAIL (product behaviour); `test_iteration += 1`; `bugs/BUG-###.md` created |
@@ -99,7 +99,7 @@ IN_PROGRESS after the retry limit — transition IN_PROGRESS → FAILED.
 
 ## 6. Creating tasks
 
-- Who: SA (from a design), TEST (new BUG found outside a task's test run), SCRUM, HUMAN.
+- Who: SA (from a design, or from a PQA accept FAIL fix list), TEST (new BUG found outside a task's test run), SCRUM, HUMAN.
 - Copy `templates/task.md`; id = highest existing `TASK-###` + 1 (or TASK-001 if none); file `tasks/TASK-###-<kebab-slug>.md`.
 - Do not delete task files in normal work (audit lives in git). An empty `tasks/` board is valid for a
   fresh framework; `scripts/sync_board.py` then writes a header-only board.
@@ -125,8 +125,8 @@ themselves and records it in History with `By = HUMAN (<name>)`.
 | READY | "DoR met"; deps listed or `[]` |
 | IN_PROGRESS | branch name |
 | CODE_REVIEW | product commit sha (BE/FE) or UX artifact paths + team sha (`UX_UI`); Implementation `### Iteration N` |
-| CHANGES_REQUESTED | SA: Review `### Round N` with ≥1 comment. UX/UI: `docs/design/ux/reviews/TASK-###-review-N.md` CHANGES_REQUESTED |
-| MERGED | `merge_commit=<sha>`; `reviews/TASK-###-round-N.md` APPROVED; UI tasks: `uxui_review` APPROVED; `--no-ff` on product `main` (skip product merge for `work_type: UX_UI`) |
+| CHANGES_REQUESTED | SA: Review `### Round N` with ≥1 comment. PQA: `docs/design/ux/reviews/TASK-###-review-N.md` CHANGES_REQUESTED |
+| MERGED | `merge_commit=<sha>`; code: `reviews/TASK-###-round-N.md` APPROVED + `--no-ff`; `UX_UI`: PQA `uxui_review` APPROVED, team sha; FE: PQA `uxui_review` APPROVED before SA merge |
 | TESTING | tested sha = ancestor of `main` containing `merge_commit` |
 | BUG | `tests/TASK-###-run-N.md` FAIL; `bugs/BUG-###.md`; expected vs actual |
 | FAILED | `failure_type` / `failure_step` / `failure_message` / `failure_retry`; `failed_from` |

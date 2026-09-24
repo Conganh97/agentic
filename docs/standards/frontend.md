@@ -35,8 +35,9 @@ the design names. Keep the scaffolder’s linter. `"strict": true`. Scripts: `de
 ## Quality bar (CODE_REVIEW fails if)
 
 - Native `<input>`/`<button>`/`<select>` as the product UI (hidden file input OK)
-- No shared layout / heading-on-blank-page
-- Loading / empty / error are raw `<p>` only
+- No shared layout / heading-on-blank-page / chrome + empty canvas
+- Fewer than two content units above the fold on a feed, list, or grid (390 and 1280)
+- Loading / empty / error are raw `<p>` only or a one-line void
 - Ignores `docs/design/ux/` or the Figma frames linked on the task
 - A second UI kit besides the one SA chose
 - Ad-hoc hex in feature files (use tokens)

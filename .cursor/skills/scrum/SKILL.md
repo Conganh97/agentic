@@ -25,6 +25,7 @@ frontmatter, `sprints/`, `bugs/`, `python3 scripts/deps.py --json`.
 
 **Writes**: `tasks/board.md` (via script), `sprints/`; task frontmatter `priority`, `sprint`, `assignee`;
 `status` only for its transitions; History; new task files at the user's request (workflow §6).
+Dispatches `/pqa` as a subagent (never does PQA work itself).
 
 **Transitions**: create task → BACKLOG · BACKLOG → READY · BLOCKED → `blocked_from` (user asked) ·
 FAILED → `failed_from` (user asked recover) · working state → BLOCKED
@@ -46,16 +47,18 @@ run. First match wins (finish work before starting new work):
 
 | # | Situation | Role → command |
 |---|-----------|----------------|
-| 1 | Requirement `APPROVED` (no design yet) | SA → `/sa analyze REQ-###` |
-| 2 | Requirement `revision` > task `requirement_revision` | stop — BLOCKED `requirement_changed` |
-| 3 | Large work, no ACTIVE sprint, nothing in-flight | SCRUM → `/scrum sprint` |
-| 4 | CODE_REVIEW and UX/UI review still required | UX/UI → `/uxui review TASK-###` |
-| 5 | CODE_REVIEW (UX/UI approved or not required) | SA → `/sa review TASK-###` |
-| 6 | MERGED or TESTING (skip `work_type: UX_UI` MERGED) | TEST → `/tester TASK-###` |
-| 7 | CHANGES_REQUESTED, BUG or IN_PROGRESS | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
-| 8 | READY, deps met, in sprint scope | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
-| 9 | BACKLOG, DoR + deps, in sprint scope | SCRUM → `/scrum ready TASK-###` |
-| 10 | READY_FOR_DEPLOY or DEPLOYING | DEVOPS → `/devops deploy TASK-### <ENV>` |
+| 1 | Requirement `APPROVED` (no design) or `ANALYZING` after PQA plan CHANGES | SA → `/sa analyze REQ-###` |
+| 2 | Requirement `ANALYZING`, plan not APPROVED | PQA → `/pqa plan REQ-###` |
+| 3 | Requirement `revision` > task `requirement_revision` | stop — BLOCKED `requirement_changed` |
+| 4 | Large work, no ACTIVE sprint, nothing in-flight | SCRUM → `/scrum sprint` |
+| 5 | CODE_REVIEW `UX_UI` or FE visual still required | PQA → `/pqa review TASK-###` |
+| 6 | CODE_REVIEW (PQA visual approved or not required) | SA → `/sa review TASK-###` (code only) |
+| 7 | MERGED or TESTING (skip `work_type: UX_UI` MERGED) | TEST → `/tester TASK-###` |
+| 8 | CHANGES_REQUESTED, BUG or IN_PROGRESS | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
+| 9 | READY, deps met, in sprint scope, REQ `ANALYZED`+ | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
+| 10 | BACKLOG, DoR + deps, REQ `ANALYZED`+ | SCRUM → `/scrum ready TASK-###` |
+| 11 | All children `READY_FOR_DEPLOY` (UX_UI `MERGED`), no PQA accept | PQA → `/pqa accept REQ-###` |
+| 12 | READY_FOR_DEPLOY or DEPLOYING (after PQA accept) | DEVOPS → `/devops deploy TASK-### <ENV>` |
 
 Independent READY tasks in **different** component repos (no shared `depends_on` edge, `deps.py`
 actionable) may be recommended together for parallel dispatch. Same repo → sequential.
@@ -173,17 +176,18 @@ record / continue
    - Dirty tree, a product repo not on `main`, or a commit rejected by guardrails → **stop the run**.
 7. Stop when: nothing actionable; dispatch limit reached; the same task produced no progress twice.
 
-Never start SA analyze again if `docs/design/REQ-###-design.md` exists and the requirement is
-`ANALYZED` or later. Never start BE/FE/UX/UI if the task is already CODE_REVIEW or later.
-Dispatch `/uxui` when `assignee` is `UX/UI` or `/uxui review` when `next.py` says so. Skip UX/UI
-for backend-only / infra / DevOps. UX/UI design tasks stay MERGED (no TEST).
+Never start SA analyze again if the requirement is `ANALYZED` or later **unless** PQA plan/accept
+asked for changes. Never start BE/FE/UX/UI if the task is already CODE_REVIEW or later.
+Dispatch `/pqa plan` / `/pqa review` / `/pqa accept` when `next.py` says so. Dispatch `/uxui` when
+`assignee` is `UX/UI`. Skip UX/UI for backend-only / infra / DevOps. UX/UI design tasks stay MERGED
+(no TEST). After PQA accept FAIL, SA adds fix tasks; leftover > 5 → `/scrum sprint` (side sprint).
 
 ### 3. Dispatch prompt (fill in `< >`)
 
 ```
 Workspace: <team repo path> (branch <current branch> — stay on it). Product repos: <path>/product (registry in project.md).
 You are invoked as `<command>`. Skill folders: /uxui → `.cursor/skills/ux-ui/SKILL.md`;
-/sa → sa; /backend → backend; /frontend → frontend; /tester → tester; /devops → devops.
+/pqa → product-qa; /sa → sa; /backend → backend; /frontend → frontend; /tester → tester; /devops → devops.
 Read and follow that SKILL.md exactly, with AGENTS.md,
 .cursor/rules/workflow.mdc and project.md (commands and local environment notes). You did not do any
 earlier step of this task in another role.

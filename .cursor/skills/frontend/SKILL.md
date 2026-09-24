@@ -1,6 +1,6 @@
 ---
 name: frontend
-description: Frontend developer for the React app. Implements a UI task from the UX/UI contract and SA-chosen kit, verifies, hands off to UX/UI then SA. Use when invoked as /frontend, e.g. "/frontend TASK-004".
+description: Frontend developer for the React app. Implements a UI task from the UX/UI contract and SA-chosen kit, verifies, hands off to PQA then SA. Use when invoked as /frontend, e.g. "/frontend TASK-004".
 disable-model-invocation: true
 ---
 
@@ -22,7 +22,7 @@ Role: `FE`. `AGENTS.md` + `.cursor/rules/workflow.mdc`.
 4. **Implement.** Follow AC + UX spec/Figma + SA stack. Missing UX contract (`requires_uxui` not false) → `BLOCKED`. No `package.json` → scaffold per `docs/standards/frontend.md` using **only** packages SA named. Structure: `app/pages/features/shared`. Tests ≥1/AC including loading/error. Spec gap → `BLOCKED` for UX/UI. API mismatch → `BLOCKED` for SA.
 5. **Verify.** `npm run lint && npm run format:check && npm test -- --run && npm run build`. 3 fails → FAILED. Self-review: no second kit, no raw-form UI, matches Figma/spec.
 6. **Commit / push** product branch; checkout `main`.
-7. **Handoff.** Implementation iteration; IN_PROGRESS → CODE_REVIEW. Next: `/uxui review` if UX required, else `/sa review`.
+7. **Handoff.** Implementation iteration; IN_PROGRESS → CODE_REVIEW. Next: `/pqa review` if UX required, else `/sa review`.
 
 ```markdown
 ### Iteration N (…)

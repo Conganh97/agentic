@@ -29,6 +29,13 @@ updated:
 
 ## Success States
 
+## Density
+
+| Viewport | Above the fold (must list real content, not “nav + empty”) |
+|----------|--------------------------------------------------------------|
+| Mobile 390 | ≥2 units (cards, tiles, or full-bleed hero) |
+| Desktop 1280 | nav + content use the width; no unused canvas |
+
 ## Responsive Behavior
 
 | Viewport | Layout change |

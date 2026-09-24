@@ -7,6 +7,8 @@ content_hash:            # python3 scripts/req.py hash requirements/REQ-XXX-*.md
 priority: MEDIUM       # LOW | MEDIUM | HIGH | CRITICAL
 owner:                 # human name
 design:                # docs/design/REQ-XXX-design.md (set by SA)
+pqa_plan:              # docs/design/reviews/REQ-XXX-plan-N.md (set by PQA)
+pqa_accept:            # docs/design/reviews/REQ-XXX-accept-N.md (set by PQA)
 tasks: []              # [TASK-001, ...] (set by SA)
 updated:
 ---

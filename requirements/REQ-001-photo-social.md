@@ -7,6 +7,8 @@ content_hash: 54839e9b074480c8
 priority: HIGH
 owner: os_anhbc
 design: docs/design/REQ-001-design.md
+pqa_plan:
+pqa_accept:
 tasks: [TASK-001, TASK-002, TASK-003, TASK-004, TASK-005]
 updated: 2026-09-24 14:44
 ---
