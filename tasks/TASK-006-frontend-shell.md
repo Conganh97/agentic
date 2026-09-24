@@ -3,7 +3,7 @@ id: TASK-006
 title: Frontend scaffold and AppShell
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:31
+updated: 2026-09-24 09:36
 ---
 
 ## Description
@@ -80,3 +80,4 @@ Pushed main.
 | 2026-09-24 09:21 | READY | IN_PROGRESS | FE | branch feature/TASK-006-frontend-shell |
 | 2026-09-24 09:25 | IN_PROGRESS | CODE_REVIEW | FE | product 1a1957a; Iteration 1; 18 tests pass |
 | 2026-09-24 09:31 | CODE_REVIEW | MERGED | SA | merge_commit=cb0c07f; reviews/TASK-006-round-1.md APPROVED; --no-ff on main |
+| 2026-09-24 09:36 | MERGED | TESTING | TEST | run 1; tested sha cb0c07f is ancestor of main containing merge_commit cb0c07f |
