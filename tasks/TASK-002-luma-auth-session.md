@@ -3,7 +3,7 @@ id: TASK-002
 title: luma-service members and session
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -17,7 +17,7 @@ uxui_review:
 figma:
 depends_on: []
 sprint:
-branch:
+branch: feature/TASK-002-luma-auth-session
 merge_commit:
 release:
 review_iteration: 0
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 14:53
+updated: 2026-09-24 14:56
 ---
 
 ## Description
@@ -76,3 +76,4 @@ NFR-3, NFR-4, NFR-7. `requirement_revision: 3`, `content_hash: 54839e9b074480c8`
 |------|------|----|----|------|
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo luma-service; human_gate=auth; deps [] |
 | 2026-09-24 14:53 | BACKLOG | READY | HUMAN (os_anhbc) | DoR met; deps []; approved auth gate |
+| 2026-09-24 14:56 | READY | IN_PROGRESS | BE | branch feature/TASK-002-luma-auth-session |
