@@ -3,7 +3,7 @@ id: TASK-005
 title: Frontend feed create like profile
 type: TASK
 priority: HIGH
-status: BACKLOG
+status: READY
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 14:44
+updated: 2026-09-24 15:40
 ---
 
 ## Description
@@ -74,3 +74,4 @@ NFR-6. `requires_uxui: true`; `depends_on` TASK-001, TASK-003, TASK-004.
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo frontend; requires_uxui; deps TASK-001, TASK-003, TASK-004 |
+| 2026-09-24 15:40 | BACKLOG | READY | SCRUM | DoR met; deps TASK-001 MERGED, TASK-003/004 READY_FOR_DEPLOY |
