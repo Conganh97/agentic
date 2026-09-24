@@ -3,7 +3,7 @@ id: TASK-005
 title: Frontend feed create like profile
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -12,12 +12,12 @@ repo: frontend
 work_type: FRONTEND
 requires_uxui: true
 uxui_task: TASK-001
-uxui_design:
+uxui_design: docs/design/ux/REQ-001-ux.md
 uxui_review:
-figma:
+figma: https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma?node-id=1-18
 depends_on: [TASK-001, TASK-003, TASK-004]
 sprint:
-branch:
+branch: feature/TASK-005-luma-feed-ui
 merge_commit:
 release:
 review_iteration: 0
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 15:40
+updated: 2026-09-24 15:42
 ---
 
 ## Description
@@ -75,3 +75,4 @@ NFR-6. `requires_uxui: true`; `depends_on` TASK-001, TASK-003, TASK-004.
 |------|------|----|----|------|
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo frontend; requires_uxui; deps TASK-001, TASK-003, TASK-004 |
 | 2026-09-24 15:40 | BACKLOG | READY | SCRUM | DoR met; deps TASK-001 MERGED, TASK-003/004 READY_FOR_DEPLOY |
+| 2026-09-24 15:42 | READY | IN_PROGRESS | FE | branch feature/TASK-005-luma-feed-ui |
