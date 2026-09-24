@@ -3,7 +3,7 @@ id: TASK-004
 title: Customer account APIs
 type: TASK
 priority: CRITICAL
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 10:53
+updated: 2026-09-24 10:56
 ---
 
 ## Description
@@ -50,6 +50,11 @@ See `docs/design/REQ-001-design.md` §5–§7 (FR-7, FR-8, NFR-3). Repo: shop-se
 - Do not implement cart merge here.
 
 ## Implementation (BE/FE)
+### Iteration 1 (initial)
+- Branch: `feature/TASK-004-customer-account-api` @ a7a64d9
+- Changed: `services/shop-service/src/main/resources/db/migration/V6__users_sessions.sql`, `api/AuthController.java`, `api/{Register,Login}Request.java`, `api/UserResponse.java`, `api/ApiExceptionHandler.java`, `service/AuthService.java`, `service/{DuplicateEmail,Unauthorized}Exception.java`, `domain/{User,Session}.java`, `repository/{User,Session}Repository.java`, `config/AuthConfig.java`, `pom.xml`, `AuthControllerTest.java`, `AuthServiceTest.java`, `AuthApiTest.java`, `ShopApplicationTests.java`
+- Tests: `./mvnw -q verify` in `services/shop-service` → pass (71 tests)
+- Notes: Flyway V6 because V1–V5 already used. Email stored trimmed+lowercase. displayName max 80. Login does not merge guest cart (TASK-005). `spring-security-crypto` only (no security filter). Cookie `shop_session` httpOnly SameSite=Lax Path=/ 7 days; token is 64-byte hex, SHA-256 stored. Login 401 detail is `Invalid credentials` for unknown email and wrong password. Branch pushed. `git pull` on shop-service main hung; created branch from already-up-to-date local main.
 
 ## Review (SA)
 
@@ -64,3 +69,4 @@ See `docs/design/REQ-001-design.md` §5–§7 (FR-7, FR-8, NFR-3). Repo: shop-se
 | 2026-09-24 10:15 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] READY_FOR_DEPLOY; waiting approved_by (human_gate: auth) |
 | 2026-09-24 10:48 | READY | READY | HUMAN (os_anhbc) | approved auth gate; run remaining REQ-001 tasks |
 | 2026-09-24 10:53 | READY | IN_PROGRESS | BE | branch feature/TASK-004-customer-account-api |
+| 2026-09-24 10:56 | IN_PROGRESS | CODE_REVIEW | BE | product a7a64d9; Implementation Iteration 1 |
