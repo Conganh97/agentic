@@ -2,14 +2,14 @@
 
 id: REQ-001
 title: Clone Biệt Đội Săn Hàng E-commerce Website
-status: APPROVED
+status: ANALYZED
 revision: 1
 content_hash: e27d9f3d0e4b4f48
 priority: CRITICAL
 owner:
-design:
-tasks: []
-updated: 2026-09-24 09:11
+design: docs/design/REQ-001-design.md
+tasks: [TASK-001, TASK-002, TASK-003, TASK-004, TASK-005, TASK-006, TASK-007, TASK-008, TASK-009, TASK-010, TASK-011, TASK-012, TASK-013]
+updated: 2026-09-24 09:15
 --------
 
 ## Goal

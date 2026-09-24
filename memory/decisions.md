@@ -11,3 +11,4 @@ Index of architecture decisions and rejected options. Append-only. Details live 
 | 2026-09-24 | ADR-0006 | FE UI kit: Mantine + Tabler Icons + Inter | Plain CSS, shadcn/Tailwind, Ant Design, Chakra |
 | 2026-09-24 | workflow | `FAILED` ≠ `BUG`; deps graph (`deps.py`); merge/AC evidence in pre-commit | Outcome FAILED with no status change; prompt-only retry limits |
 | 2026-09-24 | artifacts | Handoffs: `reviews/` `tests/` `runs/`; `req.py` hash/revision; `next.py` resume; human gates | Chat-only handoff; silent REQ edits |
+| 2026-09-24 | ADR-0007 | REQ-001 storefront: `shop-service` + `frontend` (supersedes ADR-0005 `task-service`) | Split catalog/user/cart services, reuse task-service, H2 |
