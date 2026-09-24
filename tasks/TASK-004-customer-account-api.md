@@ -3,7 +3,7 @@ id: TASK-004
 title: Customer account APIs
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:00
+updated: 2026-09-24 11:03
 ---
 
 ## Description
@@ -34,14 +34,14 @@ Customer registration, sign-in, sign-out, and current-user using opaque httpOnly
 and BCrypt password hashes. No OAuth. Cart merge is TASK-005.
 
 ## Acceptance Criteria
-- [ ] AC-001 `POST /api/v1/auth/register` with valid email, password (≥8, ≤72), displayName
+- [x] AC-001 `POST /api/v1/auth/register` with valid email, password (≥8, ≤72), displayName
       returns 201 `{ id, email, displayName }` and `Set-Cookie: shop_session`; password is BCrypt
       in `users.password_hash` and never appears in the response
-- [ ] AC-002 Register with invalid email/short password → 400 ProblemDetail; existing email → 409
-- [ ] AC-003 `POST /api/v1/auth/login` with a registered user returns 200 and the session cookie;
+- [x] AC-002 Register with invalid email/short password → 400 ProblemDetail; existing email → 409
+- [x] AC-003 `POST /api/v1/auth/login` with a registered user returns 200 and the session cookie;
       wrong password or unknown email → 401 (same message); `GET /api/v1/auth/me` with cookie → 200
-- [ ] AC-004 `POST /api/v1/auth/logout` returns 204 and clears the cookie; subsequent `/auth/me` → 401
-- [ ] AC-005 Session token is stored as a hash only; tests cover register, duplicate, bad credentials, me, logout
+- [x] AC-004 `POST /api/v1/auth/logout` returns 204 and clears the cookie; subsequent `/auth/me` → 401
+- [x] AC-005 Session token is stored as a hash only; tests cover register, duplicate, bad credentials, me, logout
 
 ## Design (SA)
 See `docs/design/REQ-001-design.md` §5–§7 (FR-7, FR-8, NFR-3). Repo: shop-service (existing).
@@ -65,6 +65,16 @@ Merged ed63e6a.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ ed63e6a (contains merge `ed63e6a`), service on port 18081
+- Build/tests: `./mvnw -q verify` PASS (71 tests)
+- AC-001 pass — `POST /api/v1/auth/register` valid → 201 `{id,email,displayName}` + `Set-Cookie: shop_session` HttpOnly SameSite=Lax Path=/ Max-Age=604800; `users.password_hash` `$2a$10$` BCrypt, no password in body
+- AC-002 pass — invalid email / short password → 400 ProblemDetail `Invalid request content.`; duplicate email → 409 `Email already registered`
+- AC-003 pass — login valid → 200 + session cookie; unknown email and wrong password both 401 `Invalid credentials` (identical body); `GET /auth/me` with cookie → 200
+- AC-004 pass — logout → 204 `shop_session` Max-Age=0; subsequent `/auth/me` → 401 `Unauthorized`
+- AC-005 pass — `sessions.token_hash` = SHA-256(raw cookie) 64 hex ≠ raw 128-hex token; AuthApiTest + AuthControllerTest + AuthServiceTest cover register, duplicate, bad credentials, me, logout
+- Exploratory: password 7/73 and displayName 81 → 400; 8/72 → 201; empty bodies 400; `/categories` 200; `/products?size=5` 200 total=18; `/articles` 200 total=3; health UP; unknown path 404 ProblemDetail; Flyway V1–V6; port 18081 free after stop
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -78,3 +88,4 @@ Pushed main.
 | 2026-09-24 10:56 | IN_PROGRESS | CODE_REVIEW | BE | product a7a64d9; Implementation Iteration 1 |
 | 2026-09-24 10:59 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit=ed63e6a --no-ff |
 | 2026-09-24 11:00 | MERGED | TESTING | TEST | run 1; tested sha ed63e6a is ancestor of main containing merge_commit ed63e6a |
+| 2026-09-24 11:03 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-004-run-1.md PASS; every AC-001..AC-005 checked; tested sha ed63e6a |
