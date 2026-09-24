@@ -3,7 +3,7 @@ id: TASK-005
 title: Cart APIs and guest merge
 type: TASK
 priority: CRITICAL
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 11:05
+updated: 2026-09-24 11:09
 ---
 
 ## Description
@@ -53,6 +53,11 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-5, FR-6). Repo: shop-service (
 - Avoid new public routes beyond `/api/v1/cart*`.
 
 ## Implementation (BE/FE)
+### Iteration 1 (initial)
+- Branch: `feature/TASK-005-cart-api` @ ac3c4f2
+- Changed: `services/shop-service/src/main/resources/db/migration/V7__carts.sql`, `api/CartController.java`, `api/{AddCartItem,UpdateCartItem}Request.java`, `api/{Cart,CartItem}Response.java`, `service/CartService.java`, `domain/{Cart,CartItem}.java`, `repository/CartRepository.java`, `api/AuthController.java`, `service/AuthService.java`, `CartControllerTest.java`, `CartServiceTest.java`, `CartApiTest.java`, `AuthControllerTest.java`, `AuthServiceTest.java`, `ShopApplicationTests.java`
+- Tests: `./mvnw -q verify` in `services/shop-service` → pass (88 tests)
+- Notes: Flyway V7 (V1–V6 already used). `cart_items.unit_price_vnd` stores the product price copied at add/update (column not listed in design §7). Guest `cart_token` is httpOnly SameSite=Lax Path=/ 30 days; issued only when a new guest cart is created. POST add increments an existing line and caps at 99, then refreshes unit price. Merge runs on login and register; same `product_id` sums qty (max 99) and keeps the user line’s unit price; guest-only lines keep the stored guest price; guest cart row is deleted. Invalid/expired session falls back to guest/empty cart (no 401). Invalid `cart_token` is ignored. Branch pushed.
 
 ## Review (SA)
 
@@ -66,3 +71,4 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-5, FR-6). Repo: shop-service (
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 11:04 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002, TASK-004] READY_FOR_DEPLOY |
 | 2026-09-24 11:05 | READY | IN_PROGRESS | BE | branch feature/TASK-005-cart-api |
+| 2026-09-24 11:09 | IN_PROGRESS | CODE_REVIEW | BE | product ac3c4f2; Implementation Iteration 1; ./mvnw -q verify pass (88 tests) |
