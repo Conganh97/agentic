@@ -3,7 +3,7 @@ id: TASK-001
 title: Luma UX/UI design contract
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: UX/UI
 parent: REQ-001
 requirement_revision: 3
@@ -17,7 +17,7 @@ uxui_review:
 figma:
 depends_on: []
 sprint:
-branch:
+branch: ux/TASK-001-luma-ux-contract
 merge_commit:
 release:
 review_iteration: 0
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 14:46
+updated: 2026-09-24 14:47
 ---
 
 ## Description
@@ -74,3 +74,4 @@ Do not change API or AC. `requirement_revision: 3`, `content_hash: 54839e9b07448
 |------|------|----|----|------|
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001 design §13; work_type UX_UI; deps [] |
 | 2026-09-24 14:46 | BACKLOG | READY | SCRUM | DoR met; deps [] |
+| 2026-09-24 14:47 | READY | IN_PROGRESS | UX/UI | branch ux/TASK-001-luma-ux-contract |
