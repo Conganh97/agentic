@@ -3,7 +3,7 @@ id: TASK-005
 title: Cart APIs and guest merge
 type: TASK
 priority: CRITICAL
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:15
+updated: 2026-09-24 11:04
 ---
 
 ## Description
@@ -64,3 +64,4 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-5, FR-6). Repo: shop-service (
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-24 11:04 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002, TASK-004] READY_FOR_DEPLOY |

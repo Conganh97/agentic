@@ -3,7 +3,7 @@ id: TASK-010
 title: Account sign-in and register UI
 type: TASK
 priority: CRITICAL
-status: BACKLOG
+status: READY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 10:48
+updated: 2026-09-24 11:04
 ---
 
 ## Description
@@ -63,3 +63,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-7, FR-8, FR-9). Repo: frontend (exi
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 10:48 | BACKLOG | BACKLOG | HUMAN (os_anhbc) | approved auth gate; run remaining REQ-001 tasks |
+| 2026-09-24 11:04 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-004, TASK-006] READY_FOR_DEPLOY; auth approved |
