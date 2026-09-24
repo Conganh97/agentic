@@ -3,7 +3,7 @@ id: TASK-004
 title: Frontend shell and authentication screens
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -12,9 +12,9 @@ repo: frontend
 work_type: FRONTEND
 requires_uxui: true
 uxui_task: TASK-001
-uxui_design:
+uxui_design: docs/design/ux/REQ-001-ux.md
 uxui_review:
-figma:
+figma: https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma?node-id=1-15
 depends_on: [TASK-001, TASK-002]
 sprint:
 branch: feature/TASK-004-luma-auth-ui
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:11
+updated: 2026-09-24 15:18
 ---
 
 ## Description
@@ -63,6 +63,12 @@ onto `MantineProvider`. Do not invent a second look.
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (2026-09-24 15:18)
+- Branch: `feature/TASK-004-luma-auth-ui` @ c78d7d5
+- Changed: `src/app`, `src/pages`, `src/features/auth`, `src/features/shell`, `src/shared`
+- Tests: FE verify → pass (11)
+- Notes: registered `product-frontend` (GitHub name already existed); Mantine tokens + session `credentials: 'include'`; pushed origin
+
 ## UX/UI Review
 
 ## Review (SA)
@@ -78,4 +84,5 @@ onto `MantineProvider`. Do not invent a second look.
 | 2026-09-24 14:53 | BACKLOG | BACKLOG | HUMAN (os_anhbc) | approved_by set; auth gate for REQ-001 run |
 | 2026-09-24 15:08 | BACKLOG | READY | SCRUM | DoR met; deps TASK-001 MERGED, TASK-002 READY_FOR_DEPLOY |
 | 2026-09-24 15:11 | READY | IN_PROGRESS | FE | branch feature/TASK-004-luma-auth-ui |
+| 2026-09-24 15:18 | IN_PROGRESS | CODE_REVIEW | FE | product c78d7d5; FE verify pass (11); Implementation iteration 1 |
 
