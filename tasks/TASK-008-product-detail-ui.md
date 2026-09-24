@@ -3,14 +3,14 @@ id: TASK-008
 title: Product detail UI
 type: TASK
 priority: CRITICAL
-status: READY
+status: IN_PROGRESS
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
 repo: frontend
 depends_on: [TASK-002, TASK-006]
 sprint:
-branch:
+branch: feature/TASK-008-product-detail-ui
 merge_commit:
 release:
 review_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:15
+updated: 2026-09-24 10:17
 ---
 
 ## Description
@@ -66,3 +66,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-3). Repo: frontend (existing).
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 10:15 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002, TASK-006] READY_FOR_DEPLOY |
+| 2026-09-24 10:17 | READY | IN_PROGRESS | FE | branch feature/TASK-008-product-detail-ui |
