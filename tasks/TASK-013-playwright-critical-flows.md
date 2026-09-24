@@ -3,7 +3,7 @@ id: TASK-013
 title: Playwright critical customer flows
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:57
+updated: 2026-09-24 11:58
 ---
 
 ## Description
@@ -78,3 +78,4 @@ Push failed: git fetch origin — Failed to connect to github.com port 443.
 | 2026-09-24 11:46 | READY | IN_PROGRESS | FE | Started on feature/TASK-013-playwright-critical-flows |
 | 2026-09-24 11:53 | IN_PROGRESS | CODE_REVIEW | FE | Product 6c81b4c; Iteration 1; lint/format/vitest/build + 3 Playwright specs pass |
 | 2026-09-24 11:57 | CODE_REVIEW | MERGED | SA | Approved round 1; merge_commit=1a1a6f2 |
+| 2026-09-24 11:58 | MERGED | TESTING | TEST | run 1; tested sha 1a1a6f2 is ancestor of main containing merge_commit 1a1a6f2 |
