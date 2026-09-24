@@ -20,3 +20,4 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 09:39 | RUN-001 | SCRUM | REQ-001 | TASK-002 | BACKLOG | READY | DoR met | deps [TASK-001] READY_FOR_DEPLOY; AC-001..AC-005; design linked |
 | 2026-09-24 09:47 | RUN-001 | BE | REQ-001 | TASK-002 | READY | IN_PROGRESS | start catalog APIs | branch feature/TASK-002-catalog-search-api |
 | 2026-09-24 09:47 | RUN-001 | BE | REQ-001 | TASK-002 | IN_PROGRESS | CODE_REVIEW | implementation completed | product bf747cb; team 0e17883; Iteration 1; verify 30 tests |
+| 2026-09-24 09:51 | RUN-001 | SA | REQ-001 | TASK-002 | CODE_REVIEW | MERGED | approved round 1 | reviews/TASK-002-round-1.md APPROVED; merge_commit 37baf91 --no-ff; team e1de718 |
