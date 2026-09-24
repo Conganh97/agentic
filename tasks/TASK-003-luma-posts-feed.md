@@ -3,7 +3,7 @@ id: TASK-003
 title: luma-service posts likes profiles seed
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 15:20
+updated: 2026-09-24 15:23
 ---
 
 ## Description
@@ -95,3 +95,4 @@ Merged `9113e93db114032c2f90383a76af872709af33f3`.
 | 2026-09-24 15:09 | READY | IN_PROGRESS | BE | branch feature/TASK-003-luma-posts-feed |
 | 2026-09-24 15:17 | IN_PROGRESS | CODE_REVIEW | BE | product f599ae5; ./mvnw -q verify pass (22) |
 | 2026-09-24 15:20 | CODE_REVIEW | MERGED | SA | reviews/TASK-003-round-1.md APPROVED; merge_commit=9113e93db114032c2f90383a76af872709af33f3 (--no-ff, two parents) |
+| 2026-09-24 15:23 | MERGED | TESTING | TEST | merge_commit=9113e93db114032c2f90383a76af872709af33f3 is ancestor of luma-service main @ 9113e93db114032c2f90383a76af872709af33f3 |
