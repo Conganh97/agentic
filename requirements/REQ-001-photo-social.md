@@ -1,14 +1,14 @@
 ---
 id: REQ-001
 title: Luma — Instagram-like photo social
-status: APPROVED
+status: ANALYZED
 revision: 3
 content_hash: 54839e9b074480c8
 priority: HIGH
 owner: os_anhbc
-design:
-tasks: []
-updated: 2026-09-24
+design: docs/design/REQ-001-design.md
+tasks: [TASK-001, TASK-002, TASK-003, TASK-004, TASK-005]
+updated: 2026-09-24 14:44
 ---
 
 ## Goal
