@@ -113,11 +113,11 @@ until the requirement is done or a human gate is hit. Typical path:
 Or invoke each role yourself (one chat = one role on one task):
 
 ```
-/sa analyze REQ-001
-/scrum ready TASK-001
-/backend TASK-001
-/sa review TASK-001
-/tester TASK-001
+/sa analyze REQ-###
+/scrum ready TASK-###
+/backend TASK-###
+/sa review TASK-###
+/tester TASK-###
 ```
 
 ### 4. Answer when the run stops
@@ -141,7 +141,7 @@ Check progress any time:
 ```
 /scrum next          # next actionable step
 /scrum report        # counts, blockers, cycle time
-/scrum report REQ-001
+/scrum report REQ-###
 ```
 
 Same data from the shell: `python3 scripts/next.py`, `python3 scripts/scrum_report.py`,

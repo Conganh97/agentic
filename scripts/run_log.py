@@ -2,8 +2,8 @@
 """Append an orchestrator history row.
 
 Usage:
-  python3 scripts/run_log.py --run RUN-001 --actor SCRUM --req REQ-001 \\
-      --task TASK-002 --from IN_PROGRESS --to CODE_REVIEW \\
+  python3 scripts/run_log.py --run RUN-### --actor SCRUM --req REQ-### \\
+      --task TASK-### --from IN_PROGRESS --to CODE_REVIEW \\
       --reason "implementation completed" --evidence "commit abc123"
 """
 from __future__ import annotations
