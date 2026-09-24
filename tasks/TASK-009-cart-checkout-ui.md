@@ -3,7 +3,7 @@ id: TASK-009
 title: Cart and checkout UI
 type: TASK
 priority: CRITICAL
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 11:27
+updated: 2026-09-24 11:29
 ---
 
 ## Description
@@ -52,6 +52,11 @@ See `docs/design/REQ-001-design.md` §13 (FR-5, FR-6, FR-13). Repo: frontend (ex
 - Fetch wrapper already in TASK-006.
 
 ## Implementation (BE/FE)
+### Iteration 1 (initial)
+- Branch: `feature/TASK-009-cart-checkout-ui` @ 79a9a63
+- Changed: `frontend/src/api/cart.ts`, `frontend/src/api/cart.test.ts`, `frontend/src/features/cart/*`, `frontend/src/components/AppShellLayout.tsx`, `frontend/src/app/router.tsx`, `frontend/src/features/catalog/useCatalogQueries.ts`, `frontend/src/features/account/useAuthQueries.ts`, `frontend/src/features/catalog/ProductDetailPage.test.tsx`
+- Tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` → pass (48 tests)
+- Notes: `GET/PATCH/DELETE /api/v1/cart*` with `credentials: 'include'`. Header `Indicator` label = `totalQuantity` (hidden at 0). Empty: `IconBasketOff` + “Giỏ hàng trống” / “Chưa có sản phẩm trong giỏ.” + “Tiếp tục mua sắm” → `/products`. Populated: desktop `Table`, stacked `Card` below `sm` (`useMediaQuery`); `NumberInput` label “Số lượng {name}”; trash `ActionIcon` opens `Modal` “Xóa sản phẩm” / “Xóa {name} khỏi giỏ hàng?”. Totals `Paper` “Tổng số lượng” / “Tổng tiền”. Checkout: reprint totals, teal `Alert` “Thanh toán cổng thanh toán chưa có trong phiên bản này…”, “Liên hệ để hoàn tất” → `/contact`. No payment fields. Add-to-cart writes `CART_QUERY_KEY`; login/register/logout invalidate cart (guest merge). PATCH/DELETE errors toast; delete success “Đã xóa khỏi giỏ”. `PlaceholderPage` left unused. Branch pushed.
 
 ## Review (SA)
 
@@ -65,3 +70,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-5, FR-6, FR-13). Repo: frontend (ex
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 11:25 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-005, TASK-006] READY_FOR_DEPLOY |
 | 2026-09-24 11:27 | READY | IN_PROGRESS | FE | Started on feature/TASK-009-cart-checkout-ui |
+| 2026-09-24 11:29 | IN_PROGRESS | CODE_REVIEW | FE | Product 79a9a63; Implementation Iteration 1 |
