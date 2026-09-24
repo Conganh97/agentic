@@ -3,7 +3,7 @@ id: TASK-007
 title: Home, catalog, category and search UI
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:06
+updated: 2026-09-24 10:10
 ---
 
 ## Description
@@ -82,3 +82,4 @@ Pushed main.
 | 2026-09-24 09:57 | READY | IN_PROGRESS | FE | branch feature/TASK-007-home-catalog-search-ui |
 | 2026-09-24 10:01 | IN_PROGRESS | CODE_REVIEW | FE | product ddc0147; Iteration 1; 23 tests pass |
 | 2026-09-24 10:06 | CODE_REVIEW | MERGED | SA | reviews/TASK-007-round-1.md APPROVED; merge_commit=4aa99e5 (--no-ff, two parents) |
+| 2026-09-24 10:10 | MERGED | TESTING | TEST | run 1; tested sha 4aa99e5 is ancestor of main containing merge_commit 4aa99e5 |
