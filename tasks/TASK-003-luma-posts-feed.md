@@ -3,7 +3,7 @@ id: TASK-003
 title: luma-service posts likes profiles seed
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -18,7 +18,7 @@ figma:
 depends_on: [TASK-002]
 sprint:
 branch: feature/TASK-003-luma-posts-feed
-merge_commit:
+merge_commit: 9113e93db114032c2f90383a76af872709af33f3
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 15:17
+updated: 2026-09-24 15:20
 ---
 
 ## Description
@@ -74,6 +74,15 @@ NFR-5, NFR-8. Depends on TASK-002 members + session. `requirement_revision: 3`,
 
 ## Review (SA)
 
+### Round 1 — APPROVED
+Reviewed: `feature/TASK-003-luma-posts-feed` @ `f599ae5` · Build/tests: `./mvnw -q verify` PASS
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | PostService.java | MINOR | Application layer returns `post.api` records; prefer application DTOs if the layering is tightened later. |
+| 2 | application.yaml | MINOR | Servlet multipart max is 10MB; create-post still rejects > 8 MiB in `PostService` (and maps oversized uploads to 400). |
+
+Merged `9113e93db114032c2f90383a76af872709af33f3`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -85,3 +94,4 @@ NFR-5, NFR-8. Depends on TASK-002 members + session. `requirement_revision: 3`,
 | 2026-09-24 15:08 | BACKLOG | READY | SCRUM | DoR met; deps TASK-002 READY_FOR_DEPLOY |
 | 2026-09-24 15:09 | READY | IN_PROGRESS | BE | branch feature/TASK-003-luma-posts-feed |
 | 2026-09-24 15:17 | IN_PROGRESS | CODE_REVIEW | BE | product f599ae5; ./mvnw -q verify pass (22) |
+| 2026-09-24 15:20 | CODE_REVIEW | MERGED | SA | reviews/TASK-003-round-1.md APPROVED; merge_commit=9113e93db114032c2f90383a76af872709af33f3 (--no-ff, two parents) |
