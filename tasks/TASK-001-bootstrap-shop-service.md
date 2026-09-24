@@ -3,14 +3,14 @@ id: TASK-001
 title: Bootstrap shop-service
 type: TASK
 priority: CRITICAL
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
 repo: shop-service
 depends_on: []
 sprint:
-branch:
+branch: feature/TASK-001-bootstrap-shop-service
 merge_commit:
 release:
 review_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:19
+updated: 2026-09-24 09:22
 ---
 
 ## Description
@@ -63,3 +63,4 @@ See `docs/design/REQ-001-design.md` §5 and NFR-5. Repo: shop-service (new, ADR-
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 09:19 | BACKLOG | READY | SCRUM | DoR met; deps [] |
+| 2026-09-24 09:22 | READY | IN_PROGRESS | BE | branch feature/TASK-001-bootstrap-shop-service |
