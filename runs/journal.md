@@ -38,3 +38,5 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 10:15 | RUN-001 | SCRUM | REQ-001 | TASK-004 | BACKLOG | READY | DoR met; waiting human auth gate | deps [TASK-001] READY_FOR_DEPLOY; human_gate auth; approved_by empty |
 | 2026-09-24 10:15 | RUN-001 | SCRUM | REQ-001 | TASK-008 | BACKLOG | READY | DoR met | deps [TASK-002, TASK-006] READY_FOR_DEPLOY; AC-001..AC-005; design linked |
 | 2026-09-24 10:16 | RUN-001 | SCRUM | REQ-001 | TASK-011 | BACKLOG | READY | DoR met | deps [TASK-003, TASK-006] READY_FOR_DEPLOY; AC-001..AC-005; design linked |
+| 2026-09-24 10:20 | RUN-001 | FE | REQ-001 | TASK-008 | READY | IN_PROGRESS | start product detail UI | branch feature/TASK-008-product-detail-ui |
+| 2026-09-24 10:20 | RUN-001 | FE | REQ-001 | TASK-008 | IN_PROGRESS | CODE_REVIEW | implementation completed | product 4d73acf; team e120077; Iteration 1; 29 tests |
