@@ -3,7 +3,7 @@ id: TASK-007
 title: Home, catalog, category and search UI
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:10
+updated: 2026-09-24 10:14
 ---
 
 ## Description
@@ -34,15 +34,15 @@ Wire header nav to the category tree; implement home sections, all-products, cat
 keyword search using TASK-002 APIs. Responsive card grids.
 
 ## Acceptance Criteria
-- [ ] AC-001 `/` loads header, category nav, a featured product section, bait and gear sections
+- [x] AC-001 `/` loads header, category nav, a featured product section, bait and gear sections
       (or equivalent category sections), and footer; product `Card` shows name, image, price
-- [ ] AC-002 `/products` and `/categories/:slug` list products from the API; sort `Select` and
+- [x] AC-002 `/products` and `/categories/:slug` list products from the API; sort `Select` and
       `Pagination` change the query; opening a card goes to `/products/:slug`
-- [ ] AC-003 Header search submits to `/search?q=`; matching products render; `q` with zero
+- [x] AC-003 Header search submits to `/search?q=`; matching products render; `q` with zero
       results shows the design §13 empty state (icon + “Không tìm thấy sản phẩm”)
-- [ ] AC-004 Loading uses `Skeleton` cards; API failure shows `Alert` role="alert"; layout is
+- [x] AC-004 Loading uses `Skeleton` cards; API failure shows `Alert` role="alert"; layout is
       4/3/2 columns at md/sm/base
-- [ ] AC-005 RTL tests cover home render of a mocked featured list, category list, and empty search
+- [x] AC-005 RTL tests cover home render of a mocked featured list, category list, and empty search
 
 ## Design (SA)
 See `docs/design/REQ-001-design.md` §13 (FR-1, FR-2, FR-4, FR-14). Repo: frontend (existing).
@@ -71,6 +71,16 @@ Merged 4aa99e5.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ 4aa99e5 (contains merge `4aa99e5`), service on port 15173 (shop-service 18081)
+- Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (23 tests)
+- AC-001 pass — browser `/`: AppShell teal `#12b886` / Inter; header + category nav + footer; H2 `Bán chạy` / `Mồi câu cá` / `Phụ kiện đồ câu`; cards name+image+price
+- AC-002 pass — `/products` 18 cards; sort `Giá giảm` → `?sort=price-desc` first `Cần máy hồ 345.000₫`; card → `/products/can-may-ho`; `/categories/cau-ca-chep` 4 cards
+- AC-003 pass — header `chép`+`Tìm` → `/search?q=chép` 4 matches; `/search?q=xyzzy` H4 `Không tìm thấy sản phẩm`
+- AC-004 pass — RTL skeletons + alert; live `/categories/khong-ton-tai` `role=alert`; grid 4/3/2 at 1280/768/375
+- AC-005 pass — 23 Vitest tests cover home featured, category list, empty search
+- Exploratory: parent category empty + children; `/news` still in shell; SA MINORs not AC; product repo left clean
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -83,3 +93,4 @@ Pushed main.
 | 2026-09-24 10:01 | IN_PROGRESS | CODE_REVIEW | FE | product ddc0147; Iteration 1; 23 tests pass |
 | 2026-09-24 10:06 | CODE_REVIEW | MERGED | SA | reviews/TASK-007-round-1.md APPROVED; merge_commit=4aa99e5 (--no-ff, two parents) |
 | 2026-09-24 10:10 | MERGED | TESTING | TEST | run 1; tested sha 4aa99e5 is ancestor of main containing merge_commit 4aa99e5 |
+| 2026-09-24 10:14 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-007-run-1.md PASS; every AC-001..AC-005 checked; tested sha 4aa99e5 |
