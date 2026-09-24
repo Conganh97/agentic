@@ -27,3 +27,5 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 15:48 | RUN-001 | FE | REQ-001 | TASK-005 | IN_PROGRESS | CODE_REVIEW | feed create like profile | 76272c5 product 0604394 |
 | 2026-09-24 15:56 | RUN-001 | UX/UI | REQ-001 | TASK-005 | CODE_REVIEW | CODE_REVIEW | uxui_review 1 APPROVED | 47b2c13 docs/design/ux/reviews/TASK-005-review-1.md |
 | 2026-09-24 15:58 | RUN-001 | SA | REQ-001 | TASK-005 | CODE_REVIEW | MERGED | Round 1 APPROVED --no-ff | c9c0208 merge_commit=ab07b17 |
+| 2026-09-24 16:05 | RUN-001 | TEST | REQ-001 | TASK-005 | TESTING | READY_FOR_DEPLOY | run 1 PASS AC-001..004 | 2147c91 tests/TASK-005-run-1.md |
+| 2026-09-24 16:05 | RUN-001 | SCRUM | REQ-001 |  |  |  | run stopped; DEVOPS Phase 9 not built | TASK-002..005 READY_FOR_DEPLOY waiting |
