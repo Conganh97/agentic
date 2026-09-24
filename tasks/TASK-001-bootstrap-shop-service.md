@@ -3,7 +3,7 @@ id: TASK-001
 title: Bootstrap shop-service
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: shop-service
 depends_on: []
 sprint:
 branch: feature/TASK-001-bootstrap-shop-service
-merge_commit:
+merge_commit: 48801b6
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:26
+updated: 2026-09-24 09:29
 ---
 
 ## Description
@@ -58,6 +58,12 @@ See `docs/design/REQ-001-design.md` §5 and NFR-5. Repo: shop-service (new, ADR-
 - Notes: Boot 4 needs `spring-boot-starter-flyway` (not `flyway-core` alone) to activate Flyway auto-config; Testcontainers 2 artifacts are `testcontainers-postgresql` / `testcontainers-junit-jupiter`. V1 is a comment-only baseline (domain tables left to later tasks). CORS + credentials for `http://localhost:15173`. Local `spring-boot:run` still needs a PostgreSQL `shop` database. Repo created via `scripts/repo.py`; branch pushed.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-001-bootstrap-shop-service @ 701a2e5 · Build/tests: ./mvnw -q verify PASS (6 tests)
+No comments.
+
+Merged 48801b6.
+Pushed main.
 
 ## Test (TEST)
 
@@ -70,3 +76,4 @@ See `docs/design/REQ-001-design.md` §5 and NFR-5. Repo: shop-service (new, ADR-
 | 2026-09-24 09:19 | BACKLOG | READY | SCRUM | DoR met; deps [] |
 | 2026-09-24 09:22 | READY | IN_PROGRESS | BE | branch feature/TASK-001-bootstrap-shop-service |
 | 2026-09-24 09:26 | IN_PROGRESS | CODE_REVIEW | BE | product commit 701a2e5; Implementation Iteration 1 |
+| 2026-09-24 09:29 | CODE_REVIEW | MERGED | SA | merge_commit=48801b6; reviews/TASK-001-round-1.md APPROVED; --no-ff on main |
