@@ -3,7 +3,7 @@ id: TASK-004
 title: Customer account APIs
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: shop-service
 depends_on: [TASK-001]
 sprint:
 branch: feature/TASK-004-customer-account-api
-merge_commit:
+merge_commit: ed63e6a
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 10:56
+updated: 2026-09-24 10:59
 ---
 
 ## Description
@@ -57,6 +57,12 @@ See `docs/design/REQ-001-design.md` §5–§7 (FR-7, FR-8, NFR-3). Repo: shop-se
 - Notes: Flyway V6 because V1–V5 already used. Email stored trimmed+lowercase. displayName max 80. Login does not merge guest cart (TASK-005). `spring-security-crypto` only (no security filter). Cookie `shop_session` httpOnly SameSite=Lax Path=/ 7 days; token is 64-byte hex, SHA-256 stored. Login 401 detail is `Invalid credentials` for unknown email and wrong password. Branch pushed. `git pull` on shop-service main hung; created branch from already-up-to-date local main.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-004-customer-account-api @ a7a64d9 · Build/tests: ./mvnw -q verify PASS (71 tests)
+No comments.
+
+Merged ed63e6a.
+Pushed main.
 
 ## Test (TEST)
 
@@ -70,3 +76,4 @@ See `docs/design/REQ-001-design.md` §5–§7 (FR-7, FR-8, NFR-3). Repo: shop-se
 | 2026-09-24 10:48 | READY | READY | HUMAN (os_anhbc) | approved auth gate; run remaining REQ-001 tasks |
 | 2026-09-24 10:53 | READY | IN_PROGRESS | BE | branch feature/TASK-004-customer-account-api |
 | 2026-09-24 10:56 | IN_PROGRESS | CODE_REVIEW | BE | product a7a64d9; Implementation Iteration 1 |
+| 2026-09-24 10:59 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit=ed63e6a --no-ff |
