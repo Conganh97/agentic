@@ -2,8 +2,8 @@
 id: REQ-001
 title: Luma — Instagram-like photo social
 status: APPROVED
-revision: 2
-content_hash: a3ec577de0e2a3bb
+revision: 3
+content_hash: 54839e9b074480c8
 priority: HIGH
 owner: os_anhbc
 design:
@@ -33,7 +33,7 @@ product, not a placeholder catalog.
 
 - Stories, Reels / video, DMs, comments, hashtags, explore ranking, ads.
 - Follow / unfollow, notifications, live, shopping.
-- Native iOS / Android apps, multi-tenant SaaS, production deploy.
+- Native iOS / Android apps, multi-tenant SaaS, PROD release.
 
 ## User Stories / Behaviour
 
