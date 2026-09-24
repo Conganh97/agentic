@@ -3,7 +3,7 @@ id: TASK-006
 title: Frontend scaffold and AppShell
 type: TASK
 priority: CRITICAL
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:21
+updated: 2026-09-24 09:25
 ---
 
 ## Description
@@ -54,6 +54,11 @@ See `docs/design/REQ-001-design.md` §13 and NFR-1. Repo: frontend (new, ADR-000
 - Create the GitHub repo only via `scripts/repo.py`.
 
 ## Implementation (BE/FE)
+### Iteration 1 (initial)
+- Branch: `feature/TASK-006-frontend-shell` @ 1a1957a
+- Changed: `frontend/src/main.tsx`, `frontend/src/app/*`, `frontend/src/components/AppShellLayout.tsx`, `frontend/src/api/client.ts`, `frontend/src/features/placeholders/*`, `frontend/vite.config.ts`, `frontend/package.json`
+- Tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` → pass (18 tests)
+- Notes: shop name/hotline/email/Zalo from design defaults (`Mồi Câu Shop`); header second row is static (no `/shop/settings` fetch yet); Sản phẩm mega is a stub `Menu` (Tất cả sản phẩm); account signed-out buttons only; no catalog/account forms; `IconMenu2` used as mobile navbar heading beside Mantine `Burger`; leftover workspace `var/` from create-vite path resolution was not deleted (`rm -rf` blocked by guard-shell)
 
 ## Review (SA)
 
@@ -67,3 +72,4 @@ See `docs/design/REQ-001-design.md` §13 and NFR-1. Repo: frontend (new, ADR-000
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 09:20 | BACKLOG | READY | SCRUM | DoR met; deps [] |
 | 2026-09-24 09:21 | READY | IN_PROGRESS | FE | branch feature/TASK-006-frontend-shell |
+| 2026-09-24 09:25 | IN_PROGRESS | CODE_REVIEW | FE | product 1a1957a; Iteration 1; 18 tests pass |
