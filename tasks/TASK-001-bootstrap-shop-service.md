@@ -3,7 +3,7 @@ id: TASK-001
 title: Bootstrap shop-service
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:29
+updated: 2026-09-24 09:32
 ---
 
 ## Description
@@ -77,3 +77,4 @@ Pushed main.
 | 2026-09-24 09:22 | READY | IN_PROGRESS | BE | branch feature/TASK-001-bootstrap-shop-service |
 | 2026-09-24 09:26 | IN_PROGRESS | CODE_REVIEW | BE | product commit 701a2e5; Implementation Iteration 1 |
 | 2026-09-24 09:29 | CODE_REVIEW | MERGED | SA | merge_commit=48801b6; reviews/TASK-001-round-1.md APPROVED; --no-ff on main |
+| 2026-09-24 09:32 | MERGED | TESTING | TEST | run 1; tested sha 48801b6 is ancestor of main containing merge_commit 48801b6 |
