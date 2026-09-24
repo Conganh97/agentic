@@ -20,3 +20,4 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 15:23 | RUN-001 | UX/UI | REQ-001 | TASK-004 | CODE_REVIEW | CHANGES_REQUESTED | review 1 MAJOR entry grain | 5fb9b93 docs/design/ux/reviews/TASK-004-review-1.md |
 | 2026-09-24 15:26 | RUN-001 | TEST | REQ-001 | TASK-003 | TESTING | READY_FOR_DEPLOY | run 1 PASS | 36c3a6c tests/TASK-003-run-1.md |
 | 2026-09-24 15:26 | RUN-001 | FE | REQ-001 | TASK-004 | CHANGES_REQUESTED | CODE_REVIEW | iteration 2 entry grain | bf01e3f product 1561b12 |
+| 2026-09-24 15:29 | RUN-001 | UX/UI | REQ-001 | TASK-004 | CODE_REVIEW | CODE_REVIEW | uxui_review 2 APPROVED | 889ada6 docs/design/ux/reviews/TASK-004-review-2.md |
