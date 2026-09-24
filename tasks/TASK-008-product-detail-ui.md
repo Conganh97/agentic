@@ -3,7 +3,7 @@ id: TASK-008
 title: Product detail UI
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: frontend
 depends_on: [TASK-002, TASK-006]
 sprint:
 branch: feature/TASK-008-product-detail-ui
-merge_commit:
+merge_commit: 4d7cf8d
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:19
+updated: 2026-09-24 10:22
 ---
 
 ## Description
@@ -61,6 +61,12 @@ See `docs/design/REQ-001-design.md` §13 (FR-3). Repo: frontend (existing).
 - Notes: Gallery is `Paper` + `Image` + thumbnail `SimpleGrid` (no `@mantine/carousel`). Tabs: “Mô tả” / “Thông tin” / “Hướng dẫn sử dụng” (usage tab omitted when empty). Related heading “Sản phẩm liên quan”. Success toast “Đã thêm vào giỏ”. 404 Alert “Không tìm thấy sản phẩm”. `addCartItem` POSTs `/api/v1/cart/items` with `credentials: 'include'`; cart backend not merged (TASK-005), so POST is mocked in tests and still called on click. Copy rendered as `Text` paragraphs (newline split). Branch pushed.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-008-product-detail-ui @ 4d73acf · Build/tests: npm run lint && npm run format:check && npm test -- --run && npm run build PASS (29 tests)
+No comments.
+
+Merged 4d7cf8d.
+Pushed main.
 
 ## Test (TEST)
 
@@ -73,3 +79,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-3). Repo: frontend (existing).
 | 2026-09-24 10:15 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002, TASK-006] READY_FOR_DEPLOY |
 | 2026-09-24 10:17 | READY | IN_PROGRESS | FE | branch feature/TASK-008-product-detail-ui |
 | 2026-09-24 10:19 | IN_PROGRESS | CODE_REVIEW | FE | product 4d73acf feat(TASK-008): product detail page with qty and add-to-cart |
+| 2026-09-24 10:22 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=4d7cf8d --no-ff |
