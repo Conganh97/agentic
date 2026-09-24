@@ -1,53 +1,24 @@
 # System Overview
 
-## 1. Idea
-
-The team runs inside Cursor. There is no orchestrator service: control comes from a workflow rule that
-every agent follows, state comes from markdown files, and git records every change.
+Control = workflow rule. State = markdown. Audit = git. No orchestrator service (ADR-0002).
 
 ```
-            HUMAN (requirements, approvals, unblock)
-                          │
-                   ┌──────▼──────┐
-                   │ Scrum skill │  "scrum next": which task, which role
-                   └──────┬──────┘
-                          │
-     ┌────────────────────▼─────────────────────┐
-     │  tasks/TASK-###.md  (status = truth)     │◄── workflow rule (.cursor/rules/workflow.mdc)
-     │  History table + git commit per change   │◄── pre-commit check, hooks
-     └───┬──────────┬──────────┬─────────┬──────┘
-         ▼          ▼          ▼         ▼
-     SA   PQA   UX/UI   BE / FE    TEST     DEVOPS   (Cursor chats using role skills)
-         │          │
-         │          └──► product/ (one git repo per component, feature branches)
-         └──► review ⇄ fix loop ──► MERGED ──► TESTING ⇄ BUG|FAILED ──► DEPLOY ──► RELEASED
+HUMAN (REQ, approved_by, unblock)
+        → Scrum (/scrum run, next.py)
+        → tasks/TASK-###.md  status = truth
+             SA  PQA  UX/UI  BE/FE  TEST  DEVOPS
+             → product/<component>  ·  ops/compose  ·  GHCR
 ```
 
-## 2. Components
+| Piece | Where |
+|-------|--------|
+| Rules | `AGENTS.md`, `workflow.mdc` |
+| Skills | `.cursor/skills/<role>/SKILL.md` |
+| State / board | `tasks/*.md`, `sync_board.py` |
+| Guards | `.githooks/pre-commit`, `.cursor/hooks.json` |
+| Build/run | `project.md` (Java 21, Spring, React, ports) |
+| Deploy | `scripts/deploy.py`, `ops/compose/`, ADR-0011 |
 
-| Component | Implementation | Responsibility |
-|-----------|----------------|----------------|
-| Rules | `AGENTS.md`, `.cursor/rules/workflow.mdc` | Hard rules, state machine, transition protocol |
-| Agents | `.cursor/skills/<role>/SKILL.md` | Role-specific reads, outputs and allowed transitions |
-| State | `tasks/*.md` frontmatter | Single source of truth per task |
-| Index | `tasks/board.md` | Overview of all tasks (derived) |
-| Audit | History table + git log | Who changed what, when, why |
-| Guardrails | git `pre-commit` + `.cursor/hooks.json` | Reject invalid transitions and dangerous commands |
-| Knowledge | `docs/`, `memory/`, `project.md` | Targeted context for agents |
-| Product | `product/` | The code being built (separate repo per component) |
-| Ops | `ops/compose/`, `scripts/deploy.py` | Local DEV/STG/PROD; GHCR images (ADR-0011) |
-
-## 3. Workflow
-
-`BACKLOG → READY → IN_PROGRESS → CODE_REVIEW → MERGED → TESTING → READY_FOR_DEPLOY → DEPLOYING → RELEASED`
-
-Loops: `CODE_REVIEW → CHANGES_REQUESTED → IN_PROGRESS` and `TESTING → BUG → IN_PROGRESS`
-(max 3 iterations each). Execution failures use `FAILED` (then back to `failed_from`).
-Any working state can go to `BLOCKED`; only an explicit unblock returns it.
-Dependencies: `python3 scripts/deps.py`. Evidence: workflow §8.
-
-Full transition table with roles and guards: `.cursor/rules/workflow.mdc` §2 and §5.
-
-## 4. Why this design
-
-See `docs/adr/0002-markdown-driven-cursor-native-team.md`.
+Flow: `BACKLOG → READY → IN_PROGRESS → CODE_REVIEW → MERGED → TESTING → READY_FOR_DEPLOY → DEPLOYING → RELEASED`
+(+ `CHANGES_REQUESTED` / `BUG` / `FAILED` / `BLOCKED`). Table + evidence: `workflow.mdc` §2 / §8.
+Deps: `scripts/deps.py`.

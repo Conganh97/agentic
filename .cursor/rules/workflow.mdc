@@ -20,17 +20,17 @@ Task state lives only in the `status:` field of `tasks/TASK-###-*.md`. Change it
 | From | To | Who | Guard |
 |------|----|-----|-------|
 | BACKLOG | READY | SCRUM, HUMAN | Definition of Ready (§4) **and** every `depends_on` is MERGED or later |
-| READY | IN_PROGRESS | BE / FE / UX/UI = `assignee` | every `depends_on` is MERGED or later |
-| IN_PROGRESS | CODE_REVIEW | BE / FE / UX/UI = `assignee` | tests pass (or UX artifacts written); work on `branch`; Implementation iteration filled |
-| IN_PROGRESS | FAILED | BE / FE / UX/UI = `assignee` | execution failed (build/git/env); `failed_from` + `failure` set |
+| READY | IN_PROGRESS | `assignee` (BE / FE / UX/UI / DEVOPS) | every `depends_on` is MERGED or later |
+| IN_PROGRESS | CODE_REVIEW | `assignee` (BE / FE / UX/UI / DEVOPS) | tests pass (or UX/ops artifacts written); work on `branch`; Implementation iteration filled |
+| IN_PROGRESS | FAILED | `assignee` (BE / FE / UX/UI / DEVOPS) | execution failed (build/git/env); `failed_from` + `failure` set |
 | CODE_REVIEW | CHANGES_REQUESTED | SA, PQA | SA (code): Review round + `review_iteration += 1`. PQA (UX_UI or FE visual): `docs/design/ux/reviews/` + `uxui_review_iteration += 1` |
 | CODE_REVIEW | MERGED | SA, PQA | SA: code Review **APPROVED** + `--no-ff` (not `UX_UI`). PQA: `work_type: UX_UI` only; `uxui_review` APPROVED; `merge_commit` = team sha. FE also needs PQA `uxui_review` before SA merges |
-| CHANGES_REQUESTED | IN_PROGRESS | BE / FE / UX/UI = `assignee` | — |
+| CHANGES_REQUESTED | IN_PROGRESS | `assignee` (BE / FE / UX/UI / DEVOPS) | — |
 | MERGED | TESTING | TEST | `merge_commit` is an ancestor of `main` |
 | TESTING | BUG | TEST | Test run FAIL (product behaviour); `test_iteration += 1`; `bugs/BUG-###.md` created |
 | TESTING | READY_FOR_DEPLOY | TEST | Test run PASS; every AC checked with evidence |
 | TESTING | FAILED | TEST | environment/tooling cannot run the test (not a product bug) |
-| BUG | IN_PROGRESS | BE / FE / UX/UI = `assignee` | — |
+| BUG | IN_PROGRESS | `assignee` (BE / FE / UX/UI / DEVOPS) | — |
 | FAILED | value of `failed_from` | owning role, SCRUM, HUMAN | cause addressed; clear `failed_from` |
 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | target PROD requires `approved_by` set by HUMAN |
 | DEPLOYING | RELEASED | DEVOPS | Deployment section filled; smoke check passed; `release` set |
@@ -99,15 +99,12 @@ IN_PROGRESS after the retry limit — transition IN_PROGRESS → FAILED.
 
 ## 6. Creating tasks
 
-- Who: SA (from a design, or from a PQA accept FAIL fix list), TEST (new BUG found outside a task's test run), SCRUM, HUMAN.
-- Copy `templates/task.md`; id = highest existing `TASK-###` + 1 (or TASK-001 if none); file `tasks/TASK-###-<kebab-slug>.md`.
-- Do not delete task files in normal work (audit lives in git). An empty `tasks/` board is valid for a
-  fresh framework; `scripts/sync_board.py` then writes a header-only board.
-- Initial status BACKLOG; History row `— → BACKLOG`; sync the board (step 7).
-- Commit: `[TASK-007] created (SA): short note`. When SA creates several tasks from one requirement,
-  use one commit: `[REQ-001] analyzed (SA): TASK-003..TASK-007 created`.
-- A failing **product** test run on an existing task uses TESTING → BUG on that task **and**
-  creates `bugs/BUG-###-<slug>.md` (see `templates/bug.md`). Do not open a second TASK for the same fail.
+Who: SA (design or PQA-accept FAIL list), TEST (BUG found outside a run), SCRUM, HUMAN.
+Copy `templates/task.md`; id = max `TASK-###` + 1; file `tasks/TASK-###-<kebab-slug>.md`.
+Do not delete task files. Empty `tasks/` is valid (`sync_board.py` header-only).
+BACKLOG + History `— → BACKLOG` + board. Commit `[TASK-007] created (SA): …` or one commit
+`[REQ-001] analyzed (SA): TASK-003..TASK-007 created`. Product test FAIL → TESTING → BUG on
+**that** task + `bugs/BUG-###-<slug>.md` — not a second TASK.
 
 ## 7. Refusing
 

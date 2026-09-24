@@ -10,7 +10,7 @@ TEST = per-task AC black-box. **PQA** = plan quality, UX quality, increment acce
 |---------|------|
 | `/pqa plan REQ-###` | REQ `ANALYZING`, design exists, plan not APPROVED |
 | `/pqa review TASK-###` | `CODE_REVIEW` on `UX_UI` or FE with `requires_uxui` |
-| `/pqa accept REQ-###` | Every child `READY_FOR_DEPLOY` or UX_UI `MERGED` |
+| `/pqa accept REQ-###` | Every child `READY_FOR_DEPLOY` or UX_UI / DEVOPS `MERGED` |
 
 SA reviews **code** only. PQA reviews **UX and the plan**. They loop until the design is `FINAL`
 and the REQ is `ANALYZED`. After all tasks pass TEST, PQA accepts the increment; FAIL → SA adds

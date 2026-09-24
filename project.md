@@ -59,21 +59,13 @@ are starting points, not locks.
 
 ## Local environment notes
 
-- JDK 25 (Homebrew) is installed; services compile with `--release 21`. `/usr/bin/java` finds no runtime,
-  so export it before `./mvnw`:
-  `export JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home`
-- Every service reads its port from `SERVER_PORT` (`server.port: ${SERVER_PORT:<default>}`). Port 8081 is
-  held by a system agent (`macmnsvc`) on this machine: for local runs pick a free port, e.g.
-  `SERVER_PORT=18081 ./mvnw -q spring-boot:run`. Check a port with `nc -z localhost <port>` (`lsof` cannot
-  see root-owned listeners).
-- Maven writes to `~/.m2` and downloads from Maven Central: in Cursor, run `mvn`/`./mvnw` outside the
-  sandbox (full permissions), not only with network access. Same for `npm` (cache in `~/.npm`).
-- Node 25 / npm 11 are installed.
-- Open the FE as `http://localhost:15173` **or** `http://127.0.0.1:15173`. CORS on the API must allow
-  both origins (`docs/standards/backend.md`). A localhost-only allowlist returns 403 on credentialed
-  POSTs when the page is opened via `127.0.0.1`.
-- Docker is required for Testcontainers. If Docker is not running, repository integration tests cannot
-  run: say so in the Implementation notes instead of skipping them silently.
+- `export JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home` before `./mvnw`
+  (`--release 21`; `/usr/bin/java` has no runtime). Node 25 / npm 11 installed.
+- `server.port: ${SERVER_PORT:<default>}`. 8081 is taken (`macmnsvc`) → `SERVER_PORT=18081`.
+  Probe: `nc -z localhost <port>` (`lsof` misses root listeners).
+- `./mvnw` / `npm` need full permissions (Maven Central, `~/.m2`, `~/.npm`), not sandbox-only.
+- FE: `http://localhost:15173` **and** `http://127.0.0.1:15173`. CORS must allow both or
+  credentialed POSTs 403. Docker required for Testcontainers — if down, say so, do not skip silently.
 
 ## Environments
 

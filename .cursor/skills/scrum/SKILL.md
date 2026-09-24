@@ -1,215 +1,85 @@
 ---
 name: scrum
-description: Scrum agent and workflow orchestrator. Runs a requirement end-to-end by dispatching role subagents (run), suggests the next step (next), checks Definition of Ready, unblocks on request, manages sprints, syncs the board and reports progress from markdown task files. Use when the user invokes /scrum, e.g. "/scrum run REQ-002", "/scrum next", "/scrum ready TASK-002", "/scrum report".
+description: Scrum orchestrator. /scrum run dispatches role subagents; also next, ready, sprint, report. Use when invoked as /scrum, e.g. "/scrum run REQ-002".
 disable-model-invocation: true
 ---
 
-# Scrum Agent
+# Scrum
 
-Role: `SCRUM`. Follow `AGENTS.md` and `.cursor/rules/workflow.mdc` (transition protocol, report format).
+Role: `SCRUM`. `AGENTS.md` + `.cursor/rules/workflow.mdc`. Next step is **disk**, not memory:
+`python3 scripts/next.py [REQ-###]` · `deps.py --json` · `parallel.py` · `sprint.py`.
 
-| Invocation | Mode |
+| Invocation | Does |
 |------------|------|
-| `/scrum run REQ-###` / `/scrum run` | State-machine executor: read → validate → next → dispatch → validate artifacts → repeat |
-| `/scrum next [REQ-###]` | Recommend the next step (no file changes) |
-| `/scrum ready TASK-###` | Check Definition of Ready + deps; move BACKLOG → READY |
-| `/scrum unblock TASK-### <note>` | Return a BLOCKED task to `blocked_from` (only when the user asks) |
-| `/scrum sprint [close]` | Plan / close a sprint. **Required** before `/scrum run` pulls BACKLOG when work is large |
-| `/scrum sync` | `python3 scripts/sync_board.py` and commit if the board changed |
-| `/scrum report [REQ-###]` | Run `python3 scripts/scrum_report.py [REQ-###]` and paste the output |
+| `/scrum run [REQ-###]` | Loop: read → validate → next → dispatch → verify artifacts |
+| `/scrum next [REQ-###]` | Print next step, no writes |
+| `/scrum ready TASK-###` | DoR + deps → BACKLOG → READY |
+| `/scrum unblock TASK-### <note>` | Only if the user asks. BLOCKED → `blocked_from` |
+| `/scrum sprint [close]` | Plan/close when unfinished > 5 (`SMALL_MAX=5`, `SPRINT_CAP=6`) |
+| `/scrum sync` | `sync_board.py` |
+| `/scrum report [REQ-###]` | Paste `scrum_report.py` output |
 
-## Contract
+**Writes:** board (via script), `sprints/`, task `priority`/`sprint`/`assignee`, own transitions,
+History, new tasks if asked. **Forbidden:** AC/Design/Implementation/Review/Test/Deployment;
+`product/`; doing another role’s work (in `run`, others are always subagents).
 
-**Reads**: `tasks/board.md`, task frontmatter (full files only when needed), `requirements/`
-frontmatter, `sprints/`, `bugs/`, `python3 scripts/deps.py --json`.
+## `ready` / `sprint` / `report`
 
-**Writes**: `tasks/board.md` (via script), `sprints/`; task frontmatter `priority`, `sprint`, `assignee`;
-`status` only for its transitions; History; new task files at the user's request (workflow §6).
-Dispatches `/pqa` as a subagent (never does PQA work itself).
+**ready:** workflow §4 + `deps.py` + sprint stamp matches ACTIVE (if any). Pass → protocol commit
+`[TASK-###] BACKLOG -> READY (SCRUM): DoR met`. Fail → `NEEDS_INPUT`.
 
-**Transitions**: create task → BACKLOG · BACKLOG → READY · BLOCKED → `blocked_from` (user asked) ·
-FAILED → `failed_from` (user asked recover) · working state → BLOCKED
+**sprint:** `sprint.py`. ≤5 unfinished → no sprint. >5 → ACTIVE file; only `sprint: SPRINT-##`
+is pulled (in-flight always continues). Plan = first dep layer, `templates/sprint.md`, stamp
+tasks, `chore: SPRINT-## planned`. Close when scoped tasks MERGED-or-later.
 
-**Forbidden**: editing Description, AC, Design, Implementation, Review, Test, Deployment; any file in
-product repos; unblocking on its own initiative; doing another role's work itself (in `run`, other roles
-are always subagents).
+**report:** never hand-count. REQ `RELEASED` only if `req.py check` passes.
 
----
+## `run [REQ-###]`
 
-## `next` — choose the next step
+Stay SCRUM. Every other role = **fresh** `generalPurpose` subagent, foreground. Never reuse.
+Resume from disk; do not re-do finished work. Max 30 dispatches (or the number the user gave).
 
-Re-read disk every time. The next step is `python3 scripts/next.py [REQ-###]` (not memory).
-Also `python3 scripts/deps.py --json` and `python3 scripts/parallel.py`.
+**Gate:** REQ `APPROVED`+ (not DRAFT/CANCELLED). Team tree clean, `core.hooksPath=.githooks`.
+`repo.py status` clean on `main`. `deps.py` no cycles. Sprint `plan`/`close_and_plan` → do
+`/scrum sprint` before new BACKLOG.
 
-Scope: tasks with `parent: REQ-###` (or all tasks). Skip BLOCKED, RELEASED, FAILED (unless recovering),
-tasks with a non-empty `human_gate` and empty `approved_by`, and tasks marked *waiting* in the current
-run. First match wins (finish work before starting new work):
+**Loop**
 
-| # | Situation | Role → command |
-|---|-----------|----------------|
-| 1 | Requirement `APPROVED` (no design) or `ANALYZING` after PQA plan CHANGES | SA → `/sa analyze REQ-###` |
-| 2 | Requirement `ANALYZING`, plan not APPROVED | PQA → `/pqa plan REQ-###` |
-| 3 | Requirement `revision` > task `requirement_revision` | stop — BLOCKED `requirement_changed` |
-| 4 | Large work, no ACTIVE sprint, nothing in-flight | SCRUM → `/scrum sprint` |
-| 5 | CODE_REVIEW `UX_UI` or FE visual still required | PQA → `/pqa review TASK-###` |
-| 6 | CODE_REVIEW (PQA visual approved or not required) | SA → `/sa review TASK-###` (code only) |
-| 7 | MERGED or TESTING (skip `UX_UI` / `DEVOPS` MERGED) | TEST → `/tester TASK-###` |
-| 8 | CHANGES_REQUESTED, BUG or IN_PROGRESS | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
-| 9 | READY, deps met, in sprint scope, REQ `ANALYZED`+ | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
-| 10 | BACKLOG, DoR + deps, REQ `ANALYZED`+ | SCRUM → `/scrum ready TASK-###` |
-| 11 | All children `READY_FOR_DEPLOY` (UX_UI / DEVOPS `MERGED`), no PQA accept | PQA → `/pqa accept REQ-###` |
-| 12 | READY_FOR_DEPLOY or DEPLOYING (after PQA accept) | DEVOPS → `/devops deploy TASK-### <ENV>` |
+1. `next.py` (fresh).
+2. SCRUM `ready`/`sprint` → do it yourself.
+3. Skip dispatch if `human_gate` and no `approved_by`, or PROD without `approved_by`. DEV and
+   STG deploy **are** dispatched. Mark *waiting* and continue.
+4. Two READY tasks only if `parallel.py` lists the pair (different repos, no `depends_on` edge).
+5. Else dispatch with the prompt below. Log:
+   `run_log.py --run RUN-### --actor <ROLE> --req … --task … --from … --to …`
+   Create `runs/RUN-###.md` from `templates/run.md` at start.
+6. After each dispatch, **re-read disk** (`artifacts.md`: review/test/bug/`merge_commit`).
+   `git log -3 --oneline`, team clean, `repo.py status`. Status + workflow §8 evidence → continue.
+   Unchanged FAILED / dirty tree / product not on `main` / hook reject → *waiting* or **stop**.
+   Permission-cancelled `NEEDS_INPUT` → re-dispatch once.
+7. Stop: idle, limit, or same task no progress twice.
 
-Independent READY tasks in **different** component repos (no shared `depends_on` edge, `deps.py`
-actionable) may be recommended together for parallel dispatch. Same repo → sequential.
+Do not re-analyze an `ANALYZED`+ REQ unless PQA asked. Do not start BE/FE/UX/UI if already
+CODE_REVIEW+. UX_UI and DEVOPS bootstrap stay MERGED (no TEST). After PQA accept →
+`/devops deploy`. Accept FAIL → SA adds tasks; leftover > 5 → side sprint.
 
-Ties inside a row: priority (CRITICAL first), then id. Nothing matches → report what everything is
-waiting for (incomplete deps from `deps.py`, human gates, BLOCKED, FAILED). Output:
+### Dispatch prompt
 
 ```
-Next:    TASK-### (<status>, <priority>) → <ROLE>
-Run:     /<skill> <args>
-Why:     <1 line: priority, dependencies, blockers>
-Waiting: <tasks blocked, FAILED, gated, or needing human input>
+Workspace: <team path> (stay on current branch). Product: <path>/product (project.md registry).
+You are invoked as `<command>`. Skill: /uxui → ux-ui; /pqa → product-qa; /sa → sa;
+/backend → backend; /frontend → frontend; /tester → tester; /devops → devops.
+Follow that SKILL.md + AGENTS.md + workflow.mdc + project.md. You did not do an earlier
+role on this task. Use `date` for timestamps. Do not bypass hooks. Commit only files you change.
+Reply: workflow report block, then ≤5 lines of problems.
 ```
 
-## `ready TASK-###`
-Re-read the task; check workflow §4 (parent, assignee, ≥1 real `AC-###`, `depends_on` list with no
-cycles/`python3 scripts/deps.py`, Design filled or linked, **every dep MERGED or later**).
-If an ACTIVE sprint exists, the task's `sprint:` must match it (or refuse).
-Pass → BACKLOG → READY per the protocol; commit `[TASK-###] BACKLOG -> READY (SCRUM): DoR met`.
-Fail → `NEEDS_INPUT` listing what is missing.
-
-## `unblock TASK-### <note>`
-Only when the user explicitly asks in chat. BLOCKED → `blocked_from`, clear `blocked_from`, History
-`By = HUMAN (<name>)` if the user decided, else `SCRUM`, note = the user's reason.
-
-## `sprint` / `sprint close`
-
-Source of truth: `python3 scripts/sprint.py [REQ-###]` (`SMALL_MAX=5`, `SPRINT_CAP=6`).
-
-| Unfinished tasks | `/scrum run` |
-|------------------|--------------|
-| ≤ 5 | No sprint. Pull BACKLOG as today. |
-| > 5 | Must have an **ACTIVE** sprint. Only `sprint: SPRINT-##` tasks are readied/started. In-flight work always continues. |
-
-**Plan** (`action: plan` or `/scrum sprint`):
-1. Proposed ids = first dependency layer (`sprint.py plan`). Human may replace the list / goal.
-2. Copy `templates/sprint.md` → `sprints/SPRINT-##.md` (next id, `status: ACTIVE`).
-3. Goal = one usable increment (not “finish the REQ”).
-4. Set `sprint: SPRINT-##` on scoped tasks (no History row). `sync_board.py`.
-5. Commit `chore: SPRINT-## planned (TASK-a..TASK-c)`.
-
-**Close** (`action: close_and_plan` or `/scrum sprint close`):
-1. All scoped tasks MERGED-or-later. Fill Outcome / Status at end. `status: CLOSED`.
-2. Commit `chore: SPRINT-## closed`.
-3. Leftover > 5 → plan the next sprint in the same step. Leftover ≤ 5 → just close; run them without a sprint.
-
-Do not ready tasks outside the ACTIVE sprint. Do not close while anything in the sprint is in-flight.
-
-## `report [REQ-###]`
-Run `python3 scripts/scrum_report.py [REQ-###]` and show the output. Do not hand-count. Never set a
-requirement to `RELEASED` / `READY_FOR_RELEASE` yourself unless the script says every child task
-qualifies (`scripts/req.py check` must pass).
-
----
-
-## `run [REQ-###]` — state-machine executor
-
-Invoke `run` in the user's main chat (subagents cannot start subagents). You stay SCRUM. Every other
-role runs as a **fresh subagent** (Task tool, `generalPurpose`, foreground). One subagent = one role on
-one task; never reuse a subagent; the SA reviewer is never the implementer of that task.
-
-This is an executor, not a script of hopes. **Every loop iteration starts from disk.** Resume is the
-default: if Cursor stopped mid-run, the next `/scrum run` continues from current statuses — it does
-not re-analyze or re-implement finished work.
-
-### 1. Gate
-- `REQ-###` given: file exists; `status` is `APPROVED` or later (not `DRAFT`, not `CANCELLED`).
-  `DRAFT` → stop, `NEEDS_INPUT` ("human must approve REQ-###").
-- Team repo: `git status --porcelain` empty and hooks enabled (`git config core.hooksPath` = `.githooks`).
-  Product repos: `python3 scripts/repo.py status` all clean on `main`. Otherwise `NEEDS_INPUT`.
-- `python3 scripts/deps.py` must report no cycles and no missing refs. Cycles → `NEEDS_INPUT`.
-- Limit: at most 30 dispatches per run (the user may give another number).
-- Sprint: `python3 scripts/sprint.py [REQ-###]`. `action: plan` / `close_and_plan` → do `/scrum sprint`
-  yourself before any new BACKLOG pull. In-flight is not blocked.
-
-### 2. Loop (read → validate → next → dispatch → validate)
-
-```
-read state from disk (tasks + req + deps.py)
-    ↓
-validate preconditions (DoR, deps, human_gate, dirty tree)
-    ↓
-find next action (`next`)
-    ↓
-dispatch role subagent  (or do SCRUM `ready` yourself)
-    ↓
-validate artifacts from disk (never trust the subagent's prose)
-    ↓
-record / continue
-```
-
-1. Compute `next` within the scope (fresh).
-2. SCRUM step (`ready` or `sprint`) → do it yourself.
-3. Human gate (`human_gate` set, no `approved_by`) or PROD deploy without `approved_by` → do not
-   dispatch; mark *waiting*; continue. DEVOPS bootstrap and `DEV`/`STG` deploy **are** dispatched.
-4. Two independent READY tasks: only if `python3 scripts/parallel.py` lists the pair. Same `repo`
-   or a `depends_on` edge → sequential. Wait for both to leave IN_PROGRESS before SA review of either
-   if you started them together.
-5. Other roles → dispatch with the prompt below.
-   After each successful status change:
-   `python3 scripts/run_log.py --run RUN-### --actor <ROLE> --req REQ-### --task TASK-### --from <FROM> --to <TO> --reason "…" --evidence "…"`
-   Create `runs/RUN-###.md` from `templates/run.md` at the start of the run (next free number).
-6. After **each** dispatch, verify from disk:
-   - Re-read the task frontmatter and artifacts in `docs/standards/artifacts.md`
-     (`reviews/TASK-###-round-N.md`, `tests/TASK-###-run-N.md`, `bugs/BUG-###`, `merge_commit`)
-   - `git log -3 --oneline`, `git status --porcelain` (team), `python3 scripts/repo.py status`
-   - Status moved as expected **and** workflow §8 evidence is present, trees clean, product on `main`
-     → progress; continue.
-   - Status unchanged with Outcome FAILED / execution error → if the role should have set `FAILED`
-     and did not, mark *waiting* ("agent did not record FAILED"); do not assume the step succeeded.
-   - `NEEDS_INPUT` only because a permission prompt was rejected/cancelled (not a guardrail deny) →
-     re-dispatch the same step once with a fresh subagent; if it happens again → *waiting*
-     ("human: approve <command>").
-   - `NEEDS_INPUT`, `BLOCKED`, `FAILED` status, or status unchanged → mark the task *waiting*.
-   - Dirty tree, a product repo not on `main`, or a commit rejected by guardrails → **stop the run**.
-7. Stop when: nothing actionable; dispatch limit reached; the same task produced no progress twice.
-
-Never start SA analyze again if the requirement is `ANALYZED` or later **unless** PQA plan/accept
-asked for changes. Never start BE/FE/UX/UI if the task is already CODE_REVIEW or later.
-Dispatch `/pqa plan` / `/pqa review` / `/pqa accept` when `next.py` says so. Dispatch `/uxui` when
-`assignee` is `UX/UI`. Skip UX/UI for backend-only / infra / DevOps. UX/UI and DEVOPS bootstrap
-tasks stay MERGED (no TEST). After PQA accept, dispatch `/devops deploy`. After PQA accept FAIL,
-SA adds fix tasks; leftover > 5 → `/scrum sprint` (side sprint).
-
-### 3. Dispatch prompt (fill in `< >`)
-
-```
-Workspace: <team repo path> (branch <current branch> — stay on it). Product repos: <path>/product (registry in project.md).
-You are invoked as `<command>`. Skill folders: /uxui → `.cursor/skills/ux-ui/SKILL.md`;
-/pqa → product-qa; /sa → sa; /backend → backend; /frontend → frontend; /tester → tester; /devops → devops.
-Read and follow that SKILL.md exactly, with AGENTS.md,
-.cursor/rules/workflow.mdc and project.md (commands and local environment notes). You did not do any
-earlier step of this task in another role.
-Use `date` for timestamps. Guardrails are active: if a command is blocked or a commit is rejected,
-report it — do not work around it. Commit only files you change (git add <paths>).
-Reply with only: the workflow report block, then at most 5 lines of problems/ambiguities.
-```
-
-### 4. Report (end of run)
+### End report
 
 ```
 Run:      REQ-### — <n> dispatches, stopped because <reason>
-Done:     TASK-a READY_FOR_DEPLOY · TASK-b MERGED · ...
-Waiting:  TASK-c BLOCKED (<reason>) · TASK-d FAILED (<failure>) · TASK-e deploy needs approved_by · ...
-Human:    <exact decisions/actions needed, one per line>
-Friction: <recurring problems reported by subagents, if any>
+Done:     TASK-a READY_FOR_DEPLOY · …
+Waiting:  TASK-c BLOCKED (…) · deploy needs approved_by · …
+Human:    <one action per line>
+Friction: <recurring subagent problems>
 ```
-
-Audit trail: task History + `runs/journal.md` + `runs/RUN-###.md` + `bugs/` + git.
-
-Resume (do **not** restart): Cursor died mid-SA → if design exists, skip analyze. Mid-BE → status
-IN_PROGRESS, same branch. Permission rejected → waiting, re-dispatch once. Push fail → note, continue
-if the transition is on disk. SA CHANGES_REQUESTED / TEST BUG / FAILED / BLOCKED → `next.py` picks
-the recover step. Docker/env fail → FAILED, not a new analyze.
