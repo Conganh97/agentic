@@ -3,7 +3,7 @@ id: TASK-009
 title: Cart and checkout UI
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 11:37
+updated: 2026-09-24 11:44
 ---
 
 ## Description
@@ -34,15 +34,15 @@ Cart page with quantity edits, remove (modal confirm), totals, continue shopping
 stub that does not take payment.
 
 ## Acceptance Criteria
-- [ ] AC-001 `/cart` lists lines from `GET /api/v1/cart` with name, image, unit price, quantity,
+- [x] AC-001 `/cart` lists lines from `GET /api/v1/cart` with name, image, unit price, quantity,
       line total; header cart indicator shows `totalQuantity`
-- [ ] AC-002 Changing `NumberInput` calls PATCH; confirming delete in a `Modal` calls DELETE;
+- [x] AC-002 Changing `NumberInput` calls PATCH; confirming delete in a `Modal` calls DELETE;
       totals on screen match `totalQuantity` and `totalPriceVnd`
-- [ ] AC-003 Empty cart shows §13 empty state and a button to `/products`; “Tiếp tục mua sắm”
+- [x] AC-003 Empty cart shows §13 empty state and a button to `/products`; “Tiếp tục mua sắm”
       goes to `/products`
-- [ ] AC-004 “Thanh toán” navigates to `/checkout`, which shows totals and an `Alert` that
+- [x] AC-004 “Thanh toán” navigates to `/checkout`, which shows totals and an `Alert` that
       online payment is not in this version, plus a button to `/contact`
-- [ ] AC-005 RTL tests: empty cart, populated totals, delete modal, checkout stub render
+- [x] AC-005 RTL tests: empty cart, populated totals, delete modal, checkout stub render
 
 ## Design (SA)
 See `docs/design/REQ-001-design.md` §13 (FR-5, FR-6, FR-13). Repo: frontend (existing).
@@ -82,6 +82,16 @@ Merged b4bd0ef.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ b4bd0ef (contains merge `b4bd0ef`), service on port 15173 (shop-service 18081)
+- Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (49 tests)
+- AC-001 pass — browser `/cart`: AppShell teal `#12b886` / Inter; lines name+image+unit+qty+line total; header indicator `3`; totals `3` / `117.000₫`
+- AC-002 pass — qty 1→3 PATCH `{quantity:3}` 200; totals `5` / `207.000₫` header `5`; Modal confirm DELETE 200; remaining totals `3` / `135.000₫`
+- AC-003 pass — empty H4 `Giỏ hàng trống` + `Tiếp tục mua sắm` → `/products`
+- AC-004 pass — `Thanh toán` → `/checkout` totals + teal Alert no-payment + `Liên hệ để hoàn tất` → `/contact`
+- AC-005 pass — 49 Vitest tests cover empty, populated totals, delete modal, checkout stub
+- Exploratory: cards below sm; catalog still `/products`; guest add-to-cart; product repo left clean
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -97,3 +107,4 @@ Pushed main.
 | 2026-09-24 11:34 | IN_PROGRESS | CODE_REVIEW | FE | Product 050dc18; Implementation Iteration 2 |
 | 2026-09-24 11:36 | CODE_REVIEW | MERGED | SA | Review round 2 APPROVED @ 050dc18; merge_commit=b4bd0ef |
 | 2026-09-24 11:37 | MERGED | TESTING | TEST | run 1; tested sha b4bd0ef is ancestor of main containing merge_commit b4bd0ef |
+| 2026-09-24 11:44 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-009-run-1.md PASS; every AC-001..AC-005 checked; tested sha b4bd0ef |
