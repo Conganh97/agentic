@@ -18,3 +18,5 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 15:18 | RUN-001 | FE | REQ-001 | TASK-004 | IN_PROGRESS | CODE_REVIEW | auth shell FE verify 11 | 5558485 product c78d7d5 |
 | 2026-09-24 15:23 | RUN-001 | SA | REQ-001 | TASK-003 | CODE_REVIEW | MERGED | Round 1 APPROVED --no-ff | 33c76ca merge_commit=9113e93 |
 | 2026-09-24 15:23 | RUN-001 | UX/UI | REQ-001 | TASK-004 | CODE_REVIEW | CHANGES_REQUESTED | review 1 MAJOR entry grain | 5fb9b93 docs/design/ux/reviews/TASK-004-review-1.md |
+| 2026-09-24 15:26 | RUN-001 | TEST | REQ-001 | TASK-003 | TESTING | READY_FOR_DEPLOY | run 1 PASS | 36c3a6c tests/TASK-003-run-1.md |
+| 2026-09-24 15:26 | RUN-001 | FE | REQ-001 | TASK-004 | CHANGES_REQUESTED | CODE_REVIEW | iteration 2 entry grain | bf01e3f product 1561b12 |
