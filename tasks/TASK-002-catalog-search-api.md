@@ -3,7 +3,7 @@ id: TASK-002
 title: Catalog and search APIs
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:50
+updated: 2026-09-24 09:52
 ---
 
 ## Description
@@ -83,3 +83,4 @@ Pushed main.
 | 2026-09-24 09:41 | READY | IN_PROGRESS | BE | branch feature/TASK-002-catalog-search-api |
 | 2026-09-24 09:47 | IN_PROGRESS | CODE_REVIEW | BE | product commit bf747cb; Implementation Iteration 1 |
 | 2026-09-24 09:50 | CODE_REVIEW | MERGED | SA | merge_commit=37baf91; reviews/TASK-002-round-1.md APPROVED; --no-ff on main |
+| 2026-09-24 09:52 | MERGED | TESTING | TEST | run 1; tested sha 37baf91 is ancestor of main containing merge_commit 37baf91 |
