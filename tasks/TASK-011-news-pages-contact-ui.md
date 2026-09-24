@@ -3,7 +3,7 @@ id: TASK-011
 title: News, policy pages and contact UI
 type: TASK
 priority: CRITICAL
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:28
+updated: 2026-09-24 10:31
 ---
 
 ## Description
@@ -54,6 +54,11 @@ See `docs/design/REQ-001-design.md` §13 (FR-10, FR-11, FR-12). Repo: frontend (
 - Original seed copy only.
 
 ## Implementation (BE/FE)
+### Iteration 1 (initial)
+- Branch: `feature/TASK-011-news-pages-contact-ui` @ 49a6757
+- Changed: `frontend/src/api/content.ts`, `frontend/src/features/content/*`, `frontend/src/app/router.tsx`, `frontend/src/features/catalog/HomePage.tsx`
+- Tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` → pass (37 tests)
+- Notes: List cards use `ThemeIcon` `IconPhoto` because `GET /articles` cards have no `imageUrl` (detail still shows `Image` when present). Home news teaser added (TASK-007 had none); `Badge` “Tin tức”. Copy: “Tin tức”, “Về danh sách tin”, “Bài trước” / “Bài sau”, “Không tìm thấy bài viết”, “Chưa có bài viết”; form “Họ tên”, “Email”, “Số điện thoại”, “Nội dung”, “Gửi”; toast “Đã nhận liên hệ” (does not claim email was sent). `/pages/:slug` covers AC-003 slugs; API also has `/pages/contact` but the form lives at `/contact`. Branch pushed.
 
 ## Review (SA)
 
@@ -67,3 +72,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-10, FR-11, FR-12). Repo: frontend (
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 10:15 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-003, TASK-006] READY_FOR_DEPLOY |
 | 2026-09-24 10:28 | READY | IN_PROGRESS | FE | branch feature/TASK-011-news-pages-contact-ui |
+| 2026-09-24 10:31 | IN_PROGRESS | CODE_REVIEW | FE | product 49a6757; Implementation Iteration 1 |
