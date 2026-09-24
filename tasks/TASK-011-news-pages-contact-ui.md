@@ -3,7 +3,7 @@ id: TASK-011
 title: News, policy pages and contact UI
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:35
+updated: 2026-09-24 10:37
 ---
 
 ## Description
@@ -80,3 +80,4 @@ Pushed main.
 | 2026-09-24 10:28 | READY | IN_PROGRESS | FE | branch feature/TASK-011-news-pages-contact-ui |
 | 2026-09-24 10:31 | IN_PROGRESS | CODE_REVIEW | FE | product 49a6757; Implementation Iteration 1 |
 | 2026-09-24 10:35 | CODE_REVIEW | MERGED | SA | approved round 1; merge_commit=580b15c |
+| 2026-09-24 10:37 | MERGED | TESTING | TEST | run 1; tested sha 580b15c is ancestor of main containing merge_commit 580b15c |
