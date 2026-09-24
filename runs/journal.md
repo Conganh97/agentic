@@ -49,3 +49,4 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 10:41 | RUN-001 | TEST | REQ-001 | TASK-011 | MERGED | TESTING | start run 1 | tested sha 580b15c ancestor of main |
 | 2026-09-24 10:41 | RUN-001 | TEST | REQ-001 | TASK-011 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-011-run-1.md PASS; AC-001..AC-005 checked; team aef3abb |
 | 2026-09-24 10:41 | RUN-001 | SCRUM | REQ-001 | TASK-012 | BACKLOG | BACKLOG | waiting DEVOPS skill (contract-only Phase 9) | DoR met but /devops is contract-only; not READY to avoid mis-dispatch |
+| 2026-09-24 10:49 | RUN-002 | HUMAN | REQ-001 | TASK-004 | READY | READY | approved auth gate | approved_by HUMAN (os_anhbc); commit d1c60c0 |
