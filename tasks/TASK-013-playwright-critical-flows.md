@@ -3,7 +3,7 @@ id: TASK-013
 title: Playwright critical customer flows
 type: TASK
 priority: CRITICAL
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:46
+updated: 2026-09-24 11:53
 ---
 
 ## Description
@@ -51,6 +51,11 @@ See `docs/design/REQ-001-design.md` NFR-7. Repo: frontend (existing).
 - `human_gate: auth`.
 
 ## Implementation (BE/FE)
+### Iteration 1 (initial)
+- Branch: `feature/TASK-013-playwright-critical-flows` @ 6c81b4c
+- Changed: `frontend/playwright.config.ts`, `frontend/e2e/browse-detail.spec.ts`, `frontend/e2e/cart.spec.ts`, `frontend/e2e/account.spec.ts`, `frontend/e2e/fixtures/shopApi.ts`, `frontend/package.json`, `frontend/vite.config.ts`, `frontend/README.md`
+- Tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` → pass (49 tests); `npx playwright test` → pass (3)
+- Notes: Playwright `webServer` starts Vite on `http://127.0.0.1:15173` (`--host 127.0.0.1`); `BASE_URL` skips webServer. Specs mock `/api/v1/*` via `context.route` (no shop-service). `getByRole` / `getByLabel` only. Account: unique `e2e-${Date.now()}@example.com`, dummy password `password1` (same as RTL). Copy unchanged. Branch pushed.
 
 ## Review (SA)
 
@@ -65,3 +70,4 @@ See `docs/design/REQ-001-design.md` NFR-7. Repo: frontend (existing).
 | 2026-09-24 10:48 | BACKLOG | BACKLOG | HUMAN (os_anhbc) | approved auth gate; run remaining REQ-001 tasks |
 | 2026-09-24 11:45 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-007, TASK-008, TASK-009, TASK-010] READY_FOR_DEPLOY; auth approved |
 | 2026-09-24 11:46 | READY | IN_PROGRESS | FE | Started on feature/TASK-013-playwright-critical-flows |
+| 2026-09-24 11:53 | IN_PROGRESS | CODE_REVIEW | FE | Product 6c81b4c; Iteration 1; lint/format/vitest/build + 3 Playwright specs pass |
