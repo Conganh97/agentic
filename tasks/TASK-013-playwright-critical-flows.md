@@ -3,7 +3,7 @@ id: TASK-013
 title: Playwright critical customer flows
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: frontend
 depends_on: [TASK-007, TASK-008, TASK-009, TASK-010]
 sprint:
 branch: feature/TASK-013-playwright-critical-flows
-merge_commit:
+merge_commit: 1a1a6f2
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:53
+updated: 2026-09-24 11:57
 ---
 
 ## Description
@@ -58,6 +58,12 @@ See `docs/design/REQ-001-design.md` NFR-7. Repo: frontend (existing).
 - Notes: Playwright `webServer` starts Vite on `http://127.0.0.1:15173` (`--host 127.0.0.1`); `BASE_URL` skips webServer. Specs mock `/api/v1/*` via `context.route` (no shop-service). `getByRole` / `getByLabel` only. Account: unique `e2e-${Date.now()}@example.com`, dummy password `password1` (same as RTL). Copy unchanged. Branch pushed.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-013-playwright-critical-flows @ 6c81b4c · Build/tests: npm run lint && npm run format:check && npm test -- --run && npm run build PASS (49); npx playwright test PASS (3)
+No comments.
+
+Merged 1a1a6f2.
+Push failed: git fetch origin — Failed to connect to github.com port 443.
 
 ## Test (TEST)
 
@@ -71,3 +77,4 @@ See `docs/design/REQ-001-design.md` NFR-7. Repo: frontend (existing).
 | 2026-09-24 11:45 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-007, TASK-008, TASK-009, TASK-010] READY_FOR_DEPLOY; auth approved |
 | 2026-09-24 11:46 | READY | IN_PROGRESS | FE | Started on feature/TASK-013-playwright-critical-flows |
 | 2026-09-24 11:53 | IN_PROGRESS | CODE_REVIEW | FE | Product 6c81b4c; Iteration 1; lint/format/vitest/build + 3 Playwright specs pass |
+| 2026-09-24 11:57 | CODE_REVIEW | MERGED | SA | Approved round 1; merge_commit=1a1a6f2 |
