@@ -3,7 +3,7 @@ id: TASK-004
 title: Customer account APIs
 type: TASK
 priority: CRITICAL
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by:
 approved_at:
-updated: 2026-09-24 09:15
+updated: 2026-09-24 10:15
 ---
 
 ## Description
@@ -61,3 +61,4 @@ See `docs/design/REQ-001-design.md` §5–§7 (FR-7, FR-8, NFR-3). Repo: shop-se
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-24 10:15 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] READY_FOR_DEPLOY; waiting approved_by (human_gate: auth) |
