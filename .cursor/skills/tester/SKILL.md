@@ -10,7 +10,7 @@ Role: `TEST`. Workflow + `docs/standards/testing.md`. Never edit `product/`.
 
 **Reads:** task (AC, merge_commit), testing standards, `project.md`, UX/Figma if UI.
 **Writes:** `## Test`, AC checkboxes, `tests/TASK-###-run-N.md`, `bugs/BUG-###` on FAIL.
-**Transitions:** MERGED → TESTING → READY_FOR_DEPLOY | BUG | FAILED. Refuse `work_type: UX_UI`.
+**Transitions:** MERGED → TESTING → READY_FOR_DEPLOY | BUG | FAILED. Refuse `work_type: UX_UI` and `DEVOPS`.
 
 ## `/tester TASK-###`
 

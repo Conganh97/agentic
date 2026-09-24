@@ -23,6 +23,7 @@ GITIGNORE = {
     "be": "target/\n.idea/\n*.iml\n.vscode/\n.DS_Store\n.env\n",
     "fe": "node_modules/\ndist/\ncoverage/\n.vscode/\n.DS_Store\n.env\n.env.local\n",
 }
+TEMPLATES = ROOT / "templates" / "ops"
 
 
 def fail(msg):
@@ -82,6 +83,17 @@ def need_gh():
         fail("GitHub CLI not logged in: human runs `gh auth login` once")
 
 
+def seed_ops(path, kind):
+    """DevOps-owned Docker + GHA so the repo is born with a pushable image pipeline."""
+    src = "Dockerfile.be" if kind == "be" else "Dockerfile.fe"
+    shutil.copy(TEMPLATES / src, path / "Dockerfile")
+    if kind == "fe":
+        shutil.copy(TEMPLATES / "nginx.conf", path / "nginx.conf")
+    wf = path / ".github" / "workflows"
+    wf.mkdir(parents=True, exist_ok=True)
+    shutil.copy(TEMPLATES / "ci.yml", wf / "ci.yml")
+
+
 def create(component, kind):
     if not re.fullmatch(r"[a-z][a-z0-9-]*", component):
         fail("component must be kebab-case, e.g. user-service or frontend")
@@ -100,7 +112,10 @@ def create(component, kind):
         run(["git", "init", "-q", "-b", "main"], cwd=path)
         (path / "README.md").write_text(f"# {component}\n\nPart of the product. Conventions: team repo `project.md`.\n")
         (path / ".gitignore").write_text(GITIGNORE[kind])
-        run(["git", "add", "README.md", ".gitignore"], cwd=path)
+        seed_ops(path, kind)
+        run(["git", "add", "README.md", ".gitignore", "Dockerfile", ".github"], cwd=path)
+        if kind == "fe":
+            run(["git", "add", "nginx.conf"], cwd=path)
         run(["git", "commit", "-q", "-m", "chore: initial repository"], cwd=path)
     if run(["git", "remote"], cwd=path):
         fail(f"{rel} already has a remote")

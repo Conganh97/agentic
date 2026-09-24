@@ -64,6 +64,9 @@ Entities/tables/fields added or changed, migrations, backward compatibility.
 |------|-------|----------|--------|------------|
 | TASK-XXX | | UX/UI / BE / FE / DEVOPS / TEST | FR-1, NFR-1 | — |
 
+New components: one DEVOPS task (`depends_on: []`) creates the GitHub repos and Docker/CI. BE/FE
+that need those repos depend on it. Skip the extra task if every repo already exists and CI is correct.
+
 ## 13. UI / UX
 Required when any task is assigned to FE. Write "none" only if there is no web UI.
 SA lists **constraints** here. The sellable visual contract is the UX/UI task (`docs/design/ux/`, ADR-0008).

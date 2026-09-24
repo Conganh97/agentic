@@ -248,7 +248,9 @@ body
             "status": "CODE_REVIEW", "assignee": "FE", "requires_uxui": "false",
         }))
         self.assertTrue(nxt.skip_test({"work_type": "UX_UI", "status": "MERGED", "assignee": "UX/UI"}))
+        self.assertTrue(nxt.skip_test({"work_type": "DEVOPS", "status": "MERGED", "assignee": "DEVOPS"}))
         self.assertFalse(nxt.skip_test({"work_type": "BACKEND", "status": "MERGED"}))
+        self.assertTrue(nxt.child_done_for_accept({"work_type": "DEVOPS", "status": "MERGED"}))
         self.assertTrue(nxt.needs_pqa_visual_review({
             "status": "CODE_REVIEW", "work_type": "FRONTEND", "uxui_review": "",
         }))

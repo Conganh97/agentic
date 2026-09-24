@@ -53,11 +53,11 @@ run. First match wins (finish work before starting new work):
 | 4 | Large work, no ACTIVE sprint, nothing in-flight | SCRUM → `/scrum sprint` |
 | 5 | CODE_REVIEW `UX_UI` or FE visual still required | PQA → `/pqa review TASK-###` |
 | 6 | CODE_REVIEW (PQA visual approved or not required) | SA → `/sa review TASK-###` (code only) |
-| 7 | MERGED or TESTING (skip `work_type: UX_UI` MERGED) | TEST → `/tester TASK-###` |
+| 7 | MERGED or TESTING (skip `UX_UI` / `DEVOPS` MERGED) | TEST → `/tester TASK-###` |
 | 8 | CHANGES_REQUESTED, BUG or IN_PROGRESS | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
 | 9 | READY, deps met, in sprint scope, REQ `ANALYZED`+ | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
 | 10 | BACKLOG, DoR + deps, REQ `ANALYZED`+ | SCRUM → `/scrum ready TASK-###` |
-| 11 | All children `READY_FOR_DEPLOY` (UX_UI `MERGED`), no PQA accept | PQA → `/pqa accept REQ-###` |
+| 11 | All children `READY_FOR_DEPLOY` (UX_UI / DEVOPS `MERGED`), no PQA accept | PQA → `/pqa accept REQ-###` |
 | 12 | READY_FOR_DEPLOY or DEPLOYING (after PQA accept) | DEVOPS → `/devops deploy TASK-### <ENV>` |
 
 Independent READY tasks in **different** component repos (no shared `depends_on` edge, `deps.py`
@@ -152,8 +152,8 @@ record / continue
 
 1. Compute `next` within the scope (fresh).
 2. SCRUM step (`ready` or `sprint`) → do it yourself.
-3. Human gate (`human_gate` set, no `approved_by`) or DEVOPS while the skill is contract-only, or
-   PROD without `approved_by` → do not dispatch; mark *waiting*; continue.
+3. Human gate (`human_gate` set, no `approved_by`) or PROD deploy without `approved_by` → do not
+   dispatch; mark *waiting*; continue. DEVOPS bootstrap and `DEV`/`STG` deploy **are** dispatched.
 4. Two independent READY tasks: only if `python3 scripts/parallel.py` lists the pair. Same `repo`
    or a `depends_on` edge → sequential. Wait for both to leave IN_PROGRESS before SA review of either
    if you started them together.
@@ -179,8 +179,9 @@ record / continue
 Never start SA analyze again if the requirement is `ANALYZED` or later **unless** PQA plan/accept
 asked for changes. Never start BE/FE/UX/UI if the task is already CODE_REVIEW or later.
 Dispatch `/pqa plan` / `/pqa review` / `/pqa accept` when `next.py` says so. Dispatch `/uxui` when
-`assignee` is `UX/UI`. Skip UX/UI for backend-only / infra / DevOps. UX/UI design tasks stay MERGED
-(no TEST). After PQA accept FAIL, SA adds fix tasks; leftover > 5 → `/scrum sprint` (side sprint).
+`assignee` is `UX/UI`. Skip UX/UI for backend-only / infra / DevOps. UX/UI and DEVOPS bootstrap
+tasks stay MERGED (no TEST). After PQA accept, dispatch `/devops deploy`. After PQA accept FAIL,
+SA adds fix tasks; leftover > 5 → `/scrum sprint` (side sprint).
 
 ### 3. Dispatch prompt (fill in `< >`)
 

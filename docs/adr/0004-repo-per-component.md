@@ -25,7 +25,8 @@ which works best with one repository per deployable unit, and wants code pushed 
 
 ## Consequences
 
-- Each component can get its own CI/CD pipeline and release cadence (Phase 9).
+- Each component has its own CI/CD (Dockerfile + GHA) from `repo.py create`; DevOps owns create and
+  repairs (ADR-0011). Stack compose lives in the team `ops/` folder.
 - Agents must use the component path (`<repo>`) instead of a single `product/` repo; a task touches one
   component, so one task = one repo.
 - Needs the GitHub CLI logged in once by a human; without it, creation stops with `NEEDS_INPUT`.

@@ -24,6 +24,9 @@ Never edit product files or the REQ body. Never merge `work_type: UX_UI` (PQA do
 5. UI: §13 = screens + **density constraints** + UX/UI task id — not a visual spec. Create
    `assignee: UX/UI` (`work_type: UX_UI`). FE `requires_uxui: true` and `depends_on` that task.
 6. Tasks: one role, one repo. 2–5 `AC-###`. `requirement_revision` + `content_hash`. `gate_scan.py`.
+   New components → one `assignee: DEVOPS` (`work_type: DEVOPS`, `depends_on: []`) to create the
+   GitHub repos and write/repair Docker + GHA + `ops/compose`. BE/FE that need that repo list it
+   in `depends_on`. No extra DEVOPS task if every named repo already exists and CI is correct.
 7. Design stays **`DRAFT`**. REQ → **`ANALYZING`** (not `ANALYZED`). One commit
    `[REQ-###] analyzing (SA): TASK-a..TASK-b drafted`. Next: **`/pqa plan REQ-###`**.
 8. If PQA plan is `CHANGES_REQUESTED`: revise design/tasks, stay `ANALYZING`, same commit style.
@@ -41,6 +44,7 @@ PQA sets `ANALYZED` + design `FINAL` when the plan is APPROVED. Do not skip that
 - `work_type: UX_UI` → `NEEDS_INPUT` (wait `/pqa review`).
 - FE + UX required and `uxui_review` empty → `NEEDS_INPUT` (wait `/pqa review`).
 - Else: `git diff main...<branch>`, `project.md` verify on the branch.
+- `work_type: DEVOPS` → Docker, GHA, `ops/compose` only (no app-feature review).
 
 | Fail | If |
 |------|-----|
@@ -50,7 +54,7 @@ PQA sets `ANALYZED` + design `FINAL` when the plan is APPROVED. Do not skip that
 
 BLOCKER/MAJOR → CHANGES_REQUESTED (`review_iteration += 1`; already 3 → BLOCKED).
 `reviews/TASK-###-round-N.md`. Approve: `--no-ff` merge, `merge_commit` two parents, `repo.py` push.
-Next: `/tester`.
+Next: `/tester` (skip for `work_type: DEVOPS` — already done at MERGED).
 
 ```markdown
 ### Round N — CHANGES_REQUESTED | APPROVED

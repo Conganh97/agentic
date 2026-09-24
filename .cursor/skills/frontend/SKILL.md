@@ -16,7 +16,7 @@ Role: `FE`. `AGENTS.md` + `.cursor/rules/workflow.mdc`.
 
 ## `/frontend TASK-###`
 
-1. **Check.** Assignee `FE`; status READY / CHANGES_REQUESTED / BUG / FAILED / IN_PROGRESS. Deps MERGED-or-later. Missing `frontend` repo → `/repo create frontend fe`. Dirty tree → `NEEDS_INPUT`.
+1. **Check.** Assignee `FE`; status READY / CHANGES_REQUESTED / BUG / FAILED / IN_PROGRESS. Deps MERGED-or-later. Missing `frontend` repo → wait for the DEVOPS bootstrap if one is open; otherwise fallback `/repo create frontend fe`. Dirty tree → `NEEDS_INPUT`.
 2. **Branch.** READY → `feature/TASK-###-<slug>` from `main`. CHANGES_REQUESTED/FAILED/IN_PROGRESS → existing `branch`. BUG → `fix/TASK-###-<slug>` from `main`.
 3. **Start.** Transition to IN_PROGRESS if needed (protocol).
 4. **Implement.** Follow AC + UX spec/Figma + SA stack. Missing UX contract (`requires_uxui` not false) → `BLOCKED`. No `package.json` → scaffold per `docs/standards/frontend.md` using **only** packages SA named. Structure: `app/pages/features/shared`. Tests ≥1/AC including loading/error. Spec gap → `BLOCKED` for UX/UI. API mismatch → `BLOCKED` for SA.

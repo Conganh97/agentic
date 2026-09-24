@@ -55,6 +55,7 @@ are starting points, not locks.
 | FE verify (before CODE_REVIEW) | `cd product/frontend && npm run lint && npm run format:check && npm test -- --run && npm run build` |
 | FE dev server | `cd product/frontend && BACKEND_PORT=18081 npm run dev -- --port 15173` |
 | E2E tests | `cd product/frontend && npx playwright test` |
+| Deploy DEV/STG/PROD (this machine) | `python3 scripts/deploy.py --env DEV` |
 
 ## Local environment notes
 
@@ -76,9 +77,14 @@ are starting points, not locks.
 
 ## Environments
 
-| Env | How to deploy | Approval |
-|-----|---------------|----------|
-| DEV | TODO (Phase 9) | none |
-| STG | TODO (Phase 9) | none |
-| UAT | TODO (Phase 9) | none |
-| PROD | TODO (Phase 9) | human `approved_by` required |
+No remote app host. DevOps builds images here, pushes GHCR, and `docker compose up` on this Mac
+(ADR-0011). Images: `ghcr.io/Conganh97/product-<component>:<env>-<sha>`.
+
+| Env | Compose | Web | API | DB | Approval |
+|-----|---------|-----|-----|-----|----------|
+| DEV | `ops/compose/dev.yml` | 15173 | 18081 | 15440 | none |
+| STG | `ops/compose/stg.yml` | 25173 | 28081 | 25440 | none |
+| PROD | `ops/compose/prod.yml` | 80 | 8080 | 5432 | human `approved_by` |
+
+`python3 scripts/deploy.py --env DEV`. Secrets in gitignored `ops/compose/.env.<env>`. Optional
+self-hosted GitHub Actions runner on this Mac repeats the image push on `main`.

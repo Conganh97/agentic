@@ -16,7 +16,8 @@ Role: `BE`. `AGENTS.md` + `.cursor/rules/workflow.mdc`.
 
 ## `/backend TASK-###`
 
-1. **Check.** Assignee `BE`. Deps MERGED-or-later. Unknown service that the design adds → `/repo create <name>-service be`. Dirty tree → `NEEDS_INPUT`.
+1. **Check.** Assignee `BE`. Deps MERGED-or-later. Missing service repo → wait for the DEVOPS
+   bootstrap if one is open; otherwise fallback `/repo create <name>-service be`. Dirty tree → `NEEDS_INPUT`.
 2. **Branch.** READY → `feature/TASK-###-<slug>` from `main`. Loops reuse `branch`. BUG → `fix/TASK-###-<slug>`.
 3. **Start.** IN_PROGRESS if needed.
 4. **Implement.** Smallest change for AC + design. Package-by-feature (`docs/standards/backend.md`). New service → design’s starters, not a hardcoded kit. Tests ≥1/AC. API/data/architecture gap → `BLOCKED` for SA. CORS (if browser): both `localhost` and `127.0.0.1`.

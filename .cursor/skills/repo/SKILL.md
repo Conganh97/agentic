@@ -11,7 +11,7 @@ decision: `docs/adr/0004-repo-per-component.md`. Everything goes through `python
 
 | Invocation | Who may run it | Does |
 |------------|----------------|------|
-| `/repo create <component> be\|fe` | DEVOPS, or BE/FE when the task design introduces the component | local repo with initial commit, private GitHub repo, `main` pushed, registry row |
+| `/repo create <component> be\|fe` | **DEVOPS first** (owns the repo + pipeline). BE/FE only if no DevOps task is in flight and they must proceed | local repo + Dockerfile + GHA, private GitHub remote, `main` pushed, registry row |
 | `/repo push <component> [branch]` | BE/FE (their task branch), SA (`main` after merge), DEVOPS | pushes one branch, never forced |
 | `/repo status` | anyone | branch, clean/dirty, commits of `main` not yet pushed |
 
@@ -32,8 +32,9 @@ decision: `docs/adr/0004-repo-per-component.md`. Everything goes through `python
 
 1. Check the component is in the design and not yet in the registry (`/repo status`).
 2. `python3 scripts/repo.py create <component> --type be|fe` (needs network + full permissions).
-3. The script leaves the repo on `main` with only `README.md` and `.gitignore`; scaffolding (Spring Boot,
-   create-vite) happens on the task's feature branch per `docs/standards/`.
+3. The script leaves `main` with `README.md`, `.gitignore`, `Dockerfile`, `.github/workflows/ci.yml`
+   (FE also `nginx.conf`). App scaffolding (Spring Boot, Vite) is still on the feature branch.
+   DevOps repairs those files if they already exist and are wrong.
 4. Commit the updated `project.md` registry in the team repo together with your next task commit (or alone:
    `chore: register <component> repository`).
 

@@ -49,10 +49,10 @@ BE / infra → `NEEDS_INPUT` (not your review).
 
 ## `/pqa accept REQ-###`
 
-Every child is `READY_FOR_DEPLOY` or UX_UI `MERGED`. Run the product (BE+FE+DB). Check REQ ACs **and**
+Every child is `READY_FOR_DEPLOY` or UX_UI / DEVOPS `MERGED`. Run the product (BE+FE+DB). Check REQ ACs **and**
 density. Write `docs/design/reviews/REQ-###-accept-N.md`.
 
-- **PASS** — set `pqa_accept:`. Next: DEVOPS (or idle if Phase 9).
+- **PASS** — set `pqa_accept:`. Next: `/devops deploy TASK-### DEV`.
 - **FAIL** — list must-fix items. **Agree the list with SA in that file** (SA answers the
   “SA agreement” row). Next: `/sa analyze` only to add/adjust tasks (do not wipe the design).
   Scrum may plan a **side sprint** if leftover > 5 (`sprint.py`). Refactors that keep ACs green are

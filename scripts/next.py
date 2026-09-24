@@ -77,8 +77,12 @@ def needs_pqa_plan(req: dict | None, req_id: str) -> bool:
     return artifact_status(req.get("pqa_plan", "")) != "APPROVED"
 
 
+def is_devops_work(task: dict) -> bool:
+    return (task.get("work_type") or "").strip() == "DEVOPS" or task.get("assignee") == "DEVOPS"
+
+
 def child_done_for_accept(task: dict) -> bool:
-    if is_uxui_work(task):
+    if is_uxui_work(task) or is_devops_work(task):
         return task.get("status") in {"MERGED", *DONE_FOR_ACCEPT}
     return task.get("status") in DONE_FOR_ACCEPT
 
@@ -129,8 +133,10 @@ def needs_uxui_review(task: dict) -> bool:
 
 
 def skip_test(task: dict) -> bool:
-    """UX/UI design tasks are done at MERGED; do not dispatch TEST."""
-    return is_uxui_work(task) and task.get("status") == "MERGED"
+    """UX/UI and DevOps bootstrap are done at MERGED; do not dispatch TEST."""
+    if task.get("status") != "MERGED":
+        return False
+    return is_uxui_work(task) or is_devops_work(task)
 
 
 def command_for(task: dict) -> tuple[str, str]:

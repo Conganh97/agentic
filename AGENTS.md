@@ -17,7 +17,8 @@ There is no platform code and no database:
 ## 2. Operating model
 
 Markdown state + role skills + `/scrum run`. Stack: ADR-0009. UX/UI: ADR-0008. Product QA: ADR-0010.
-Sprints when unfinished tasks > 5 (`scripts/sprint.py`). DevOps skill is contract-only (no deploy yet).
+DevOps (ADR-0011): DEV / STG / PROD on this machine, GHCR images + `ops/compose`. Sprints when
+unfinished tasks > 5 (`scripts/sprint.py`).
 Skills: `.cursor/skills/{sa,product-qa,ux-ui,backend,frontend,tester,devops,scrum,repo}/SKILL.md`.
 
 ## 3. Hard rules (never violate)
@@ -61,6 +62,7 @@ Skills: `.cursor/skills/{sa,product-qa,ux-ui,backend,frontend,tester,devops,scru
 | `tests/` | TEST run reports (`TASK-###-run-N.md`) |
 | `runs/` | `/scrum run` journal (`RUN-###.md`, `journal.md`) |
 | `sprints/`, `releases/` | Sprint and release files |
+| `ops/` | Local compose stack (DevOps). Product Docker/CI lives in each product repo |
 | `docs/architecture/` | Architecture docs |
 | `docs/design/` | SA designs |
 | `docs/design/ux/` | UX/UI design contract and reviews (ADR-0008) |

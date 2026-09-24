@@ -13,3 +13,4 @@ Index of architecture decisions and rejected options. Append-only. Details live 
 | 2026-09-24 | ADR-0008 | First-class UX/UI role; markdown contract + Figma MCP for visual review | FE invents UI; Figma as workflow state |
 | 2026-09-24 | ADR-0009 | Locked: Java 21 + Spring, React. SA chooses kit/DB/etc. Package-by-feature FE/BE layouts | Global Mantine lock (ADR-0006) |
 | 2026-09-24 | ADR-0010 | Product QA: plan loop, UX review, increment accept. SA = code only | SA merges UX; designer self-review FE |
+| 2026-09-24 | ADR-0011 | DevOps owns repos + Docker + GHA; DEV/STG/PROD on this machine; GHCR images | Cloud-only runners; images never pushed; UAT |

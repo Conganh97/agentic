@@ -34,7 +34,8 @@ every agent follows, state comes from markdown files, and git records every chan
 | Audit | History table + git log | Who changed what, when, why |
 | Guardrails | git `pre-commit` + `.cursor/hooks.json` | Reject invalid transitions and dangerous commands |
 | Knowledge | `docs/`, `memory/`, `project.md` | Targeted context for agents |
-| Product | `product/` | The code being built (separate repo) |
+| Product | `product/` | The code being built (separate repo per component) |
+| Ops | `ops/compose/`, `scripts/deploy.py` | Local DEV/STG/PROD; GHCR images (ADR-0011) |
 
 ## 3. Workflow
 

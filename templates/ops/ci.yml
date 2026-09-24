@@ -1,0 +1,33 @@
+# Copy to product/<component>/.github/workflows/ci.yml
+# Runs on a self-hosted runner on the human's machine (ADR-0011).
+name: ci
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      env:
+        description: Image channel
+        type: choice
+        options: [dev, stg, prod]
+        default: dev
+permissions:
+  contents: read
+  packages: write
+jobs:
+  image:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GHCR
+        run: echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Build and push
+        env:
+          ENV: ${{ github.event.inputs.env || 'dev' }}
+        run: |
+          set -euo pipefail
+          IMAGE="ghcr.io/${{ github.repository }}"
+          SHA="$(git rev-parse --short HEAD)"
+          docker build -t "${IMAGE}:${ENV}-${SHA}" -t "${IMAGE}:${ENV}" .
+          docker push "${IMAGE}:${ENV}-${SHA}"
+          docker push "${IMAGE}:${ENV}"

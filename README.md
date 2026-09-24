@@ -24,7 +24,7 @@ HUMAN writes REQ → approve
         ├─ PQA → SA          visual review, then code review + merge
         ├─ TEST              per-task acceptance
         ├─ PQA               increment accept (fail → SA fix tasks / side sprint)
-        └─ DEVOPS            deploy (skill exists; not wired yet)
+        └─ DEVOPS            repos + Docker/CI + deploy DEV/STG/PROD on this machine
 ```
 
 ---
@@ -35,11 +35,13 @@ HUMAN writes REQ → approve
 
 1. Open this folder in Cursor.
 2. `git config core.hooksPath .githooks` (`python3` required).
-3. `brew install gh && gh auth login` (only `/repo` uses it).
+3. `brew install gh && gh auth login` then `gh auth refresh -s write:packages` (repos + GHCR).
 4. Confirm GitHub owner / `product-<component>` / visibility in `project.md`.
-5. Install JDK 21+ and Node. Docker if Testcontainers will run. Details: `project.md`.
+5. Install JDK 21+, Node, and **Docker Desktop** (Testcontainers + local deploy). Details: `project.md`.
 6. Connect Figma once: Settings → Tools & MCP → **Connect** next to `figma`
    (`.cursor/mcp.json` → `https://mcp.figma.com/mcp`).
+7. Optional: install a GitHub **self-hosted** Actions runner on this Mac so product `ci.yml` pushes
+   images on `main`. Without it, `/devops deploy` is the pipeline.
 
 Do not clone `product/` by hand. `/repo create` does that.
 
@@ -76,8 +78,9 @@ Same from the shell: `python3 scripts/next.py` · `scrum_report.py` · `deps.py`
 | `/backend TASK-###` | BE | Implement in `product/services/<name>-service` |
 | `/frontend TASK-###` | FE | Implement in `product/frontend` |
 | `/tester TASK-###` | TEST | Black-box after MERGED |
-| `/devops deploy TASK-### <ENV>` | DevOps | Contract only for now |
-| `/repo create\|push\|status` | Repo | Product GitHub repos (`repo.py`) |
+| `/devops TASK-###` | DevOps | Create missing repos; write or repair Docker + GHA + compose |
+| `/devops deploy TASK-### <ENV>` | DevOps | Build, push GHCR, compose up (`DEV` / `STG` / `PROD`) |
+| `/repo create\|push\|status` | Repo | Product GitHub repos (`repo.py`); DevOps is the preferred creator |
 
 One chat = one role, except `/scrum run`. Skills do not auto-invoke.
 
@@ -95,7 +98,8 @@ agentic/                    ← this repo (control plane)
 ├── docs/                   architecture, ADRs, standards, designs
 ├── memory/                 decision / lesson index
 ├── templates/              copy these; do not fill them in place
-├── scripts/                next, deps, board, guards, repo
+├── ops/                    local compose (DEV/STG/PROD)
+├── scripts/                next, deps, board, guards, repo, deploy
 ├── .cursor/                skills, workflow rule, hooks, Figma MCP
 ├── .githooks/              pre-commit
 └── product/                ignored — one git repo per component
@@ -121,7 +125,8 @@ agentic/                    ← this repo (control plane)
 | `reviews/TASK-###-round-N.md` | SA code-review evidence |
 | `tests/TASK-###-run-N.md` | TEST evidence |
 | `runs/RUN-###.md`, `journal.md` | `/scrum run` audit |
-| `releases/` | Release notes when DevOps ships |
+| `releases/` | Release notes when DevOps ships PROD |
+| `ops/` | Compose stack. DevOps. Images from GHCR. Secrets in `.env.dev` / `.env.stg` / `.env.prod` |
 
 Handoff contract: `docs/standards/artifacts.md`.
 
@@ -134,14 +139,14 @@ Handoff contract: `docs/standards/artifacts.md`.
 | `docs/design/ux/` | UX/UI machine contract + Figma URL |
 | `docs/design/reviews/` | PQA plan and increment-accept files |
 | `docs/adr/` | Decisions. Locked cores 0003/0009; repos 0004; UX 0008; PQA 0010 |
-| `docs/standards/` | How BE / FE / UX / PQA / TEST write artifacts |
+| `docs/standards/` | How BE / FE / UX / PQA / TEST / DevOps write artifacts |
 | `memory/decisions.md` | ADR index |
 | `memory/lessons.md` | Recurring pitfalls agents should not repeat |
 
 ### Templates
 
 Copy from `templates/` (`requirement.md`, `task.md`, `design.md`, `ux-*.md`, `pqa-*.md`,
-`review-round.md`, `test-report.md`, `bug.md`, `sprint.md`, `run.md`).
+`review-round.md`, `test-report.md`, `bug.md`, `sprint.md`, `run.md`, `release.md`, `ops/`).
 `templates/examples/TASK-000-example.md` is a filled lifecycle, not a live task.
 
 ### Agents and guards
@@ -167,7 +172,8 @@ Copy from `templates/` (`requirement.md`, `task.md`, `design.md`, `ux-*.md`, `pq
 | `check_transitions.py` | Illegal status changes, retry limits, merge sha |
 | `req.py` | Requirement hash / revision / completion |
 | `gate_scan.py` | Auth / migration / breaking-API text → `human_gate` |
-| `repo.py` | Create and push product repos; write the registry |
+| `repo.py` | Create and push product repos (seeds Dockerfile + GHA); write the registry |
+| `deploy.py` | Build images, push GHCR, compose up (`--env DEV|STG|PROD`) |
 | `run_log.py` | Append `runs/journal.md` |
 | `scrum_report.py` | Counts and cycle time |
 | `test_workflow.py` | Unit tests for the guards |
@@ -181,8 +187,9 @@ product/services/<name>-service/   # Java 21 + Spring, package by feature
 product/frontend/                  # React, src/{app,pages,features,shared}
 ```
 
-Create and push only via `scripts/repo.py`. `main` only after an SA `--no-ff` merge recorded as
-`merge_commit`. Registry rows in `project.md` are written by that script.
+Create and push only via `scripts/repo.py` (DevOps preferred). Create also seeds `Dockerfile` and
+`.github/workflows/ci.yml`. `main` only after an SA `--no-ff` merge recorded as `merge_commit`.
+Registry rows in `project.md` are written by that script. Run the stack with `scripts/deploy.py`.
 
 ---
 
@@ -197,7 +204,7 @@ Create and push only via `scripts/repo.py`. `main` only after an SA `--no-ff` me
 | UX/UI | `docs/design/ux/` + Figma | Product implementation, approving own look |
 | BE / FE | Feature branches in their repo | Merge, approve own work |
 | TEST | Acceptance vs AC | Commits in `product/` |
-| DEVOPS | Deploy when the skill is wired | PROD without `approved_by` |
+| DEVOPS | Product repos (if missing), Dockerfile, GHA, compose, deploy | App features; PROD without `approved_by` |
 
 ---
 
@@ -232,4 +239,4 @@ SA in the design.
 - Log in `gh` once; check owner / visibility in `project.md`.
 - Connect Figma MCP once.
 - Unblock tasks and set `approved_by` for gates and PROD.
-- Deploy is not wired yet — a finished increment stops at `READY_FOR_DEPLOY` after PQA accept.
+- Keep Docker running. After PQA accept, DevOps deploys DEV on this machine (`scripts/deploy.py`).
