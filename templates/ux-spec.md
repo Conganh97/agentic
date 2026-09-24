@@ -1,6 +1,7 @@
 ---
 requirement: REQ-XXX
 status: DRAFT          # DRAFT | FINAL
+figma:                 # https://www.figma.com/design/… (required for UI)
 updated:
 ---
 
@@ -37,6 +38,9 @@ updated:
 | Mobile (<768) | |
 
 ## Accessibility
+
+## Figma
+File URL, pages, key frame ids (home / list / detail / …).
 
 ## Open Questions
 | # | Question | Blocking? | Answer |

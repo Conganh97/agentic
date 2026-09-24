@@ -22,8 +22,9 @@ Add role `UX/UI` (`/uxui`, `/uxui review`) without new task states.
   `work_type: FRONTEND`. UX/UI may set `CHANGES_REQUESTED` (uses `uxui_review_iteration`, not SA
   `review_iteration`).
 - Backend-only / infra / DevOps tasks skip UX/UI.
-- Figma is optional. No Figma tool is configured; do not block the workflow unless the requirement
-  explicitly requires a Figma artifact. Task state stays in markdown.
+- Visual review is **Figma** via the official remote MCP (`.cursor/mcp.json` → `https://mcp.figma.com/mcp`).
+  Markdown remains the machine contract and the status database. If MCP is not connected, UX/UI
+  stops with `NEEDS_INPUT` (human Connects once).
 
 ## Consequences
 
@@ -36,4 +37,4 @@ Add role `UX/UI` (`/uxui`, `/uxui review`) without new task states.
 
 - **SA §13 only:** Rejected — produced kit-default pages, not sellable design.
 - **New task states for “UX_REVIEW”:** Rejected — reuse `CODE_REVIEW` / `CHANGES_REQUESTED`.
-- **Figma as source of truth:** Rejected — agents consume markdown; Figma is an optional visual.
+- **Figma as workflow state:** Rejected — status stays in markdown; Figma is the visual review surface.

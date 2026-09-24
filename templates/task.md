@@ -13,6 +13,7 @@ requires_uxui: false
 uxui_task:
 uxui_design:
 uxui_review:
+figma:                   # Figma file URL (UX/UI tasks and FE that implement them)
 depends_on: []
 sprint:
 branch:

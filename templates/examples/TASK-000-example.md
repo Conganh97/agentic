@@ -11,6 +11,7 @@ requires_uxui: false
 uxui_task:
 uxui_design:
 uxui_review:
+figma:
 depends_on: []
 sprint: SPRINT-00
 branch: feature/TASK-000-health-check

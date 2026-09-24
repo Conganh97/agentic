@@ -16,19 +16,10 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phases 0–8 and 10 done (Scrum incl. `/scrum run` orchestrator).** UX/UI role added (ADR-0008):
-skill `.cursor/skills/ux-ui/SKILL.md`, artifacts `docs/design/ux/`, `/scrum run` dispatches
-`/uxui` and `/uxui review` when `work_type: FRONTEND` or `requires_uxui: true`.
-Workflow hardening is done: FAILED ≠ BUG, deps graph, merge/test artifacts, req hash/revision,
-human gates — see `.cursor/rules/workflow.mdc` and
-`scripts/{check_transitions,deps,req,gate_scan,next}.py`.
-Pending: Phase 9 — DevOps Skill (GitHub Actions + Docker Compose).
-Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript) and ADR-0006
-(Mantine UI kit); details in `project.md`.
-Role skills (contracts): `.cursor/skills/{sa,ux-ui,backend,frontend,tester,devops,scrum}/SKILL.md`;
-product repos: `.cursor/skills/repo/SKILL.md`.
-Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
-`templates/examples/TASK-000-example.md`.
+**Phases 0–8, 10 done.** UX/UI role (ADR-0008) + Figma MCP. Stack policy ADR-0009: Java 21 + Spring
+and React are locked; SA chooses the rest. Pending: Phase 9 DevOps.
+Skills: `.cursor/skills/{sa,ux-ui,backend,frontend,tester,devops,scrum,repo}/SKILL.md`.
+Workflow: `.cursor/rules/workflow.mdc`.
 
 Update this section whenever a phase starts or finishes.
 

@@ -7,7 +7,7 @@ only after the artifacts below exist on disk.
 |-----------|-------------------|
 | HUMAN → SA | `requirements/REQ-###-*.md` (`status: APPROVED`, `revision`, `content_hash`) |
 | SA → UX/UI / BE / FE | Design `docs/design/REQ-###-design.md` §5–§7 + §13 · task file (AC `AC-###`, `depends_on`, `repo`, `work_type`, `requirement_revision`) |
-| UX/UI → FE | `docs/design/ux/REQ-###-ux.md` · page specs · design tokens/system · task `uxui_design` |
+| UX/UI → FE | `docs/design/ux/REQ-###-ux.md` · page specs · tokens · Figma URL (`figma:`) · `uxui_design` |
 | FE → UX/UI | Task `## Implementation` iteration · product branch + commit · `branch` set (when `requires_uxui`) |
 | UX/UI → SA | `docs/design/ux/reviews/TASK-###-review-N.md` **APPROVED** · `uxui_review` set |
 | BE / FE → SA | Task `## Implementation` iteration · product branch + commit · `branch` set |

@@ -1,6 +1,6 @@
 # ADR-0003: Product tech stack — Java Spring microservices + React
 
-- **Status:** Accepted
+- **Status:** Accepted (amended by ADR-0009)
 - **Date:** 2026-09-23
 - **Deciders:** Project owner
 
@@ -11,18 +11,14 @@ reviews are consistent.
 
 ## Decision
 
-- **Backend:** Java 21, Spring Boot 4.0.x (Maven, one Maven project per service with its own wrapper),
-  Spring Cloud 2025.1.x only when a cross-service feature needs it.
-- **Architecture:** microservices (`services/<name>-service/`; one repo per component since ADR-0004), database per service
-  (PostgreSQL + Flyway), synchronous REST (`/api/v1/...`) between services; messaging only via a new ADR.
-- **Frontend:** React + TypeScript (Vite), TanStack Query, React Router (when there is more than one
-  route), Vitest + React Testing Library, oxlint + Prettier. Lives in `frontend/`.
-  *Amended 2026-09-23 (Phase 8):* linter changed from ESLint to oxlint, which `create-vite` 9 generates;
-  the project keeps the scaffolder's tooling instead of swapping it.
-  *Amended 2026-09-24 (ADR-0006):* product UI uses **Mantine** (`@mantine/core`, `@mantine/hooks`,
-  `@mantine/notifications`) + **Tabler Icons** + Inter. Plain CSS is not the product look.
-- **Testing:** JUnit 5, AssertJ, Mockito, Spring slice tests; Testcontainers for PostgreSQL when Docker
-  is available; Playwright for end-to-end tests (TEST role).
+**Locked cores** (ADR-0009): Backend = Java 21 + Spring (Boot), Maven wrapper per service.
+Frontend = React, one `frontend/` app. One repo per component (ADR-0004).
+
+**SA chooses per requirement** (design §5 + ADR if new): Boot minor, DB, migrations, security,
+messaging, FE bundler, UI kit, data library, router, test tooling. Defaults when silent:
+Boot 4, PostgreSQL/Flyway, Vite + TypeScript + Vitest — not locks.
+
+REST `/api/v1/...` between services unless the design says otherwise. Messaging / extra kits need an ADR.
 
 ## Consequences
 

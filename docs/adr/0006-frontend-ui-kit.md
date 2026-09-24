@@ -1,6 +1,6 @@
 # ADR-0006: Frontend UI kit — Mantine + Tabler Icons
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0009
 - **Date:** 2026-09-24
 - **Deciders:** Project owner
 
@@ -17,7 +17,9 @@ passed; the product did not look complete.
 Agents will keep shipping that baseline unless the stack **requires** a component kit and SA/TEST
 reject unthemed pages.
 
-## Decision
+Do **not** use this ADR for new work. UI kit is chosen by SA per requirement (ADR-0009).
+
+## Decision (historical)
 
 The `product/frontend` app uses this UI kit (install latest compatible majors with `npm install`;
 do not pin versions by hand):

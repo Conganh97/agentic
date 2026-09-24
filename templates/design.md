@@ -25,7 +25,17 @@ updated:
 | NFR-1 | Performance / Security / Reliability / ... | |
 
 ## 5. Architecture
-Components involved or added, responsibilities, interactions (optional mermaid diagram).
+Components, responsibilities, interactions (optional mermaid).
+
+### Stack (ADR-0009)
+Locked: Java 21 + Spring · React. SA names everything else.
+
+| Layer | Choice | Why |
+|-------|--------|-----|
+| BE runtime | Java 21 + Spring Boot <ver> | locked core |
+| BE data / security / messaging | | |
+| FE runtime | React + <bundler> | locked core |
+| FE UI kit / data / router | | |
 
 ## 6. API Changes
 | Method | Path / Interface | Request | Response | Errors |
@@ -59,8 +69,7 @@ Required when any task is assigned to FE. Write "none" only if there is no web U
 SA lists **constraints** here. The sellable visual contract is the UX/UI task (`docs/design/ux/`, ADR-0008).
 
 - **Screens:** one row per view (route, purpose, primary actions, data/API it needs).
-- **Constraints:** auth, i18n, kit ADR-0006, content that is legally fixed.
+- **Constraints:** auth, i18n, the UI kit named in §5, legally fixed copy.
 - **UX/UI task:** id that will write `docs/design/ux/REQ-###-ux.md` and page specs. Every FE
   implementation task `depends_on` that UX/UI task and sets `requires_uxui: true`.
-- Do **not** treat “Mantine form on a blank page” as a design. Do **not** duplicate the full
-  visual spec here — that is UX/UI’s job.
+- Do **not** write the visual spec here (UX/UI + Figma). A blank-page form is not a design.

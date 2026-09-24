@@ -203,13 +203,8 @@ hits auth, migration, breaking API, or similar.
 
 ## Stack
 
-See `project.md`, `docs/adr/0003-product-tech-stack.md`, and `docs/adr/0006-frontend-ui-kit.md`.
-
-| Area | Choice |
-|------|--------|
-| Backend | Java 21, Spring Boot 4.0.8, Maven wrapper, PostgreSQL + Flyway |
-| Frontend | React + TypeScript, Vite, TanStack Query, Mantine + Tabler Icons, oxlint + Prettier |
-| Tests | JUnit 5 / AssertJ / Testcontainers (BE); Vitest + RTL (FE) |
+See `project.md` and ADR-0009. **Locked:** Java 21 + Spring, React. Everything else is SA’s
+choice in the requirement design (UI kit, DB, …).
 
 ## Where things live
 
@@ -222,6 +217,7 @@ See `project.md`, `docs/adr/0003-product-tech-stack.md`, and `docs/adr/0006-fron
 | `tests/` | TEST run reports (`TASK-###-run-N.md`) |
 | `runs/` | `/scrum run` journal (`RUN-###.md`, `journal.md`) |
 | `docs/design/` | SA designs |
+| `docs/design/ux/` | UX/UI contract + Figma link |
 | `docs/adr/` | Architecture decisions (stack: 0003; UI kit: 0006) |
 | `docs/standards/` | BE / FE / testing / artifact contracts |
 | `memory/` | Decision index and lessons |
