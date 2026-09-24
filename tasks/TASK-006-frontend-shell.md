@@ -3,7 +3,7 @@ id: TASK-006
 title: Frontend scaffold and AppShell
 type: TASK
 priority: CRITICAL
-status: BACKLOG
+status: READY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:15
+updated: 2026-09-24 09:20
 ---
 
 ## Description
@@ -65,3 +65,4 @@ See `docs/design/REQ-001-design.md` §13 and NFR-1. Repo: frontend (new, ADR-000
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-24 09:20 | BACKLOG | READY | SCRUM | DoR met; deps [] |
