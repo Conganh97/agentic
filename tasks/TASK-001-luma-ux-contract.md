@@ -3,7 +3,7 @@ id: TASK-001
 title: Luma UX/UI design contract
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: UX/UI
 parent: REQ-001
 requirement_revision: 3
@@ -18,7 +18,7 @@ figma: "https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma (Feed 1:18, Cre
 depends_on: []
 sprint:
 branch: ux/TASK-001-luma-ux-contract
-merge_commit:
+merge_commit: e394833
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 14:50
+updated: 2026-09-24 14:52
 ---
 
 ## Description
@@ -69,6 +69,16 @@ Do not change API or AC. `requirement_revision: 3`, `content_hash: 54839e9b07448
 
 ## Review (SA)
 
+### Round 1 — APPROVED
+Reviewed: ux/TASK-001-luma-ux-contract @ `e394833` · Build/tests: n/a (UX_UI; Figma MCP screenshots inspected)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | Figma Screens | MINOR | No frames for `/` or `/sign-up`. Markdown covers both; AC-003 only requires four frames. |
+| 2 | Figma Screens | MINOR | Loading / error / empty-profile are markdown-only; Figma shows success + create-empty. |
+| 3 | Figma Create `1:21` | MINOR | Slot is a filled raised block, not the spec’s 1:1 dashed frame. |
+
+AC-001..AC-004 met. Photo-first feed, heart like, square tiles, mobile bottom nav, desktop side nav. No product merge (`work_type: UX_UI`). Merged `e394833`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -80,3 +90,4 @@ Do not change API or AC. `requirement_revision: 3`, `content_hash: 54839e9b07448
 | 2026-09-24 14:46 | BACKLOG | READY | SCRUM | DoR met; deps [] |
 | 2026-09-24 14:47 | READY | IN_PROGRESS | UX/UI | branch ux/TASK-001-luma-ux-contract |
 | 2026-09-24 14:50 | IN_PROGRESS | CODE_REVIEW | UX/UI | Iteration 1; docs/design/ux/REQ-001-ux.md; Figma https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma frames Feed 1:18 Create 1:21 Profile 1:24 Sign-in 1:15 |
+| 2026-09-24 14:52 | CODE_REVIEW | MERGED | SA | Round 1 APPROVED; merge_commit=e394833 (UX artifacts; no product merge); reviews/TASK-001-round-1.md |
