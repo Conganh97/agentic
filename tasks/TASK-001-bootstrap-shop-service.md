@@ -3,7 +3,7 @@ id: TASK-001
 title: Bootstrap shop-service
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:32
+updated: 2026-09-24 09:34
 ---
 
 ## Description
@@ -35,13 +35,13 @@ Actuator health, Flyway, PostgreSQL config, RFC 9457 `ProblemDetail` advice, and
 origin. No domain APIs yet.
 
 ## Acceptance Criteria
-- [ ] AC-001 `python3 scripts/repo.py create shop-service` (from the team repo) registers
+- [x] AC-001 `python3 scripts/repo.py create shop-service` (from the team repo) registers
       `product/services/shop-service` and the service starts with
       `SERVER_PORT=18081 ./mvnw spring-boot:run` when PostgreSQL is available
-- [ ] AC-002 `GET /actuator/health` returns 200 with status UP when the database is reachable
-- [ ] AC-003 Flyway is wired (`ddl-auto=validate`); an empty or baseline `V1` migration applies on startup
-- [ ] AC-004 A `@RestControllerAdvice` returns RFC 9457 `ProblemDetail` for a sample 404; no stack trace in the body
-- [ ] AC-005 `./mvnw -q verify` passes (at least a health web-slice or context test)
+- [x] AC-002 `GET /actuator/health` returns 200 with status UP when the database is reachable
+- [x] AC-003 Flyway is wired (`ddl-auto=validate`); an empty or baseline `V1` migration applies on startup
+- [x] AC-004 A `@RestControllerAdvice` returns RFC 9457 `ProblemDetail` for a sample 404; no stack trace in the body
+- [x] AC-005 `./mvnw -q verify` passes (at least a health web-slice or context test)
 
 ## Design (SA)
 See `docs/design/REQ-001-design.md` §5 and NFR-5. Repo: shop-service (new, ADR-0007).
@@ -66,6 +66,16 @@ Merged 48801b6.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ 48801b6 (contains merge `48801b6`), service on port 18081
+- Build/tests: `./mvnw -q verify` PASS (6 tests)
+- AC-001 pass — `python3 scripts/repo.py status` → shop-service registered at `product/services/shop-service`; `SERVER_PORT=18081 ./mvnw spring-boot:run` (shop PG on :15432) listening, health UP
+- AC-002 pass — `curl -s localhost:18081/actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`
+- AC-003 pass — startup Flyway `Migrating schema "public" to version "1 - baseline"`; `flyway_schema_history` version=1 script=`V1__baseline.sql`; `ddl-auto: validate`
+- AC-004 pass — `curl -s localhost:18081/api/v1/does-not-exist` → 404 `application/problem+json` `{"status":404,"title":"Not Found",...}`; no stack trace
+- AC-005 pass — `./mvnw -q verify` → 6 tests, 0 failures
+- Exploratory: CORS Vite origin 200 + credentials; other origin 403; POST /actuator/health 405 ProblemDetail; /actuator/env 404; GET / 404 no stack
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -78,3 +88,4 @@ Pushed main.
 | 2026-09-24 09:26 | IN_PROGRESS | CODE_REVIEW | BE | product commit 701a2e5; Implementation Iteration 1 |
 | 2026-09-24 09:29 | CODE_REVIEW | MERGED | SA | merge_commit=48801b6; reviews/TASK-001-round-1.md APPROVED; --no-ff on main |
 | 2026-09-24 09:32 | MERGED | TESTING | TEST | run 1; tested sha 48801b6 is ancestor of main containing merge_commit 48801b6 |
+| 2026-09-24 09:34 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-001-run-1.md PASS; every AC-001..AC-005 checked; tested sha 48801b6 |
