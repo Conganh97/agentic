@@ -3,7 +3,7 @@ id: TASK-004
 title: Frontend shell and authentication screens
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:31
+updated: 2026-09-24 15:33
 ---
 
 ## Description
@@ -112,4 +112,5 @@ Merged `154bf4f19514e9fde423eff32eb900247263e787`.
 | 2026-09-24 15:24 | CHANGES_REQUESTED | IN_PROGRESS | FE | branch feature/TASK-004-luma-auth-ui |
 | 2026-09-24 15:26 | IN_PROGRESS | CODE_REVIEW | FE | product 1561b12; FE verify pass (11); Implementation iteration 2 |
 | 2026-09-24 15:31 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit=154bf4f19514e9fde423eff32eb900247263e787 (--no-ff, two parents); FE verify PASS (11); uxui_review APPROVED |
+| 2026-09-24 15:33 | MERGED | TESTING | TEST | merge_commit=154bf4f19514e9fde423eff32eb900247263e787 is ancestor of frontend main @ 154bf4f19514e9fde423eff32eb900247263e787 |
 
