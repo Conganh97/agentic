@@ -4,28 +4,3 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 
 | Time | Run | Actor | Requirement | Task | From | To | Reason | Evidence |
 |------|-----|-------|-------------|------|------|----|--------|----------|
-| 2026-09-24 14:46 | RUN-001 | SA | REQ-001 |  | APPROVED | ANALYZED | design FINAL + TASK-001..005 | 9b256d1 |
-| 2026-09-24 14:46 | RUN-001 | SCRUM | REQ-001 | TASK-001 | BACKLOG | READY | DoR met; deps [] | parent assignee ACs Design |
-| 2026-09-24 14:51 | RUN-001 | UX/UI | REQ-001 | TASK-001 | IN_PROGRESS | CODE_REVIEW | ux spec + Figma | e394833 docs/design/ux/REQ-001-ux.md |
-| 2026-09-24 14:53 | RUN-001 | SA | REQ-001 | TASK-001 | CODE_REVIEW | MERGED | Round 1 APPROVED UX_UI | 2ff994a merge_commit=e394833 reviews/TASK-001-round-1.md |
-| 2026-09-24 14:54 | RUN-001 | SCRUM | REQ-001 | TASK-002 | BACKLOG | READY | DoR met; HUMAN approved auth | approved_by=os_anhbc |
-| 2026-09-24 15:02 | RUN-001 | BE | REQ-001 | TASK-002 | IN_PROGRESS | CODE_REVIEW | members+session verify 11 | ace2e4b product d8dffdd |
-| 2026-09-24 15:04 | RUN-001 | SA | REQ-001 | TASK-002 | CODE_REVIEW | MERGED | Round 1 APPROVED --no-ff | 99d6165 merge_commit=b110ab945924d95a525c6ae5ce652ab8ff8aa17a |
-| 2026-09-24 15:08 | RUN-001 | TEST | REQ-001 | TASK-002 | MERGED | TESTING | merge_commit ancestor of main | 3656696 |
-| 2026-09-24 15:08 | RUN-001 | TEST | REQ-001 | TASK-002 | TESTING | READY_FOR_DEPLOY | run 1 PASS AC-001..004 | 27a9dec tests/TASK-002-run-1.md |
-| 2026-09-24 15:08 | RUN-001 | SCRUM | REQ-001 | TASK-002 | READY_FOR_DEPLOY | READY_FOR_DEPLOY | deploy waiting Phase 9 | devops skill contract-only |
-| 2026-09-24 15:18 | RUN-001 | BE | REQ-001 | TASK-003 | IN_PROGRESS | CODE_REVIEW | posts likes profiles seed | 0a12304 product f599ae5 |
-| 2026-09-24 15:18 | RUN-001 | FE | REQ-001 | TASK-004 | IN_PROGRESS | CODE_REVIEW | auth shell FE verify 11 | 5558485 product c78d7d5 |
-| 2026-09-24 15:23 | RUN-001 | SA | REQ-001 | TASK-003 | CODE_REVIEW | MERGED | Round 1 APPROVED --no-ff | 33c76ca merge_commit=9113e93 |
-| 2026-09-24 15:23 | RUN-001 | UX/UI | REQ-001 | TASK-004 | CODE_REVIEW | CHANGES_REQUESTED | review 1 MAJOR entry grain | 5fb9b93 docs/design/ux/reviews/TASK-004-review-1.md |
-| 2026-09-24 15:26 | RUN-001 | TEST | REQ-001 | TASK-003 | TESTING | READY_FOR_DEPLOY | run 1 PASS | 36c3a6c tests/TASK-003-run-1.md |
-| 2026-09-24 15:26 | RUN-001 | FE | REQ-001 | TASK-004 | CHANGES_REQUESTED | CODE_REVIEW | iteration 2 entry grain | bf01e3f product 1561b12 |
-| 2026-09-24 15:29 | RUN-001 | UX/UI | REQ-001 | TASK-004 | CODE_REVIEW | CODE_REVIEW | uxui_review 2 APPROVED | 889ada6 docs/design/ux/reviews/TASK-004-review-2.md |
-| 2026-09-24 15:32 | RUN-001 | SA | REQ-001 | TASK-004 | CODE_REVIEW | MERGED | Round 1 APPROVED --no-ff | 118fbda merge_commit=154bf4f |
-| 2026-09-24 15:40 | RUN-001 | TEST | REQ-001 | TASK-004 | TESTING | READY_FOR_DEPLOY | run 1 PASS AC-001..004 | 94a9311 tests/TASK-004-run-1.md |
-| 2026-09-24 15:40 | RUN-001 | SCRUM | REQ-001 | TASK-005 | BACKLOG | READY | DoR met | deps 001 MERGED 003/004 RFD |
-| 2026-09-24 15:48 | RUN-001 | FE | REQ-001 | TASK-005 | IN_PROGRESS | CODE_REVIEW | feed create like profile | 76272c5 product 0604394 |
-| 2026-09-24 15:56 | RUN-001 | UX/UI | REQ-001 | TASK-005 | CODE_REVIEW | CODE_REVIEW | uxui_review 1 APPROVED | 47b2c13 docs/design/ux/reviews/TASK-005-review-1.md |
-| 2026-09-24 15:58 | RUN-001 | SA | REQ-001 | TASK-005 | CODE_REVIEW | MERGED | Round 1 APPROVED --no-ff | c9c0208 merge_commit=ab07b17 |
-| 2026-09-24 16:05 | RUN-001 | TEST | REQ-001 | TASK-005 | TESTING | READY_FOR_DEPLOY | run 1 PASS AC-001..004 | 2147c91 tests/TASK-005-run-1.md |
-| 2026-09-24 16:05 | RUN-001 | SCRUM | REQ-001 |  |  |  | run stopped; DEVOPS Phase 9 not built | TASK-002..005 READY_FOR_DEPLOY waiting |

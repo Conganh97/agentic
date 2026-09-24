@@ -255,8 +255,11 @@ body
 
     def test_pqa_plan_and_accept_gates(self):
         import next as nxt
+        from unittest.mock import patch
         self.assertTrue(nxt.needs_sa_analyze({"status": "APPROVED"}, "REQ-999"))
-        self.assertTrue(nxt.needs_pqa_plan({"status": "ANALYZING", "pqa_plan": ""}, "REQ-001"))
+        self.assertFalse(nxt.needs_pqa_plan({"status": "ANALYZING", "pqa_plan": ""}, "REQ-999"))
+        with patch.object(nxt, "design_exists", return_value=True):
+            self.assertTrue(nxt.needs_pqa_plan({"status": "ANALYZING", "pqa_plan": ""}, "REQ-000"))
         self.assertFalse(nxt.req_analyzed({"status": "ANALYZING"}))
         self.assertTrue(nxt.req_analyzed({"status": "ANALYZED"}))
         tasks = {
