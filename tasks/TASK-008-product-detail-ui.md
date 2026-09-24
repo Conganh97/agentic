@@ -3,7 +3,7 @@ id: TASK-008
 title: Product detail UI
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:23
+updated: 2026-09-24 10:26
 ---
 
 ## Description
@@ -37,13 +37,13 @@ disabled note only if the cart API is absent — prefer depending on mocked fetc
 grid.
 
 ## Acceptance Criteria
-- [ ] AC-001 `/products/:slug` shows name, price (VND), at least one image, category breadcrumb,
+- [x] AC-001 `/products/:slug` shows name, price (VND), at least one image, category breadcrumb,
       description, and information; usage section when `usage` is non-empty
-- [ ] AC-002 `NumberInput` “Số lượng” is 1–99; `Button` “Thêm vào giỏ” is a Mantine button
-- [ ] AC-003 Related products render as cards linking to their slugs when `related` is non-empty
-- [ ] AC-004 Unknown slug shows `Alert` (404); loading uses `Skeleton`; add-to-cart success uses
+- [x] AC-002 `NumberInput` “Số lượng” is 1–99; `Button` “Thêm vào giỏ” is a Mantine button
+- [x] AC-003 Related products render as cards linking to their slugs when `related` is non-empty
+- [x] AC-004 Unknown slug shows `Alert` (404); loading uses `Skeleton`; add-to-cart success uses
       `notifications.show` when the POST is mocked or available
-- [ ] AC-005 RTL tests: renders detail from mock JSON; changing quantity updates the input;
+- [x] AC-005 RTL tests: renders detail from mock JSON; changing quantity updates the input;
       404 mock shows the alert. No `dangerouslySetInnerHTML`
 
 ## Design (SA)
@@ -69,6 +69,16 @@ Merged 4d7cf8d.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ 4d7cf8d (contains merge `4d7cf8d`), service on port 15173 (shop-service 18081)
+- Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (29 tests)
+- AC-001 pass — browser `/products/vien-moi-chep-ngot`: AppShell teal `#12b886` / Inter; H2 `Viên mồi chép ngọt` `45.000₫`; breadcrumb `Câu cá chép`; image + tabs Mô tả / Thông tin / Hướng dẫn sử dụng
+- AC-002 pass — `NumberInput` `Số lượng` 1→5; type 100 clamps to 99; `mantine-Button-root` `Thêm vào giỏ`
+- AC-003 pass — related cards; click `Bột thơm dụ chép` → `/products/bot-thom-du-chep`
+- AC-004 pass — `/products/khong-ton-tai` Alert `Không tìm thấy sản phẩm`; RTL skeletons + mocked `Đã thêm vào giỏ`
+- AC-005 pass — 29 Vitest tests cover mock detail, qty, 404; no `dangerouslySetInnerHTML`
+- Exploratory: empty related hides heading; `/news` still in shell; live cart POST 404 toast until TASK-005; product repo left clean
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -81,3 +91,4 @@ Pushed main.
 | 2026-09-24 10:19 | IN_PROGRESS | CODE_REVIEW | FE | product 4d73acf feat(TASK-008): product detail page with qty and add-to-cart |
 | 2026-09-24 10:22 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=4d7cf8d --no-ff |
 | 2026-09-24 10:23 | MERGED | TESTING | TEST | run 1; tested sha 4d7cf8d is ancestor of main containing merge_commit 4d7cf8d |
+| 2026-09-24 10:26 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-008-run-1.md PASS; every AC-001..AC-005 checked; tested sha 4d7cf8d |
