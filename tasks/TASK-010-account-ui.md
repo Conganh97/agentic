@@ -23,9 +23,9 @@ failure_message:
 failure_retry: 0
 failure_recoverable:
 human_gate: auth
-approved_by:
-approved_at:
-updated: 2026-09-24 09:15
+approved_by: HUMAN (os_anhbc)
+approved_at: 2026-09-24 10:48
+updated: 2026-09-24 10:48
 ---
 
 ## Description
@@ -62,3 +62,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-7, FR-8, FR-9). Repo: frontend (exi
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-24 10:48 | BACKLOG | BACKLOG | HUMAN (os_anhbc) | approved auth gate; run remaining REQ-001 tasks |
