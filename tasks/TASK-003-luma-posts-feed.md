@@ -3,7 +3,7 @@ id: TASK-003
 title: luma-service posts likes profiles seed
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 15:09
+updated: 2026-09-24 15:17
 ---
 
 ## Description
@@ -64,6 +64,12 @@ NFR-5, NFR-8. Depends on TASK-002 members + session. `requirement_revision: 3`,
 
 ## Implementation (BE/FE)
 
+### Iteration 1
+- Branch: `feature/TASK-003-luma-posts-feed` @ f599ae5
+- Changed: `post/{api,application,domain,infrastructure}`, `like/{application,domain,infrastructure}`, `media/{api,application,domain,infrastructure}`, `member/{api,application}`, Flyway `V2__posts_likes_media.sql`, `R__seed_demo.sql`
+- Tests: `./mvnw -q verify` → pass (22)
+- Notes: session required for create/like; public feed/profiles/media; HTTPS URLs stored as-is; uploads under `luma.media.dir`; seed `luna`/`noah` (password `demo-pass-8`) + 6 HTTPS posts; members V1 unchanged
+
 ## UX/UI Review
 
 ## Review (SA)
@@ -78,3 +84,4 @@ NFR-5, NFR-8. Depends on TASK-002 members + session. `requirement_revision: 3`,
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo luma-service; depends_on TASK-002 |
 | 2026-09-24 15:08 | BACKLOG | READY | SCRUM | DoR met; deps TASK-002 READY_FOR_DEPLOY |
 | 2026-09-24 15:09 | READY | IN_PROGRESS | BE | branch feature/TASK-003-luma-posts-feed |
+| 2026-09-24 15:17 | IN_PROGRESS | CODE_REVIEW | BE | product f599ae5; ./mvnw -q verify pass (22) |
