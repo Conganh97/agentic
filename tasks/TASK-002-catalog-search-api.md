@@ -3,7 +3,7 @@ id: TASK-002
 title: Catalog and search APIs
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:52
+updated: 2026-09-24 09:54
 ---
 
 ## Description
@@ -34,15 +34,15 @@ Persist categories, products, and product images; seed the tree and ≥16 synthe
 list/detail/search as specified in the design. Placeholder image URLs only.
 
 ## Acceptance Criteria
-- [ ] AC-001 `GET /api/v1/categories` returns the two-level tree (bait + gear parents and children)
+- [x] AC-001 `GET /api/v1/categories` returns the two-level tree (bait + gear parents and children)
       with slugs from design §7
-- [ ] AC-002 `GET /api/v1/products?category=cau-ca-chep` returns only products in that category;
+- [x] AC-002 `GET /api/v1/products?category=cau-ca-chep` returns only products in that category;
       each item has `name`, `imageUrl`, `priceVnd`; unknown category → 404
-- [ ] AC-003 `GET /api/v1/products/{slug}` returns description, information, usage, images, and
+- [x] AC-003 `GET /api/v1/products/{slug}` returns description, information, usage, images, and
       up to 8 related products in the same category excluding self; missing slug → 404
-- [ ] AC-004 `GET /api/v1/products?q=` (case-insensitive name/description contains, `q` max 80)
+- [x] AC-004 `GET /api/v1/products?q=` (case-insensitive name/description contains, `q` max 80)
       returns matches; a `q` with no rows returns `items: []` and `total: 0` (200)
-- [ ] AC-005 Pagination (`page`,`size` max 60) and `sort=name|price` + `order` work; seed has
+- [x] AC-005 Pagination (`page`,`size` max 60) and `sort=name|price` + `order` work; seed has
       ≥4 `featured=true`; tests cover list, detail, empty search, and 404
 
 ## Design (SA)
@@ -72,6 +72,16 @@ Merged 37baf91.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ 37baf91 (contains merge `37baf91`), service on port 18081
+- Build/tests: `./mvnw -q verify` PASS (30 tests)
+- AC-001 pass — `curl -s localhost:18081/api/v1/categories` → 200 two-level tree; parents `moi-cau-ca`, `phu-kien-do-cau` with full design §7 child slugs
+- AC-002 pass — `GET /api/v1/products?category=cau-ca-chep` → 200 4 items all `cau-ca-chep` with `name`/`imageUrl`/`priceVnd`; unknown category → 404
+- AC-003 pass — `GET /api/v1/products/vien-moi-chep-ngot` → 200 description/information/usage/images + 3 related same category excluding self; missing slug → 404
+- AC-004 pass — `GET /api/v1/products?q=CHÉP` → 200 `total=4`; no-match `q` → 200 `items: []` `total: 0`; `q` len 81 → 400
+- AC-005 pass — `page=1&size=5&sort=price&order=asc` → 5 items `total=18`; `featured=true` → `total=4`; `size=61` → 400; verify covers list/detail/empty search/404
+- Exploratory: blank `q` = no filter (18); parent category `moi-cau-ca` → empty page; `/categories/{slug}` 200/404; health UP; unknown path 404 ProblemDetail; HHH90003004 on detail (known MINOR)
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -84,3 +94,4 @@ Pushed main.
 | 2026-09-24 09:47 | IN_PROGRESS | CODE_REVIEW | BE | product commit bf747cb; Implementation Iteration 1 |
 | 2026-09-24 09:50 | CODE_REVIEW | MERGED | SA | merge_commit=37baf91; reviews/TASK-002-round-1.md APPROVED; --no-ff on main |
 | 2026-09-24 09:52 | MERGED | TESTING | TEST | run 1; tested sha 37baf91 is ancestor of main containing merge_commit 37baf91 |
+| 2026-09-24 09:54 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-002-run-1.md PASS; every AC-001..AC-005 checked; tested sha 37baf91 |
