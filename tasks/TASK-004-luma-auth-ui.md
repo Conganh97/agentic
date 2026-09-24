@@ -3,7 +3,7 @@ id: TASK-004
 title: Frontend shell and authentication screens
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:33
+updated: 2026-09-24 15:40
 ---
 
 ## Description
@@ -45,13 +45,13 @@ onto `MantineProvider`. Do not invent a second look.
 
 ## Acceptance Criteria
 
-- [ ] AC-001 Sign-up with email, password, username calls `POST /api/v1/auth/sign-up`, then lands
+- [x] AC-001 Sign-up with email, password, username calls `POST /api/v1/auth/sign-up`, then lands
       on `/feed`. Duplicate email shows the API `detail`, not a blank or raw dump.
-- [ ] AC-002 Sign-in with valid credentials opens `/feed`. Invalid credentials show
+- [x] AC-002 Sign-in with valid credentials opens `/feed`. Invalid credentials show
       `Invalid email or password.` and stay on `/sign-in`.
-- [ ] AC-003 Reload while signed in still shows the member chrome (`GET /api/v1/auth/me`).
+- [x] AC-003 Reload while signed in still shows the member chrome (`GET /api/v1/auth/me`).
       Sign-out calls `POST /api/v1/auth/sign-out` and returns to `/`.
-- [ ] AC-004 Routes `/`, `/sign-up`, `/sign-in` use the UX/UI contract (loading, empty, error,
+- [x] AC-004 Routes `/`, `/sign-up`, `/sign-in` use the UX/UI contract (loading, empty, error,
       success). No native unthemed `<input>`/`<button>` as the visible product UI (hidden file
       input exception does not apply here).
 
@@ -98,6 +98,15 @@ Merged `154bf4f19514e9fde423eff32eb900247263e787`.
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ 154bf4f19514e9fde423eff32eb900247263e787 (contains merge_commit)
+- Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (11)
+- AC-001 pass — browser sign-up `tester004a` → `/feed`; duplicate email `Email is already taken.`
+- AC-002 pass — invalid stay on `/sign-in` with `Invalid email or password.`; valid → `/feed` (localhost + 127.0.0.1)
+- AC-003 pass — reload keeps member chrome via `GET /me`; sign-out → `/`
+- AC-004 pass — `/` `/sign-up` `/sign-in` loading/empty/error/success; Mantine-themed controls; CORS both origins
+- Evidence: `tests/TASK-004-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -113,4 +122,5 @@ Merged `154bf4f19514e9fde423eff32eb900247263e787`.
 | 2026-09-24 15:26 | IN_PROGRESS | CODE_REVIEW | FE | product 1561b12; FE verify pass (11); Implementation iteration 2 |
 | 2026-09-24 15:31 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit=154bf4f19514e9fde423eff32eb900247263e787 (--no-ff, two parents); FE verify PASS (11); uxui_review APPROVED |
 | 2026-09-24 15:33 | MERGED | TESTING | TEST | merge_commit=154bf4f19514e9fde423eff32eb900247263e787 is ancestor of frontend main @ 154bf4f19514e9fde423eff32eb900247263e787 |
+| 2026-09-24 15:40 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-004-run-1.md PASS; AC-001..AC-004 checked; tested sha=154bf4f19514e9fde423eff32eb900247263e787 ancestor of main |
 
