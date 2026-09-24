@@ -3,7 +3,7 @@ id: TASK-008
 title: Product detail UI
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:22
+updated: 2026-09-24 10:23
 ---
 
 ## Description
@@ -80,3 +80,4 @@ Pushed main.
 | 2026-09-24 10:17 | READY | IN_PROGRESS | FE | branch feature/TASK-008-product-detail-ui |
 | 2026-09-24 10:19 | IN_PROGRESS | CODE_REVIEW | FE | product 4d73acf feat(TASK-008): product detail page with qty and add-to-cart |
 | 2026-09-24 10:22 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=4d7cf8d --no-ff |
+| 2026-09-24 10:23 | MERGED | TESTING | TEST | run 1; tested sha 4d7cf8d is ancestor of main containing merge_commit 4d7cf8d |
