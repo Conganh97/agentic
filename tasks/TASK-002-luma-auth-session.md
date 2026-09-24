@@ -3,7 +3,7 @@ id: TASK-002
 title: luma-service members and session
 type: TASK
 priority: HIGH
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -31,9 +31,9 @@ failure_message:
 failure_retry: 0
 failure_recoverable:
 human_gate: auth
-approved_by:
-approved_at:
-updated: 2026-09-24 14:44
+approved_by: os_anhbc
+approved_at: 2026-09-24 14:53
+updated: 2026-09-24 14:53
 ---
 
 ## Description
@@ -75,3 +75,4 @@ NFR-3, NFR-4, NFR-7. `requirement_revision: 3`, `content_hash: 54839e9b074480c8`
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo luma-service; human_gate=auth; deps [] |
+| 2026-09-24 14:53 | BACKLOG | READY | HUMAN (os_anhbc) | DoR met; deps []; approved auth gate |
