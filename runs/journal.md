@@ -56,3 +56,8 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 11:04 | RUN-002 | TEST | REQ-001 | TASK-004 | MERGED | TESTING | start run 1 | tested sha ed63e6a ancestor of main |
 | 2026-09-24 11:04 | RUN-002 | TEST | REQ-001 | TASK-004 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-004-run-1.md PASS; AC-001..AC-005 checked; team 491421f |
 | 2026-09-24 11:04 | RUN-002 | SCRUM | REQ-001 | TASK-005 | BACKLOG | READY | DoR met | deps [TASK-002, TASK-004] READY_FOR_DEPLOY |
+| 2026-09-24 11:10 | RUN-002 | SCRUM | REQ-001 | TASK-010 | BACKLOG | READY | DoR met | deps [TASK-004, TASK-006] READY_FOR_DEPLOY |
+| 2026-09-24 11:10 | RUN-002 | BE | REQ-001 | TASK-005 | READY | IN_PROGRESS | start cart APIs | branch feature/TASK-005-cart-api |
+| 2026-09-24 11:10 | RUN-002 | FE | REQ-001 | TASK-010 | READY | IN_PROGRESS | start account UI | branch feature/TASK-010-account-ui |
+| 2026-09-24 11:10 | RUN-002 | BE | REQ-001 | TASK-005 | IN_PROGRESS | CODE_REVIEW | implementation completed | product ac3c4f2; team c088878; Iteration 1; 88 tests |
+| 2026-09-24 11:10 | RUN-002 | FE | REQ-001 | TASK-010 | IN_PROGRESS | CODE_REVIEW | implementation completed | product db64a0b; team 227d6b9; Iteration 1; 40 tests |
