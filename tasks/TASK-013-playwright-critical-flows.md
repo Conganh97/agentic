@@ -3,14 +3,14 @@ id: TASK-013
 title: Playwright critical customer flows
 type: TASK
 priority: CRITICAL
-status: READY
+status: IN_PROGRESS
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
 repo: frontend
 depends_on: [TASK-007, TASK-008, TASK-009, TASK-010]
 sprint:
-branch:
+branch: feature/TASK-013-playwright-critical-flows
 merge_commit:
 release:
 review_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:45
+updated: 2026-09-24 11:46
 ---
 
 ## Description
@@ -64,3 +64,4 @@ See `docs/design/REQ-001-design.md` NFR-7. Repo: frontend (existing).
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
 | 2026-09-24 10:48 | BACKLOG | BACKLOG | HUMAN (os_anhbc) | approved auth gate; run remaining REQ-001 tasks |
 | 2026-09-24 11:45 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-007, TASK-008, TASK-009, TASK-010] READY_FOR_DEPLOY; auth approved |
+| 2026-09-24 11:46 | READY | IN_PROGRESS | FE | Started on feature/TASK-013-playwright-critical-flows |
