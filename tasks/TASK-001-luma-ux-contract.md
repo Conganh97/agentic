@@ -3,7 +3,7 @@ id: TASK-001
 title: Luma UX/UI design contract
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: UX/UI
 parent: REQ-001
 requirement_revision: 3
@@ -12,9 +12,9 @@ repo:
 work_type: UX_UI
 requires_uxui: false
 uxui_task:
-uxui_design:
+uxui_design: docs/design/ux/REQ-001-ux.md
 uxui_review:
-figma:
+figma: "https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma (Feed 1:18, Create 1:21, Profile 1:24, Sign-in 1:15)"
 depends_on: []
 sprint:
 branch: ux/TASK-001-luma-ux-contract
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 14:47
+updated: 2026-09-24 14:50
 ---
 
 ## Description
@@ -61,6 +61,10 @@ Do not change API or AC. `requirement_revision: 3`, `content_hash: 54839e9b07448
 
 ## Implementation (BE/FE)
 
+### Iteration 1
+- Wrote: `docs/design/ux/REQ-001-ux.md`
+- Figma: https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma (frames: Feed `1:18`, Create `1:21`, Profile `1:24`, Sign-in `1:15`; also Feed desktop `1:155`)
+
 ## UX/UI Review
 
 ## Review (SA)
@@ -75,3 +79,4 @@ Do not change API or AC. `requirement_revision: 3`, `content_hash: 54839e9b07448
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001 design §13; work_type UX_UI; deps [] |
 | 2026-09-24 14:46 | BACKLOG | READY | SCRUM | DoR met; deps [] |
 | 2026-09-24 14:47 | READY | IN_PROGRESS | UX/UI | branch ux/TASK-001-luma-ux-contract |
+| 2026-09-24 14:50 | IN_PROGRESS | CODE_REVIEW | UX/UI | Iteration 1; docs/design/ux/REQ-001-ux.md; Figma https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma frames Feed 1:18 Create 1:21 Profile 1:24 Sign-in 1:15 |
