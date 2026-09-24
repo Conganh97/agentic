@@ -8,3 +8,5 @@ Recurring review findings, bugs and failed approaches. Append-only. Read by SA (
 | 2026-09-24 | ADR-0006 | FE must ship Mantine AppShell + kit controls (ADR-0006). Browser-default inputs/buttons or a CSS-only white form is a MAJOR standards miss, even if ACs pass | FE / SA |
 | 2026-09-24 | TASK-002 review round 1 | Do not put `@EntityGraph` collection paths (`images`) on `findTopN` / paginated queries — Hibernate logs HHH90003004 and applies the limit in memory. Fetch the collection in a second query. | BE |
 | 2026-09-24 | TASK-007 review round 1 | Keep `src/components` presentational: do not import `features/*` query hooks from the shared shell; pass data in or colocate the nav in the feature (`app → features → components/api`). | FE |
+| 2026-09-24 | TASK-009 review round 1 | Do not PATCH cart quantity from `NumberInput` `onChange` on empty/partial keystrokes (clamp-to-1); commit a complete 1–99 value (blur or stepper) and reset the field if the mutation fails | FE |
+| 2026-09-24 | TASK-009 review round 1 | When an AC requires on-screen totals to match the API after PATCH/DELETE, assert those totals after the mutation, not only after the initial GET | FE |
