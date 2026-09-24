@@ -3,7 +3,7 @@ id: TASK-003
 title: luma-service posts likes profiles seed
 type: TASK
 priority: HIGH
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 14:44
+updated: 2026-09-24 15:08
 ---
 
 ## Description
@@ -76,3 +76,4 @@ NFR-5, NFR-8. Depends on TASK-002 members + session. `requirement_revision: 3`,
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo luma-service; depends_on TASK-002 |
+| 2026-09-24 15:08 | BACKLOG | READY | SCRUM | DoR met; deps TASK-002 READY_FOR_DEPLOY |
