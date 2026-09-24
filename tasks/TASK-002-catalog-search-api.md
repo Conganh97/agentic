@@ -3,7 +3,7 @@ id: TASK-002
 title: Catalog and search APIs
 type: TASK
 priority: CRITICAL
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:15
+updated: 2026-09-24 09:39
 ---
 
 ## Description
@@ -64,3 +64,4 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-2, FR-3, FR-4). Repo: shop-ser
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-24 09:39 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] READY_FOR_DEPLOY |
