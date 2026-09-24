@@ -3,7 +3,7 @@ id: TASK-002
 title: Catalog and search APIs
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: shop-service
 depends_on: [TASK-001]
 sprint:
 branch: feature/TASK-002-catalog-search-api
-merge_commit:
+merge_commit: 37baf91
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:47
+updated: 2026-09-24 09:50
 ---
 
 ## Description
@@ -60,6 +60,16 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-2, FR-3, FR-4). Repo: shop-ser
 - Notes: TASK-001 already used Flyway V1 baseline, so tables are V2 and seed is V3. Blank `q` is treated as no text filter; unknown `category` is 404 per AC-002. Search is SQL contains with `\`-escaped `%`/`_`. Parent slug filters that exact category only (not descendants). `GET /categories/{slug}` added from design §6. Seed: 18 products, 4 featured, `/placeholders/product.svg` only. Boot 4 `@DataJpaTest` needs `spring-boot-data-jpa-test` (not on classpath); seed/repo check uses `@SpringBootTest` + Testcontainers. Branch pushed.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-002-catalog-search-api @ bf747cb · Build/tests: ./mvnw -q verify PASS (30 tests)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | api/CatalogApiTest.java:38 | MINOR | AC-001 test samples a few slugs; assert the full design §7 parent+child set so a dropped seed category fails CI. |
+| 2 | repository/ProductRepository.java:16 | MINOR | `@EntityGraph` on `findTop8…` includes `images` and logs HHH90003004 (limit applied in memory). Fetch related without the collection graph, or load images in a second query. |
+| 3 | service/CatalogService.java:47 | MINOR | `listProducts` Specification has no entity graph; `toCard` lazy-loads `category` and `images` (N+1). Add a fetch graph or join on the page query. |
+
+Merged 37baf91.
+Pushed main.
 
 ## Test (TEST)
 
@@ -72,3 +82,4 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-2, FR-3, FR-4). Repo: shop-ser
 | 2026-09-24 09:39 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] READY_FOR_DEPLOY |
 | 2026-09-24 09:41 | READY | IN_PROGRESS | BE | branch feature/TASK-002-catalog-search-api |
 | 2026-09-24 09:47 | IN_PROGRESS | CODE_REVIEW | BE | product commit bf747cb; Implementation Iteration 1 |
+| 2026-09-24 09:50 | CODE_REVIEW | MERGED | SA | merge_commit=37baf91; reviews/TASK-002-round-1.md APPROVED; --no-ff on main |
