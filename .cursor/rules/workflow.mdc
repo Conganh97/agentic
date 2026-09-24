@@ -9,7 +9,7 @@ Task state lives only in the `status:` field of `tasks/TASK-###-*.md`. Change it
 
 ## 1. Your role
 
-- Each chat acts as exactly one role: `SCRUM`, `SA`, `BE`, `FE`, `TEST`, `DEVOPS`.
+- Each chat acts as exactly one role: `SCRUM`, `SA`, `UX/UI`, `BE`, `FE`, `TEST`, `DEVOPS`.
 - The role comes from the invoked skill or an explicit user instruction ("act as BE").
   If the role is unknown, ask before changing any task file.
 - `HUMAN` actions (PROD approval, unblock, exceptions, human gates) are done only when the user
@@ -20,17 +20,17 @@ Task state lives only in the `status:` field of `tasks/TASK-###-*.md`. Change it
 | From | To | Who | Guard |
 |------|----|-----|-------|
 | BACKLOG | READY | SCRUM, HUMAN | Definition of Ready (§4) **and** every `depends_on` is MERGED or later |
-| READY | IN_PROGRESS | BE / FE = `assignee` | every `depends_on` is MERGED or later |
-| IN_PROGRESS | CODE_REVIEW | BE / FE = `assignee` | tests pass; work on `branch`; Implementation iteration filled |
-| IN_PROGRESS | FAILED | BE / FE = `assignee` | execution failed (build/git/env); `failed_from` + `failure` set |
-| CODE_REVIEW | CHANGES_REQUESTED | SA | new Review round with ≥1 comment; `review_iteration += 1` |
-| CODE_REVIEW | MERGED | SA | latest Review **APPROVED**; `--no-ff` merge; `merge_commit` is a git sha |
-| CHANGES_REQUESTED | IN_PROGRESS | BE / FE = `assignee` | — |
+| READY | IN_PROGRESS | BE / FE / UX/UI = `assignee` | every `depends_on` is MERGED or later |
+| IN_PROGRESS | CODE_REVIEW | BE / FE / UX/UI = `assignee` | tests pass (or UX artifacts written); work on `branch`; Implementation iteration filled |
+| IN_PROGRESS | FAILED | BE / FE / UX/UI = `assignee` | execution failed (build/git/env); `failed_from` + `failure` set |
+| CODE_REVIEW | CHANGES_REQUESTED | SA, UX/UI | SA: Review round + `review_iteration += 1`. UX/UI (UI tasks only): `docs/design/ux/reviews/` + `uxui_review_iteration += 1` |
+| CODE_REVIEW | MERGED | SA | latest Review **APPROVED**; UI tasks also need approved `uxui_review`; `--no-ff` merge (product) or team sha (`work_type: UX_UI`); `merge_commit` is a git sha |
+| CHANGES_REQUESTED | IN_PROGRESS | BE / FE / UX/UI = `assignee` | — |
 | MERGED | TESTING | TEST | `merge_commit` is an ancestor of `main` |
 | TESTING | BUG | TEST | Test run FAIL (product behaviour); `test_iteration += 1`; `bugs/BUG-###.md` created |
 | TESTING | READY_FOR_DEPLOY | TEST | Test run PASS; every AC checked with evidence |
 | TESTING | FAILED | TEST | environment/tooling cannot run the test (not a product bug) |
-| BUG | IN_PROGRESS | BE / FE = `assignee` | — |
+| BUG | IN_PROGRESS | BE / FE / UX/UI = `assignee` | — |
 | FAILED | value of `failed_from` | owning role, SCRUM, HUMAN | cause addressed; clear `failed_from` |
 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | target PROD requires `approved_by` set by HUMAN |
 | DEPLOYING | RELEASED | DEVOPS | Deployment section filled; smoke check passed; `release` set |
@@ -124,9 +124,9 @@ themselves and records it in History with `By = HUMAN (<name>)`.
 |----|--------------------------------------------------------------|
 | READY | "DoR met"; deps listed or `[]` |
 | IN_PROGRESS | branch name |
-| CODE_REVIEW | product commit sha; Implementation `### Iteration N` |
-| CHANGES_REQUESTED | Review `### Round N — CHANGES_REQUESTED` with ≥1 comment |
-| MERGED | `merge_commit=<sha>`; `reviews/TASK-###-round-N.md` APPROVED; `--no-ff` on `main` |
+| CODE_REVIEW | product commit sha (BE/FE) or UX artifact paths + team sha (`UX_UI`); Implementation `### Iteration N` |
+| CHANGES_REQUESTED | SA: Review `### Round N` with ≥1 comment. UX/UI: `docs/design/ux/reviews/TASK-###-review-N.md` CHANGES_REQUESTED |
+| MERGED | `merge_commit=<sha>`; `reviews/TASK-###-round-N.md` APPROVED; UI tasks: `uxui_review` APPROVED; `--no-ff` on product `main` (skip product merge for `work_type: UX_UI`) |
 | TESTING | tested sha = ancestor of `main` containing `merge_commit` |
 | BUG | `tests/TASK-###-run-N.md` FAIL; `bugs/BUG-###.md`; expected vs actual |
 | FAILED | `failure_type` / `failure_step` / `failure_message` / `failure_retry`; `failed_from` |

@@ -17,7 +17,7 @@ every agent follows, state comes from markdown files, and git records every chan
      │  History table + git commit per change   │◄── pre-commit check, hooks
      └───┬──────────┬──────────┬─────────┬──────┘
          ▼          ▼          ▼         ▼
-        SA        BE / FE     TEST     DEVOPS      (Cursor chats using role skills)
+     SA   UX/UI   BE / FE    TEST     DEVOPS      (Cursor chats using role skills)
          │          │
          │          └──► product/ (one git repo per component, feature branches)
          └──► review ⇄ fix loop ──► MERGED ──► TESTING ⇄ BUG|FAILED ──► DEPLOY ──► RELEASED

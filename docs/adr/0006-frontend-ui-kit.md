@@ -10,7 +10,7 @@ ADR-0003 and `docs/standards/frontend.md` specified React + TypeScript with **pl
 and forbade a UI library unless a new ADR approved it. The FE skill also told agents to pick the
 “simplest accessible option” when the design omitted layout.
 
-On REQ-001 / TASK-004 that produced a functional but unfinished UI: browser-default inputs, unstyled
+An early FE task produced a functional but unfinished UI: browser-default inputs, unstyled
 buttons, a bare `<h1>` page, no app shell, no icons, no themed empty/loading states. Functional ACs
 passed; the product did not look complete.
 
@@ -45,10 +45,9 @@ ADR-0003 is amended: Frontend = React + TypeScript (Vite) + this kit + TanStack 
 
 - Positive: default look is a finished product (spacing, radius, typography, states); FE tasks stay
   small because agents compose kit components; accessibility comes from Mantine, not hand-rolled CSS.
-- Negative: first FE task (or the next TASK-004 iteration) must add the packages, theme, and AppShell;
-  tests must wrap `MantineProvider`.
-- Follow-up: existing TASK-004 UI must be rebuilt on the kit before MERGED. Future FE designs fill
-  template §13 (UI / UX).
+- Negative: the first FE task must add the packages, theme, and AppShell; tests must wrap
+  `MantineProvider`.
+- Follow-up: UX/UI (ADR-0008) specifies tokens and page composition; FE maps them onto this kit.
 
 ## Alternatives considered
 

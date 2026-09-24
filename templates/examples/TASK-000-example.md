@@ -6,12 +6,18 @@ priority: MEDIUM
 status: RELEASED
 assignee: BE
 parent: REQ-000
+work_type: BACKEND
+requires_uxui: false
+uxui_task:
+uxui_design:
+uxui_review:
 depends_on: []
 sprint: SPRINT-00
 branch: feature/TASK-000-health-check
 merge_commit: 3f2a9c1
 release: REL-000
 review_iteration: 1
+uxui_review_iteration: 0
 test_iteration: 1
 blocked_from:
 approved_by: HUMAN (Anh)
@@ -40,6 +46,8 @@ See `docs/design/REQ-000-design.md` §2. Add a controller in the web layer; no d
 
 ### Iteration 3 (bug fix, test run 1)
 - Endpoint was behind auth filter; excluded `/health` from the filter; added regression test.
+
+## UX/UI Review
 
 ## Review (SA)
 ### Round 1 — CHANGES_REQUESTED

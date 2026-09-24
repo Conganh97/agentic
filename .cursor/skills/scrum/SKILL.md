@@ -1,6 +1,6 @@
 ---
 name: scrum
-description: Scrum agent and workflow orchestrator. Runs a requirement end-to-end by dispatching role subagents (run), suggests the next step (next), checks Definition of Ready, unblocks on request, manages sprints, syncs the board and reports progress from markdown task files. Use when the user invokes /scrum, e.g. "/scrum run REQ-001", "/scrum next", "/scrum ready TASK-002", "/scrum report".
+description: Scrum agent and workflow orchestrator. Runs a requirement end-to-end by dispatching role subagents (run), suggests the next step (next), checks Definition of Ready, unblocks on request, manages sprints, syncs the board and reports progress from markdown task files. Use when the user invokes /scrum, e.g. "/scrum run REQ-002", "/scrum next", "/scrum ready TASK-002", "/scrum report".
 disable-model-invocation: true
 ---
 
@@ -48,12 +48,13 @@ run. First match wins (finish work before starting new work):
 |---|-----------|----------------|
 | 1 | Requirement `APPROVED` (no design yet) | SA → `/sa analyze REQ-###` |
 | 2 | Requirement `revision` > task `requirement_revision` | stop — BLOCKED `requirement_changed` |
-| 3 | CODE_REVIEW | SA → `/sa review TASK-###` |
-| 4 | MERGED or TESTING | TEST → `/tester TASK-###` |
-| 5 | CHANGES_REQUESTED, BUG or IN_PROGRESS | assignee → `/backend` or `/frontend TASK-###` |
-| 6 | READY and `deps.py` lists it as actionable | assignee → `/backend` or `/frontend TASK-###` |
-| 7 | BACKLOG that meets DoR **and** deps MERGED-or-later | SCRUM → `/scrum ready TASK-###` |
-| 8 | READY_FOR_DEPLOY or DEPLOYING | DEVOPS → `/devops deploy TASK-### <ENV>` |
+| 3 | CODE_REVIEW and UX/UI review still required | UX/UI → `/uxui review TASK-###` |
+| 4 | CODE_REVIEW (UX/UI approved or not required) | SA → `/sa review TASK-###` |
+| 5 | MERGED or TESTING (skip `work_type: UX_UI` MERGED) | TEST → `/tester TASK-###` |
+| 6 | CHANGES_REQUESTED, BUG or IN_PROGRESS | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
+| 7 | READY and `deps.py` lists it as actionable | assignee → `/uxui` / `/backend` / `/frontend` / `/devops` |
+| 8 | BACKLOG that meets DoR **and** deps MERGED-or-later | SCRUM → `/scrum ready TASK-###` |
+| 9 | READY_FOR_DEPLOY or DEPLOYING | DEVOPS → `/devops deploy TASK-### <ENV>` |
 
 Independent READY tasks in **different** component repos (no shared `depends_on` edge, `deps.py`
 actionable) may be recommended together for parallel dispatch. Same repo → sequential.
@@ -153,13 +154,17 @@ record / continue
 7. Stop when: nothing actionable; dispatch limit reached; the same task produced no progress twice.
 
 Never start SA analyze again if `docs/design/REQ-###-design.md` exists and the requirement is
-`ANALYZED` or later. Never start BE/FE if the task is already CODE_REVIEW or later.
+`ANALYZED` or later. Never start BE/FE/UX/UI if the task is already CODE_REVIEW or later.
+Dispatch `/uxui` when `assignee` is `UX/UI` or `/uxui review` when `next.py` says so. Skip UX/UI
+for backend-only / infra / DevOps. UX/UI design tasks stay MERGED (no TEST).
 
 ### 3. Dispatch prompt (fill in `< >`)
 
 ```
 Workspace: <team repo path> (branch <current branch> — stay on it). Product repos: <path>/product (registry in project.md).
-You are invoked as `<command>`. Read and follow <.cursor/skills/<skill>/SKILL.md> exactly, with AGENTS.md,
+You are invoked as `<command>`. Skill folders: /uxui → `.cursor/skills/ux-ui/SKILL.md`;
+/sa → sa; /backend → backend; /frontend → frontend; /tester → tester; /devops → devops.
+Read and follow that SKILL.md exactly, with AGENTS.md,
 .cursor/rules/workflow.mdc and project.md (commands and local environment notes). You did not do any
 earlier step of this task in another role.
 Use `date` for timestamps. Guardrails are active: if a command is blocked or a commit is rejected,

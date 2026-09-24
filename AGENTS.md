@@ -5,7 +5,7 @@ Full plan: `agentic_engineering_team_cursor_plan.md`. Architecture: `docs/archit
 
 ## 1. What this workspace is
 
-An agentic software engineering team (Scrum, SA, BE, FE, Test, DevOps) that runs entirely in Cursor.
+An agentic software engineering team (Scrum, SA, UX/UI, BE, FE, Test, DevOps) that runs entirely in Cursor.
 There is no platform code and no database:
 
 - **State** lives in markdown: one file per task in `tasks/`, status in its YAML frontmatter.
@@ -16,13 +16,17 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phases 0–8 and 10 done (Scrum incl. `/scrum run` orchestrator).** Workflow hardening is done:
-FAILED ≠ BUG, deps graph, merge/test artifacts, req hash/revision, human gates — see
-`.cursor/rules/workflow.mdc` and `scripts/{check_transitions,deps,req,gate_scan,next}.py`.
+**Phases 0–8 and 10 done (Scrum incl. `/scrum run` orchestrator).** UX/UI role added (ADR-0008):
+skill `.cursor/skills/ux-ui/SKILL.md`, artifacts `docs/design/ux/`, `/scrum run` dispatches
+`/uxui` and `/uxui review` when `work_type: FRONTEND` or `requires_uxui: true`.
+Workflow hardening is done: FAILED ≠ BUG, deps graph, merge/test artifacts, req hash/revision,
+human gates — see `.cursor/rules/workflow.mdc` and
+`scripts/{check_transitions,deps,req,gate_scan,next}.py`.
 Pending: Phase 9 — DevOps Skill (GitHub Actions + Docker Compose).
 Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript) and ADR-0006
 (Mantine UI kit); details in `project.md`.
-Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`; product repos: `.cursor/skills/repo/SKILL.md`.
+Role skills (contracts): `.cursor/skills/{sa,ux-ui,backend,frontend,tester,devops,scrum}/SKILL.md`;
+product repos: `.cursor/skills/repo/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
 `templates/examples/TASK-000-example.md`.
 
@@ -72,6 +76,7 @@ Update this section whenever a phase starts or finishes.
 | `sprints/`, `releases/` | Sprint and release files (from Phase 9–10) |
 | `docs/architecture/` | Architecture docs |
 | `docs/design/` | SA designs (from Phase 3) |
+| `docs/design/ux/` | UX/UI design contract and reviews (ADR-0008) |
 | `docs/adr/` | Architecture Decision Records |
 | `docs/standards/` | Product standards (from Phase 4) |
 | `memory/` | Decisions and lessons learned (from Phase 3) |

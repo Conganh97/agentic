@@ -16,6 +16,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 def repo_of(tid: str, tasks: dict) -> str:
     info = tasks.get(tid) or {}
+    if info.get("work_type") == "UX_UI" or info.get("assignee") == "UX/UI":
+        return "ux-docs"
     path = info.get("path")
     if not path:
         return ""

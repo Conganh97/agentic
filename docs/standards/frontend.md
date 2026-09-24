@@ -1,6 +1,8 @@
 # Frontend Standards — React + TypeScript
 
-Applies to everything in `product/frontend/`. Stack: `project.md`, ADR-0003, ADR-0006.
+Applies to everything in `product/frontend/`. Stack: `project.md`, ADR-0003, ADR-0006, ADR-0008.
+Visual contract: `docs/design/ux/` and `docs/standards/ux-ui.md`. Implement the spec; do not invent
+a second look.
 
 ## App layout
 
@@ -43,8 +45,9 @@ Dependencies point inward: `app → features → components/api`. Components nev
 - Then add the UI kit files in **UI kit (required)** below. An app that only has create-vite + a raw
   form is not done.
 
-If the repo already has `package.json` but is missing the kit (legacy TASK-004 scaffold), install the
-same UI packages on the current branch and migrate the page — do not add a second library.
+If the repo already has `package.json` but is missing the kit, install the same UI packages on the
+current branch and migrate the page — do not add a second library. Map UX/UI tokens into
+`src/app/theme.ts` (do not leave the default teal unless the spec says so).
 
 ## UI kit (required) — ADR-0006
 
@@ -133,6 +136,11 @@ A page is **not** ready for CODE_REVIEW if any of these are true:
 - Delete has no confirm; success has no toast
 - Feature-local CSS re-implements buttons, fields, or cards
 - Duplicate `id` on labels (use `useId()` per form instance)
+- Catalog/home product cards all share one blank or near-blank placeholder (same teal block / missing
+  file). Seed **distinct visible** images per product (unique SVG or photo in `public/placeholders/`).
+  A 404 image URL or `ThemeIcon` for every card is not a storefront.
+- Design §13 or the UX/UI page spec calls for hero `Image`s / `Carousel` and the page ships text-only `Card`s instead
+- A UX/UI spec exists and the page ignores tokens, layout, or states in `docs/design/ux/`
 
 Missing copy or spacing in the design is **not** permission to ship unstyled controls. Compose the
 kit; record the wording in Implementation Notes.

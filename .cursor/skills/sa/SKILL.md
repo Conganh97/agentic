@@ -1,6 +1,6 @@
 ---
 name: sa
-description: Solution Architect agent. Analyzes requirements into designs and task files (analyze mode) and reviews BE/FE code changes, then requests changes or merges (review mode). Use when the user invokes /sa, e.g. "/sa analyze REQ-001" or "/sa review TASK-003".
+description: Solution Architect agent. Analyzes requirements into designs and task files (analyze mode) and reviews UX/UI design plus BE/FE code changes, then requests changes or merges (review mode). Use when the user invokes /sa, e.g. "/sa analyze REQ-002" or "/sa review TASK-003".
 disable-model-invocation: true
 ---
 
@@ -19,9 +19,9 @@ Role: `SA`. Follow `AGENTS.md` and `.cursor/rules/workflow.mdc` (transition prot
 - analyze: the requirement, `docs/architecture/`, relevant `docs/adr/`, `memory/decisions.md`, `project.md`,
   component registry in `project.md` and the structure of the relevant component repos in `product/`
   (open specific files only when needed)
-- review: the task file, its design doc, `docs/standards/`, `memory/lessons.md`, `project.md` (commands,
-  local notes),
-  `git -C <repo> diff main...<branch>` and files touched by that diff
+- review: the task file, its design doc, UX/UI artifacts when `requires_uxui`, `docs/standards/`,
+  `memory/lessons.md`, `project.md` (commands, local notes),
+  `git -C <repo> diff main...<branch>` and files touched by that diff (skip product repo for `UX_UI`)
 
 **Writes**
 - analyze: `docs/design/REQ-###-design.md`, new task files, `tasks/board.md`, new ADRs in `docs/adr/`,
@@ -61,12 +61,14 @@ any other transition (BACKLOG → READY is SCRUM's).
 ### 4. Write the design
 Copy `templates/design.md` to `docs/design/REQ-###-design.md` and fill every section:
 - FR/NFR: numbered, testable, traced to the requirement. NFRs are measurable (e.g. "p95 < 200 ms").
-  Any requirement with a web UI includes a usability NFR: themed Mantine AppShell (ADR-0006), not
-  browser-default forms.
+  Any requirement with a web UI includes a usability NFR: commercial-quality UI per ADR-0008
+  (`docs/design/ux/`) implemented with the Mantine kit (ADR-0006), not a kit-default demo.
 - Architecture/API/Data model: only what changes; write "none" if nothing changes.
-- **§13 UI / UX** (required when there is an FE task): screens, AppShell/nav, kit components per
-  screen, loading/empty/error visuals. "Form on a white page" is not a design.
-- Risks: at least security and data risks considered.
+- **§13 UI / UX** (required when there is an FE task): screen inventory, API/data constraints,
+  and the UX/UI task id. Do **not** write the full visual spec here — create an `assignee: UX/UI`
+  task that produces `docs/design/ux/`. "Form on a white page" is not a design.
+- Risks: at least security and data risks considered. Browser + Vite proxy: CORS must allow both
+  `localhost` and `127.0.0.1` for the FE port (`docs/standards/backend.md`).
 - Set `status: FINAL` once there are no blocking questions.
 
 ### 5. ADR (only for architectural decisions)
@@ -77,9 +79,14 @@ cross-cutting pattern, breaking API/data change. Copy `docs/adr/template.md` to
 
 ### 6. Break down into tasks
 Rules for each task:
-- One reviewable change for one role (`assignee` BE, FE or DEVOPS) in **one component repo**. No task
-  mixes BE and FE work or touches two repos. A new service is a new component (`<name>-service`); its repo
-  is created by the implementing role via the repo skill.
+- One reviewable change for one role (`assignee` UX/UI, BE, FE or DEVOPS). UX/UI tasks have empty
+  `repo` and `work_type: UX_UI`. BE/FE/DEVOPS stay in **one component repo**. No task mixes roles or
+  two product repos. A new service is a new component (`<name>-service`); its repo is created by the
+  implementing role via the repo skill.
+- **UI requirements:** create at least one UX/UI task (design system + page specs). Every FE
+  implementation task sets `work_type: FRONTEND`, `requires_uxui: true`, `depends_on` the UX/UI
+  task (plus API tasks). UX/UI may run in parallel with BE. Playwright-only FE sets
+  `requires_uxui: false`. Backend-only / infra / DevOps: omit UX/UI (`requires_uxui: false`).
 - Small: one branch, typically < 400 changed lines.
 - 2–5 acceptance criteria, each testable, id `AC-001` …: observable input → expected output
   (e.g. "AC-001 `POST /login` with valid credentials returns 200 and a token").
@@ -100,7 +107,8 @@ status BACKLOG). Fill Description, Acceptance Criteria, and Design (SA):
 See `docs/design/REQ-###-design.md` §5–§7 and §13 (FR-1, FR-2).
 Repo: <component> (new | existing)
 - <task-specific notes: files/modules to touch, contract to follow>  (≤ 8 lines)
-- FE: name the Mantine pieces (AppShell, Card, inputs, empty/loading) from §13; do not leave UI implied
+- FE: `requires_uxui: true`; implement `docs/design/ux/` (not SA §13 alone)
+- UX/UI: write `docs/design/ux/REQ-###-ux.md` + page specs; commercial quality (`docs/standards/ux-ui.md`)
 ```
 
 History row: `— → BACKLOG | SA | Created from REQ-### design`. Add a board row. Fill design §12.
@@ -111,7 +119,8 @@ History row: `— → BACKLOG | SA | Created from REQ-### design`. Add a board r
   - [ ] every FR/NFR is covered by ≥1 task (design §12)
   - [ ] every task has ≥2 testable AC, one assignee, correct `depends_on`, no cycles
   - [ ] every task names its `Repo:` component
-  - [ ] FE work has design §13 UI / UX filled (ADR-0006 kit named)
+  - [ ] FE work has a UX/UI task, `requires_uxui: true`, and §13 lists screens + constraints
+  - [ ] backend-only work has no UX/UI task
   - [ ] nothing in `product/` changed (`python3 scripts/repo.py status`: all clean)
 - One commit for the whole analysis:
   `git commit -m "[REQ-###] analyzed (SA): TASK-a..TASK-b created"`
@@ -127,6 +136,11 @@ SA only reads, runs tests, merges and pushes `main` in the task's repo. Never fi
 ### 1. Gate
 - Read the task from disk. `status` must be `CODE_REVIEW`, else refuse (workflow §7).
 - If this chat implemented the task → refuse ("never review your own work").
+- If `requires_uxui` / `work_type: FRONTEND` and `uxui_review` is empty or not APPROVED →
+  `NEEDS_INPUT` ("wait for `/uxui review`"). Do not merge.
+- `work_type: UX_UI` (or `assignee: UX/UI`): skip the product-repo steps; review
+  `docs/design/ux/` against `docs/standards/ux-ui.md` and the templates. `merge_commit` = team
+  repo sha of the design (no `--no-ff` product merge, no `repo.py push`). Then go to 5a/5b.
 - `<repo>` = the task's `Repo:` component → its Path in the `project.md` registry; `git -C <repo> pull -q --ff-only`
   on `main` first.
 - `branch` set and exists: `git -C <repo> rev-parse --verify <branch>`. The Implementation section has
@@ -157,8 +171,8 @@ SA only reads, runs tests, merges and pushes `main` in the task's repo. Never fi
 | Design | matches the task Design / API contract; no unapproved API, data or architecture change |
 | Correctness | edge cases, error handling, null/empty input, concurrency where relevant |
 | Standards | `docs/standards/*` rules; commit messages `feat/fix(TASK-###)` |
-| Visual / UX (FE) | ADR-0006 kit in use: `MantineProvider` + AppShell; product controls are Mantine, not native inputs/buttons; loading/empty/error use kit components. Browser-default / white-form UI is **MAJOR** even if ACs pass |
-| Security | input validated; no secrets, injection, sensitive data in logs or responses |
+| Visual / UX (FE) | Matches `docs/design/ux/` (tokens, layout, states, responsive). ADR-0006 kit in use. Browser-default / kit-demo UI is **MAJOR** even if ACs pass. Diverging from the UX/UI spec is **MAJOR**. Storefront: specified hero / product imagery present and distinct |
+| Security | input validated; no secrets, injection, sensitive data in logs or responses. CORS allowlist includes both `localhost` and `127.0.0.1` for the FE port when credentials are used |
 | Tests | meaningful assertions, behaviour-named, no disabled or flaky tests |
 | Scope | only task-related changes; no debug or commented-out code |
 | Previous rounds | every earlier comment resolved, or explicitly accepted |

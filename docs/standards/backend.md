@@ -62,6 +62,17 @@ controller until a service is justified.
 - Schema changes only via Flyway migrations; never edit an applied migration.
 - `spring.jpa.hibernate.ddl-auto=validate`.
 
+## CORS (browser + Vite proxy)
+
+When the FE calls the API through the Vite `/api` proxy, the browser still sends `Origin` as the
+page origin. Spring CORS that allows only `http://localhost:<port>` **rejects** `http://127.0.0.1:<port>`
+with **403 `Invalid CORS request`** (register/login/cart POSTs fail in the browser).
+
+- `allowedOrigins` must include **both** `http://localhost:<FE_PORT>` and `http://127.0.0.1:<FE_PORT>`
+  (default FE port 15173 unless the design says otherwise).
+- `allowCredentials(true)` when cookies/sessions are used.
+- Tests must assert both origins (a test that only uses `localhost` will miss this).
+
 ## Cross-service calls
 
 - `RestClient` in `client/`, base URL from configuration, explicit timeouts.

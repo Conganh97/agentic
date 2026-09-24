@@ -25,6 +25,10 @@ an AC is untested and fails, otherwise a note in the Test run).
   the behaviour that the task must not break (earlier AC of the same service, pitfalls in `memory/lessons.md`).
 - UI tasks: the rendered app must use the ADR-0006 kit (AppShell, Mantine controls). A browser-default
   form or unthemed page is FAIL against `docs/standards/frontend.md`, even if the functional ACs click through.
+- Auth/cart POSTs: hit the API **through the Vite origin the browser uses**. Allowlists that only
+  accept `http://localhost:<port>` fail with 403 CORS on `http://127.0.0.1:<port>` — that is FAIL.
+- Catalog imagery: open a product card and confirm the image URL returns 200 and is not a broken or
+  identical blank placeholder for every product.
 - Stop every process you started; leave `product/` clean on `main`.
 
 ## Verdict

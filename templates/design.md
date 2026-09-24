@@ -52,12 +52,15 @@ Entities/tables/fields added or changed, migrations, backward compatibility.
 ## 12. Task Breakdown
 | Task | Title | Assignee | Covers | Depends on |
 |------|-------|----------|--------|------------|
-| TASK-XXX | | BE / FE / DEVOPS / TEST | FR-1, NFR-1 | — |
+| TASK-XXX | | UX/UI / BE / FE / DEVOPS / TEST | FR-1, NFR-1 | — |
 
 ## 13. UI / UX
-Required when any task is assigned to FE. Kit: ADR-0006 (Mantine + Tabler Icons). Write "none" only if there is no web UI.
+Required when any task is assigned to FE. Write "none" only if there is no web UI.
+SA lists **constraints** here. The sellable visual contract is the UX/UI task (`docs/design/ux/`, ADR-0008).
 
-- **Screens:** one row per view (route, purpose, primary actions).
-- **Shell:** AppShell header title, nav (if any), content width.
-- **Per screen:** Mantine components (Card, TextInput, SegmentedControl, Badge, …), empty / loading / error treatment, confirmations, toasts.
-- **Do not** specify “a form on a blank page” or leave layout to FE improvisation.
+- **Screens:** one row per view (route, purpose, primary actions, data/API it needs).
+- **Constraints:** auth, i18n, kit ADR-0006, content that is legally fixed.
+- **UX/UI task:** id that will write `docs/design/ux/REQ-###-ux.md` and page specs. Every FE
+  implementation task `depends_on` that UX/UI task and sets `requires_uxui: true`.
+- Do **not** treat “Mantine form on a blank page” as a design. Do **not** duplicate the full
+  visual spec here — that is UX/UI’s job.

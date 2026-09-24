@@ -74,6 +74,8 @@ board, commit `[TASK-###] <FROM> -> IN_PROGRESS (BE): ...`).
   `failure_recoverable: true|false`), commit work on the branch, report `FAILED`.
 - Self-review `git -C <repo> diff main...HEAD`: only task-related changes, no secrets, no debug code,
   no commented-out code, matches the design/API contract, every review comment addressed.
+  If the task adds or changes CORS, both `localhost` and `127.0.0.1` FE origins must be allowed
+  (`docs/standards/backend.md`); a `localhost`-only allowlist is not done.
 
 ### 6. Commit (product repo)
 `git -C <repo> add <files> && git -C <repo> commit -m "feat(TASK-###): <summary>"` (use `fix(...)` for BUG; review fixes keep the prefix of the current iteration).

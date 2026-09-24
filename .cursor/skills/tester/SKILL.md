@@ -40,6 +40,7 @@ acceptance criterion without evidence in the Test run.
 
 ### 1. Gate
 - Read the task from disk. Status must be MERGED or TESTING, else refuse (workflow §7).
+- `work_type: UX_UI` or `assignee: UX/UI` → refuse ("design-only; no product test"). Scrum skips these.
 - `merge_commit` set, is a git sha, and is contained in `main`:
   `git -C <repo> merge-base --is-ancestor <merge_commit> main`. Test **that revision on `main`**,
   never the feature branch.
@@ -66,7 +67,11 @@ MERGED → TESTING per the protocol; commit `[TASK-###] MERGED -> TESTING (TEST)
   keep the command and actual output. Map every result to an AC id: pass / fail / not_applicable.
 - UI tasks: also start the FE dev server (`project.md`, proxied to the backend port you chose), check each
   AC in the Cursor browser (navigate, interact, snapshot) and record the steps and the observed text.
-  Confirm the page is a themed Mantine AppShell (ADR-0006), not a raw HTML form on a blank page.
+  Confirm the page is a themed Mantine AppShell (ADR-0006) **and** matches `docs/design/ux/` when
+  `requires_uxui` is not `false` — not a raw HTML form or a kit-default demo.
+  Exercise mutating calls (register, login, add-to-cart) **from the browser** at both
+  `http://localhost:<FE_PORT>` and `http://127.0.0.1:<FE_PORT>`. A 403 `Invalid CORS request` is FAIL.
+  Product/home images must actually render (HTTP 200 on `src`, not one identical empty block).
 - In-scope exploratory checks per `docs/standards/testing.md` (boundaries, invalid input, no regression of
   earlier behaviour, known pitfalls).
 - Stop the service (kill the PID you started) and confirm with `nc -z` that the port is free again.

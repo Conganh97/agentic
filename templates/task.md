@@ -7,13 +7,19 @@ status: BACKLOG
 assignee:
 parent:
 requirement_revision: 1
-repo:                    # product component (frontend | <name>-service)
+repo:                    # product component (frontend | <name>-service); empty for UX_UI
+work_type:               # BACKEND | FRONTEND | UX_UI | TEST | DEVOPS
+requires_uxui: false
+uxui_task:
+uxui_design:
+uxui_review:
 depends_on: []
 sprint:
 branch:
 merge_commit:
 release:
 review_iteration: 0
+uxui_review_iteration: 0
 test_iteration: 0
 blocked_from:
 failed_from:
@@ -36,6 +42,8 @@ updated:
 ## Design (SA)
 
 ## Implementation (BE/FE)
+
+## UX/UI Review
 
 ## Review (SA)
 

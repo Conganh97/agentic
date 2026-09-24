@@ -26,8 +26,6 @@ Registry (written by `scripts/repo.py create`; do not edit by hand):
 
 | Component | Type | Path | Remote |
 |-----------|------|------|--------|
-| shop-service | BE | `product/services/shop-service` | https://github.com/Conganh97/product-shop-service |
-| frontend | FE | `product/frontend` | https://github.com/Conganh97/product-frontend |
 
 ## Stack
 
@@ -68,6 +66,9 @@ Registry (written by `scripts/repo.py create`; do not edit by hand):
 - Maven writes to `~/.m2` and downloads from Maven Central: in Cursor, run `mvn`/`./mvnw` outside the
   sandbox (full permissions), not only with network access. Same for `npm` (cache in `~/.npm`).
 - Node 25 / npm 11 are installed.
+- Open the FE as `http://localhost:15173` **or** `http://127.0.0.1:15173`. CORS on the API must allow
+  both origins (`docs/standards/backend.md`). A localhost-only allowlist returns 403 on register/login
+  when the page is opened via `127.0.0.1`.
 - Docker is required for Testcontainers. If Docker is not running, repository integration tests cannot
   run: say so in the Implementation notes instead of skipping them silently.
 

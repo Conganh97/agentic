@@ -15,7 +15,7 @@ STATUSES = {
 }
 WORKING = STATUSES - {"BACKLOG", "RELEASED", "BLOCKED"}
 FAILED_FROM = {"IN_PROGRESS", "TESTING", "DEPLOYING"}
-ROLES = {"SCRUM", "SA", "BE", "FE", "TEST", "DEVOPS", "HUMAN"}
+ROLES = {"SCRUM", "SA", "UX/UI", "BE", "FE", "TEST", "DEVOPS", "HUMAN"}
 DONE = {"MERGED", "TESTING", "BUG", "READY_FOR_DEPLOY", "DEPLOYING", "RELEASED"}
 MERGE_SHA = re.compile(r"^[0-9a-f]{7,40}$")
 
@@ -24,7 +24,7 @@ TRANSITIONS = {
     ("READY", "IN_PROGRESS"): {"ASSIGNEE"},
     ("IN_PROGRESS", "CODE_REVIEW"): {"ASSIGNEE"},
     ("IN_PROGRESS", "FAILED"): {"ASSIGNEE"},
-    ("CODE_REVIEW", "CHANGES_REQUESTED"): {"SA"},
+    ("CODE_REVIEW", "CHANGES_REQUESTED"): {"SA", "UX/UI"},
     ("CODE_REVIEW", "MERGED"): {"SA"},
     ("CHANGES_REQUESTED", "IN_PROGRESS"): {"ASSIGNEE"},
     ("MERGED", "TESTING"): {"TEST"},
@@ -100,6 +100,33 @@ def last_test_pass(text):
 
 def has_iteration(text):
     return bool(re.search(r"^### Iteration ", section(text, "## Implementation (BE/FE)"), re.M))
+
+
+def flag_true(value):
+    return (value or "").strip().lower() in {"true", "yes", "1"}
+
+
+def flag_false(value):
+    return (value or "").strip().lower() in {"false", "no", "0"}
+
+
+def uxui_required(fields):
+    if flag_false(fields.get("requires_uxui")):
+        return False
+    if flag_true(fields.get("requires_uxui")):
+        return True
+    return (fields.get("work_type") or "").strip() == "FRONTEND"
+
+
+def last_uxui_review_approved(fields):
+    path = (fields.get("uxui_review") or "").strip()
+    if not path:
+        return False
+    full = ROOT / path
+    if not full.is_file():
+        return False
+    status = frontmatter(full.read_text()).get("status", "")
+    return status == "APPROVED"
 
 
 def ac_ids(text):
@@ -304,26 +331,38 @@ def check(path, old, new, statuses=None):
 
     tid = nf.get("id", "")
     if status in {"MERGED", "CHANGES_REQUESTED"}:
-        if tid and not list((ROOT / "reviews").glob(f"{tid}-round-*.md")):
+        if by == "UX/UI":
+            if tid and not list((ROOT / "docs" / "design" / "ux" / "reviews").glob(f"{tid}-review-*.md")):
+                err(f"{path}: missing docs/design/ux/reviews/{tid}-review-N.md (copy templates/ux-review.md)")
+        elif tid and not list((ROOT / "reviews").glob(f"{tid}-round-*.md")):
             err(f"{path}: missing reviews/{tid}-round-N.md (copy templates/review-round.md)")
     if status in {"READY_FOR_DEPLOY", "BUG"} and before == "TESTING":
         if tid and not list((ROOT / "tests").glob(f"{tid}-run-*.md")):
             err(f"{path}: missing tests/{tid}-run-N.md (copy templates/test-report.md)")
 
-    counters = {("CODE_REVIEW", "CHANGES_REQUESTED"): "review_iteration", ("TESTING", "BUG"): "test_iteration"}
-    counter = counters.get((before, status))
-    if counter:
-        o, n = as_int(of.get(counter)), as_int(nf.get(counter))
+    if before == "CODE_REVIEW" and status == "CHANGES_REQUESTED" and by == "UX/UI":
+        o, n = as_int(of.get("uxui_review_iteration")), as_int(nf.get("uxui_review_iteration"))
         if o is None or n != o + 1:
-            err(f"{path}: {counter} must increase by 1 ({of.get(counter)} -> {nf.get(counter)})")
+            err(f"{path}: uxui_review_iteration must increase by 1 ({of.get('uxui_review_iteration')} -> {nf.get('uxui_review_iteration')})")
         elif o >= 3:
-            err(f"{path}: {counter} limit reached; set BLOCKED instead (workflow.mdc §3)")
+            err(f"{path}: uxui_review_iteration limit reached; set BLOCKED instead (workflow.mdc §3)")
+    else:
+        counters = {("CODE_REVIEW", "CHANGES_REQUESTED"): "review_iteration", ("TESTING", "BUG"): "test_iteration"}
+        counter = counters.get((before, status))
+        if counter:
+            o, n = as_int(of.get(counter)), as_int(nf.get(counter))
+            if o is None or n != o + 1:
+                err(f"{path}: {counter} must increase by 1 ({of.get(counter)} -> {nf.get(counter)})")
+            elif o >= 3:
+                err(f"{path}: {counter} limit reached; set BLOCKED instead (workflow.mdc §3)")
     if status == "MERGED":
         sha = nf.get("merge_commit", "")
         if not sha or not MERGE_SHA.match(sha):
             err(f"{path}: merge_commit must be a git sha (7–40 hex) when MERGED")
         if not last_review_approved(new):
             err(f"{path}: MERGED requires the latest Review round to be APPROVED")
+        if uxui_required(nf) and not last_uxui_review_approved(nf):
+            err(f"{path}: MERGED requires an APPROVED UX/UI review (uxui_review)")
     if status == "CODE_REVIEW" and not has_iteration(new):
         err(f"{path}: CODE_REVIEW requires an Implementation iteration")
     if status == "CODE_REVIEW" and not nf.get("branch"):

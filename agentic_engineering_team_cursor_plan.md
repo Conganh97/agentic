@@ -166,7 +166,7 @@ title: Login API
 type: STORY            # EPIC | STORY | TASK | BUG | TECHNICAL_TASK
 priority: HIGH         # LOW | MEDIUM | HIGH | CRITICAL
 status: BACKLOG        # see §6
-assignee: BE           # SCRUM | SA | BE | FE | TEST | DEVOPS | HUMAN
+assignee: BE           # SCRUM | SA | UX/UI | BE | FE | TEST | DEVOPS | HUMAN
 parent: REQ-001        # requirement or epic id
 depends_on: []         # [TASK-002, ...]
 sprint:
@@ -233,11 +233,11 @@ READY_FOR_DEPLOY, DEPLOYING, RELEASED, BLOCKED`
 | From | To | Who | Guard |
 |------|----|-----|-------|
 | BACKLOG | READY | SCRUM | Definition of Ready (§10) satisfied |
-| READY | IN_PROGRESS | BE / FE (assignee) | dependencies are MERGED or later |
-| IN_PROGRESS | CODE_REVIEW | BE / FE | tests pass, branch pushed/committed, Implementation section filled |
-| CODE_REVIEW | CHANGES_REQUESTED | SA | new Review round with ≥1 comment; `review_iteration += 1` |
-| CODE_REVIEW | MERGED | SA | Review round APPROVED, no open BLOCKER; branch merged locally (`git merge --no-ff`); `merge_commit` set |
-| CHANGES_REQUESTED | IN_PROGRESS | BE / FE | — |
+| READY | IN_PROGRESS | BE / FE / UX/UI (assignee) | dependencies are MERGED or later |
+| IN_PROGRESS | CODE_REVIEW | BE / FE / UX/UI | tests pass (or UX artifacts written), branch, Implementation section filled |
+| CODE_REVIEW | CHANGES_REQUESTED | SA, UX/UI | SA: Review round + `review_iteration += 1`. UX/UI (UI tasks): ux review + `uxui_review_iteration += 1` |
+| CODE_REVIEW | MERGED | SA | Review APPROVED; UI tasks also need approved `uxui_review`; `merge_commit` set |
+| CHANGES_REQUESTED | IN_PROGRESS | BE / FE / UX/UI | — |
 | MERGED | TESTING | TEST | — |
 | TESTING | BUG | TEST | Test run FAIL with bug details; `test_iteration += 1` |
 | TESTING | READY_FOR_DEPLOY | TEST | Test run PASS, all AC checked |
@@ -264,7 +264,8 @@ Retry limits:
 |------|-------|--------|-------------|-----------|
 | SCRUM | requirements, board, tasks, sprints | board, sprints, task metadata (priority, sprint, assignee) | BACKLOG→READY, unblock | code, designs, reviews |
 | SA | requirement, architecture, ADRs, standards, relevant product code, diffs | designs, ADRs, new task files, Review sections, memory | CODE_REVIEW→CHANGES_REQUESTED / MERGED | editing product code |
-| BE / FE | task, SA design, standards, relevant product code | product code on feature branch, Implementation section | READY/CHANGES_REQUESTED/BUG→IN_PROGRESS, IN_PROGRESS→CODE_REVIEW | merge, approve own work, change architecture without SA |
+| UX/UI | REQ, SA design, standards, existing `docs/design/ux/`, reference site | `docs/design/ux/`, Implementation, UX/UI Review | READY→IN_PROGRESS→CODE_REVIEW; CODE_REVIEW→CHANGES_REQUESTED on FE | product code, changing AC, blocking only for missing Figma |
+| BE / FE | task, SA design, UX/UI contract, standards, relevant product code | product code on feature branch, Implementation section | READY/CHANGES_REQUESTED/BUG→IN_PROGRESS, IN_PROGRESS→CODE_REVIEW | merge, approve own work, invent UX when a spec exists |
 | TEST | requirement, AC, diff, existing tests | tests in product repo, Test section, bug notes, memory/lessons | MERGED→TESTING, TESTING→BUG / READY_FOR_DEPLOY | editing production code |
 | DEVOPS | project.md, build/CI/deploy config, release notes | CI/deploy config, Deployment section | READY_FOR_DEPLOY→DEPLOYING→RELEASED | PROD without `approved_by` |
 | HUMAN | everything | requirements, approvals | approve requirement, PROD approval, unblock | — |
@@ -295,8 +296,10 @@ On `FAILED` or `NEEDS_INPUT` the status does not change.
 
 - **One chat = one role on one task.** Start a new chat per step to keep context small.
 - Invoke a role by its skill, e.g.:
-  - `/sa analyze REQ-001`
+  - `/sa analyze REQ-###`
+  - `/uxui TASK-###` / `/uxui review TASK-###`
   - `/backend TASK-003`
+  - `/frontend TASK-004`
   - `/sa review TASK-003`
   - `/tester TASK-003`
   - `/devops deploy TASK-003 STG`
@@ -557,7 +560,7 @@ being refused."
 
 ## Phase 3
 "Create the SA skill in analyze mode following §7, §8, §11 Phase 3 and §12. The SA must not edit
-`product/`. Test it with `requirements/REQ-001-*.md`."
+`product/`. Test it with an approved `requirements/REQ-###-*.md`."
 
 ## Phase 4
 "Create the Backend skill following §7, §8, §11 Phase 4 and §12. Test it on the first READY task."

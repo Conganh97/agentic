@@ -33,6 +33,53 @@ def rank(task: dict) -> tuple:
     return (PRIORITY.get(task.get("priority", ""), 9), task["id"])
 
 
+def flag_true(value: str) -> bool:
+    return (value or "").strip().lower() in {"true", "yes", "1"}
+
+
+def flag_false(value: str) -> bool:
+    return (value or "").strip().lower() in {"false", "no", "0"}
+
+
+def is_uxui_work(task: dict) -> bool:
+    return (task.get("work_type") or "").strip() == "UX_UI" or task.get("assignee") == "UX/UI"
+
+
+def uxui_required(task: dict) -> bool:
+    if flag_false(task.get("requires_uxui")):
+        return False
+    if flag_true(task.get("requires_uxui")):
+        return True
+    return (task.get("work_type") or "").strip() == "FRONTEND"
+
+
+def needs_uxui_review(task: dict) -> bool:
+    if task.get("status") != "CODE_REVIEW" or is_uxui_work(task):
+        return False
+    if not uxui_required(task):
+        return False
+    return not (task.get("uxui_review") or "").strip()
+
+
+def skip_test(task: dict) -> bool:
+    """UX/UI design tasks are done at MERGED; do not dispatch TEST."""
+    return is_uxui_work(task) and task.get("status") == "MERGED"
+
+
+def command_for(task: dict) -> tuple[str, str]:
+    """Return (role, /skill TASK-id) for implement / resume steps."""
+    assignee = (task.get("assignee") or "").strip()
+    tid = task["id"]
+    mapping = {
+        "FE": ("FE", f"/frontend {tid}"),
+        "UX/UI": ("UX/UI", f"/uxui {tid}"),
+        "DEVOPS": ("DEVOPS", f"/devops {tid}"),
+        "TEST": ("TEST", f"/tester {tid}"),
+        "BE": ("BE", f"/backend {tid}"),
+    }
+    return mapping.get(assignee, ("BE", f"/backend {tid}"))
+
+
 def next_step(req_id: str | None = None) -> dict:
     tasks = deps.load_tasks()
     if req_id:
@@ -63,26 +110,34 @@ def next_step(req_id: str | None = None) -> dict:
                 return t
         return None
 
+    t = first(needs_uxui_review)
+    if t:
+        return {
+            "next": t["id"],
+            "role": "UX/UI",
+            "run": f"/uxui review {t['id']}",
+            "why": "CODE_REVIEW waiting UX/UI review",
+        }
     t = first(lambda x: x["status"] == "CODE_REVIEW")
     if t:
         return {"next": t["id"], "role": "SA", "run": f"/sa review {t['id']}", "why": "CODE_REVIEW"}
-    t = first(lambda x: x["status"] in {"MERGED", "TESTING"})
+    t = first(lambda x: x["status"] in {"MERGED", "TESTING"} and not skip_test(x))
     if t:
         return {"next": t["id"], "role": "TEST", "run": f"/tester {t['id']}", "why": t["status"]}
     t = first(lambda x: x["status"] in {"CHANGES_REQUESTED", "BUG", "IN_PROGRESS", "FAILED"})
     if t:
-        skill = "/frontend" if t.get("assignee") == "FE" else "/backend"
+        role, skill = command_for(t)
         if t["status"] == "FAILED" and t.get("failed_from") == "TESTING":
-            skill = "/tester"
-        return {"next": t["id"], "role": t.get("assignee") or "BE", "run": f"{skill} {t['id']}", "why": t["status"]}
+            role, skill = "TEST", f"/tester {t['id']}"
+        return {"next": t["id"], "role": role, "run": skill, "why": t["status"]}
     t = first(
         lambda x: x["status"] == "READY"
         and deps.deps_ready(tasks, x["id"])
         and not (x.get("human_gate") and not x.get("approved_by"))
     )
     if t:
-        skill = "/frontend" if t.get("assignee") == "FE" else "/backend"
-        return {"next": t["id"], "role": t.get("assignee") or "BE", "run": f"{skill} {t['id']}", "why": "READY, deps met"}
+        role, skill = command_for(t)
+        return {"next": t["id"], "role": role, "run": skill, "why": "READY, deps met"}
     t = first(lambda x: x["status"] == "BACKLOG" and deps.deps_ready(tasks, x["id"]))
     if t:
         return {"next": t["id"], "role": "SCRUM", "run": f"/scrum ready {t['id']}", "why": "DoR + deps"}

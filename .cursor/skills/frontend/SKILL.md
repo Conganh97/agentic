@@ -1,6 +1,6 @@
 ---
 name: frontend
-description: Frontend developer agent for the React + TypeScript app. Implements a UI task on a feature branch in the frontend repo, runs lint/tests/build, records the implementation and hands it to SA review. Use when the user invokes /frontend, e.g. "/frontend TASK-004".
+description: Frontend developer agent for the React + TypeScript app. Implements a UI task on a feature branch in the frontend repo from the UX/UI design contract, runs lint/tests/build, records the implementation and hands it to UX/UI then SA review. Use when the user invokes /frontend, e.g. "/frontend TASK-004".
 disable-model-invocation: true
 ---
 
@@ -10,8 +10,9 @@ Role: `FE`. Follow `AGENTS.md` and `.cursor/rules/workflow.mdc` (transition prot
 
 ## Contract
 
-**Reads**: the task file (Description, AC, Design, latest Review round / Test run) · linked design doc
-section (UI / UX + API contract, design §13 when present) · `docs/standards/frontend.md` · ADR-0006 ·
+**Reads**: the task file (Description, AC, Design, latest UX/UI Review / SA Review / Test run) ·
+SA design (API + §13 constraints) · **UX/UI contract** (`uxui_design`, `docs/design/ux/`, page specs) ·
+`docs/standards/ux-ui.md` · `docs/standards/frontend.md` · ADR-0006 · ADR-0008 ·
 `project.md` · only the `product/frontend/` files found relevant by search, and their tests ·
 frontmatter of `depends_on` tasks · the backend API (controller/DTOs in `product/services/`) read-only,
 when the design does not spell out the contract.
@@ -58,20 +59,23 @@ If status is not IN_PROGRESS yet: transition to IN_PROGRESS per the protocol (se
 board, commit `[TASK-###] <FROM> -> IN_PROGRESS (FE): ...`).
 
 ### 4. Implement
-- Know exactly what to change: the AC, the design section, and, for loops, every comment of the latest
-  Review round or the bug in the latest Test run.
+- Know exactly what to change: the AC, the SA design, the **UX/UI artifacts**, and, for loops, every
+  comment of the latest UX/UI or SA review or the bug in the latest Test run.
+- `requires_uxui` is not `false` and `docs/design/ux/` / `uxui_design` is missing → `BLOCKED`
+  "needs UX/UI design". Do not invent a brand, layout, or flow.
 - No `package.json` in `<repo>` yet → create the app per the standards ("Creating the app"), including
   the Mantine UI kit (ADR-0006). If `package.json` exists but the kit is missing, install and wire it
   on this branch before feature work. Otherwise `npm ci` first.
 - Find relevant code by search; open only those files. Smallest change that satisfies all AC, the
-  design, **and** the visual quality bar in `docs/standards/frontend.md`.
+  design, the UX/UI page spec, **and** the visual quality bar in `docs/standards/frontend.md` +
+  `docs/standards/ux-ui.md`.
 - Use only the API contract from the design / backend code; a missing or different endpoint is not
   something FE fixes → BLOCKED "needs SA decision: <question>".
 - Write tests: ≥1 per AC (and per review comment / bug where testable), incl. loading and error states.
   Wrap RTL renders in `MantineProvider`.
-- UI copy or spacing missing in the design → compose Mantine (`AppShell`, `Card`, `TextInput`,
-  `Button`, `Badge`, `SegmentedControl`, `Alert`, `Skeleton`, `Modal`, notifications) and Tabler
-  icons. Do **not** ship browser-default forms or invent a second CSS system. Record wording in Notes.
+- Spec gap (copy, spacing, a missing state) → `BLOCKED` for UX/UI, or compose the specified kit
+  pieces only if the spec already named them. Do **not** ship browser-default forms, invent a second
+  CSS system, or silently replace the UX/UI brand. Record wording in Notes.
 
 ### 5. Verify
 - In `product/frontend/`: `npm run lint && npm run format:check && npm test -- --run && npm run build`. All must pass.
@@ -82,6 +86,8 @@ board, commit `[TASK-###] <FROM> -> IN_PROGRESS (FE): ...`).
   `node_modules/`), no secrets, no `console.log`, no commented-out code, every review comment addressed.
   Also fail the self-review if the page is a raw form (no AppShell, native inputs/buttons as the
   product UI, unstyled loading/empty/error). That is not “done”.
+  Storefront pages: fail if the UX/UI spec (or SA §13) hero `Image`/`Carousel` is missing, or every
+  product uses the same blank/404 placeholder (`docs/standards/frontend.md` visual bar).
 
 ### 6. Commit (product repo)
 `git -C <repo> add <files> && git -C <repo> commit -m "feat(TASK-###): <summary>"` (use `fix(...)` for
@@ -93,7 +99,8 @@ BUG; review fixes keep the prefix of the current iteration). Push the branch:
 - Append an iteration to `## Implementation (BE/FE)` (format below).
 - Transition IN_PROGRESS → CODE_REVIEW per the protocol; commit
   `[TASK-###] IN_PROGRESS -> CODE_REVIEW (FE): <summary>`.
-- Report with `Next: SA — /sa review TASK-###`.
+- Report `Next: UX/UI — /uxui review TASK-###` when `requires_uxui` is not `false`; otherwise
+  `Next: SA — /sa review TASK-###`.
 
 ## Output format
 

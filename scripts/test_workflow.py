@@ -227,6 +227,44 @@ body
         step = nxt.next_step("REQ-999")
         self.assertEqual(step.get("stop"), "idle")
 
+    def test_command_for_roles(self):
+        import next as nxt
+        self.assertEqual(nxt.command_for({"id": "TASK-002", "assignee": "UX/UI"}), ("UX/UI", "/uxui TASK-002"))
+        self.assertEqual(nxt.command_for({"id": "TASK-004", "assignee": "FE"}), ("FE", "/frontend TASK-004"))
+        self.assertEqual(nxt.command_for({"id": "TASK-003", "assignee": "BE"}), ("BE", "/backend TASK-003"))
+        self.assertEqual(nxt.command_for({"id": "TASK-012", "assignee": "DEVOPS"}), ("DEVOPS", "/devops TASK-012"))
+
+    def test_uxui_review_gate(self):
+        import next as nxt
+        self.assertTrue(nxt.needs_uxui_review({"status": "CODE_REVIEW", "work_type": "FRONTEND", "uxui_review": ""}))
+        self.assertFalse(nxt.needs_uxui_review({
+            "status": "CODE_REVIEW", "work_type": "FRONTEND",
+            "uxui_review": "docs/design/ux/reviews/TASK-004-review-01.md",
+        }))
+        self.assertFalse(nxt.needs_uxui_review({
+            "status": "CODE_REVIEW", "assignee": "UX/UI", "work_type": "UX_UI",
+        }))
+        self.assertFalse(nxt.needs_uxui_review({
+            "status": "CODE_REVIEW", "assignee": "FE", "requires_uxui": "false",
+        }))
+        self.assertTrue(nxt.skip_test({"work_type": "UX_UI", "status": "MERGED", "assignee": "UX/UI"}))
+        self.assertFalse(nxt.skip_test({"work_type": "BACKEND", "status": "MERGED"}))
+
+    def test_merged_ui_needs_uxui_review(self):
+        old = task(status="CODE_REVIEW")
+        new = task(
+            status="MERGED",
+            merge="abc1234",
+            extra="requires_uxui: true\nuxui_review:\n",
+            review="### Round 1 — APPROVED\nNo comments.\n",
+            history=[
+                "| 2026-01-01 00:00 | — | BACKLOG | SA | Created |",
+                "| 2026-01-01 02:00 | CODE_REVIEW | MERGED | SA | merged abc1234 |",
+            ],
+        )
+        errors = ct.check("tasks/TASK-001-x.md", old, new, {"TASK-001": "MERGED"})
+        self.assertTrue(any("UX/UI review" in e for e in errors))
+
 
 if __name__ == "__main__":
     unittest.main()
