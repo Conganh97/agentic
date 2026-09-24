@@ -13,7 +13,7 @@ work_type: FRONTEND
 requires_uxui: true
 uxui_task: TASK-001
 uxui_design: docs/design/ux/REQ-001-ux.md
-uxui_review:
+uxui_review: docs/design/ux/reviews/TASK-005-review-1.md
 figma: https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma?node-id=1-18
 depends_on: [TASK-001, TASK-003, TASK-004]
 sprint:
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 15:48
+updated: 2026-09-24 15:55
 ---
 
 ## Description
@@ -69,6 +69,10 @@ NFR-6. `requires_uxui: true`; `depends_on` TASK-001, TASK-003, TASK-004.
 - Notes: TanStack Query vs TASK-003; photo-first PhotoCard, HeartLike, square ProfileTile; Figma MCP rate-limited so implemented from `docs/design/ux/REQ-001-ux.md` + frames 1:18/1:21/1:24; pushed via repo.py
 
 ## UX/UI Review
+
+### Iteration 1 (2026-09-24 15:55)
+- Review: `docs/design/ux/reviews/TASK-005-review-1.md` APPROVED
+- Compared: spec + running `/feed` `/create` `/u/luna` `/u/emptyreview` on `feature/TASK-005-luma-feed-ui` @ 0604394 (mobile 390 + desktop 1280); Figma MCP rate-limited
 
 ## Review (SA)
 
