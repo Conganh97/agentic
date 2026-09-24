@@ -3,7 +3,7 @@ id: TASK-005
 title: Frontend feed create like profile
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 15:42
+updated: 2026-09-24 15:48
 ---
 
 ## Description
@@ -62,6 +62,12 @@ NFR-6. `requires_uxui: true`; `depends_on` TASK-001, TASK-003, TASK-004.
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (feed / create / like / profile)
+- Branch: `feature/TASK-005-luma-feed-ui` @ 0604394
+- Changed: `src/pages/{Feed,Create,Profile}Page.tsx`, `src/features/{feed,create,profile}/`, `src/shared/api/client.ts`, `src/shared/ui/Field.tsx`
+- Tests: FE verify → pass (23)
+- Notes: TanStack Query vs TASK-003; photo-first PhotoCard, HeartLike, square ProfileTile; Figma MCP rate-limited so implemented from `docs/design/ux/REQ-001-ux.md` + frames 1:18/1:21/1:24; pushed via repo.py
+
 ## UX/UI Review
 
 ## Review (SA)
@@ -76,3 +82,4 @@ NFR-6. `requires_uxui: true`; `depends_on` TASK-001, TASK-003, TASK-004.
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo frontend; requires_uxui; deps TASK-001, TASK-003, TASK-004 |
 | 2026-09-24 15:40 | BACKLOG | READY | SCRUM | DoR met; deps TASK-001 MERGED, TASK-003/004 READY_FOR_DEPLOY |
 | 2026-09-24 15:42 | READY | IN_PROGRESS | FE | branch feature/TASK-005-luma-feed-ui |
+| 2026-09-24 15:47 | IN_PROGRESS | CODE_REVIEW | FE | product 0604394; FE verify pass (23); pushed feature/TASK-005-luma-feed-ui |
