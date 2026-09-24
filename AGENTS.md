@@ -16,9 +16,12 @@ There is no platform code and no database:
 
 ## 2. Current phase
 
-**Phases 0–8 and 10 done (Scrum incl. `/scrum run` orchestrator).** Pending: Phase 9 — DevOps Skill
-(GitHub Actions + Docker Compose; needs a GitHub remote for `product/` and Docker).
-Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript); details in `project.md`.
+**Phases 0–8 and 10 done (Scrum incl. `/scrum run` orchestrator).** Workflow hardening is done:
+FAILED ≠ BUG, deps graph, merge/test artifacts, req hash/revision, human gates — see
+`.cursor/rules/workflow.mdc` and `scripts/{check_transitions,deps,req,gate_scan,next}.py`.
+Pending: Phase 9 — DevOps Skill (GitHub Actions + Docker Compose).
+Product stack: ADR-0003 (Java 21 + Spring Boot 4 microservices, React + TypeScript) and ADR-0006
+(Mantine UI kit); details in `project.md`.
 Role skills (contracts): `.cursor/skills/{sa,backend,frontend,tester,devops,scrum}/SKILL.md`; product repos: `.cursor/skills/repo/SKILL.md`.
 Workflow: `.cursor/rules/workflow.mdc`. Task format: `templates/task.md`, example
 `templates/examples/TASK-000-example.md`.
@@ -34,8 +37,10 @@ Update this section whenever a phase starts or finishes.
 - No production deployment without `approved_by` set by a human in the task file.
 - A requirement is analyzed only after a human sets its `status: APPROVED`.
 - A task needs acceptance criteria before `READY`.
-- Every code change passes SA review before `MERGED`.
+- Every code change passes SA review before `MERGED`; `merge_commit` must be a `--no-ff` sha on `main`.
 - Review and test loops are limited to 3 iterations; beyond that the task becomes `BLOCKED`.
+- Product AC misses are `BUG` (+ `bugs/BUG-###.md`). Execution/tooling misses are `FAILED`.
+- `depends_on` is a graph: no cycles; a task is not READY until deps are MERGED or later.
 - Always read files and run `git` to learn state; never assume it.
 - Read only the files your role needs (plan §12); never load the whole repository.
 - Never write secrets into markdown, commits, or chat.
@@ -60,6 +65,10 @@ Update this section whenever a phase starts or finishes.
 | `project.md` | Product repo registry, stack, commands, environments |
 | `requirements/` | Input requirements (`REQ-###-*.md`) |
 | `tasks/` | Task files and `board.md` (from Phase 1) |
+| `bugs/` | Product defect records (`BUG-###`) |
+| `reviews/` | SA review rounds (`TASK-###-round-N.md`) |
+| `tests/` | TEST run reports (`TASK-###-run-N.md`) |
+| `runs/` | `/scrum run` journal (`RUN-###.md`, `journal.md`) |
 | `sprints/`, `releases/` | Sprint and release files (from Phase 9–10) |
 | `docs/architecture/` | Architecture docs |
 | `docs/design/` | SA designs (from Phase 3) |

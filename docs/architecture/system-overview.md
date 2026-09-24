@@ -20,7 +20,7 @@ every agent follows, state comes from markdown files, and git records every chan
         SA        BE / FE     TEST     DEVOPS      (Cursor chats using role skills)
          │          │
          │          └──► product/ (one git repo per component, feature branches)
-         └──► review ⇄ fix loop ──► MERGED ──► TESTING ⇄ BUG ──► DEPLOY ──► RELEASED
+         └──► review ⇄ fix loop ──► MERGED ──► TESTING ⇄ BUG|FAILED ──► DEPLOY ──► RELEASED
 ```
 
 ## 2. Components
@@ -41,7 +41,9 @@ every agent follows, state comes from markdown files, and git records every chan
 `BACKLOG → READY → IN_PROGRESS → CODE_REVIEW → MERGED → TESTING → READY_FOR_DEPLOY → DEPLOYING → RELEASED`
 
 Loops: `CODE_REVIEW → CHANGES_REQUESTED → IN_PROGRESS` and `TESTING → BUG → IN_PROGRESS`
-(max 3 iterations each). Any working state can go to `BLOCKED`; only an explicit unblock returns it.
+(max 3 iterations each). Execution failures use `FAILED` (then back to `failed_from`).
+Any working state can go to `BLOCKED`; only an explicit unblock returns it.
+Dependencies: `python3 scripts/deps.py`. Evidence: workflow §8.
 
 Full transition table with roles and guards: plan §6. Transition protocol: plan §8.
 

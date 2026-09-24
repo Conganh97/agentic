@@ -16,7 +16,7 @@ from check_transitions import frontmatter  # noqa: E402
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 BOARD = "tasks/board.md"
 ORDER = ["BACKLOG", "READY", "IN_PROGRESS", "CODE_REVIEW", "CHANGES_REQUESTED", "MERGED", "TESTING", "BUG",
-         "READY_FOR_DEPLOY", "DEPLOYING", "RELEASED", "BLOCKED"]
+         "FAILED", "READY_FOR_DEPLOY", "DEPLOYING", "RELEASED", "BLOCKED"]
 PRIORITY = ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
 HEADER = """# Task Board
 

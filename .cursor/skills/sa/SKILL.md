@@ -61,7 +61,11 @@ any other transition (BACKLOG → READY is SCRUM's).
 ### 4. Write the design
 Copy `templates/design.md` to `docs/design/REQ-###-design.md` and fill every section:
 - FR/NFR: numbered, testable, traced to the requirement. NFRs are measurable (e.g. "p95 < 200 ms").
+  Any requirement with a web UI includes a usability NFR: themed Mantine AppShell (ADR-0006), not
+  browser-default forms.
 - Architecture/API/Data model: only what changes; write "none" if nothing changes.
+- **§13 UI / UX** (required when there is an FE task): screens, AppShell/nav, kit components per
+  screen, loading/empty/error visuals. "Form on a white page" is not a design.
 - Risks: at least security and data risks considered.
 - Set `status: FINAL` once there are no blocking questions.
 
@@ -77,8 +81,14 @@ Rules for each task:
   mixes BE and FE work or touches two repos. A new service is a new component (`<name>-service`); its repo
   is created by the implementing role via the repo skill.
 - Small: one branch, typically < 400 changed lines.
-- 2–5 acceptance criteria, each testable: observable input → expected output
-  (e.g. "AC-1 `POST /login` with valid credentials returns 200 and a token").
+- 2–5 acceptance criteria, each testable, id `AC-001` …: observable input → expected output
+  (e.g. "AC-001 `POST /login` with valid credentials returns 200 and a token").
+- Set `requirement_revision` to the parent requirement's `revision`, and `repo:` to the component.
+- After writing the requirement/design, set `content_hash` with
+  `python3 scripts/req.py hash requirements/REQ-###-*.md`. Bump `revision` if the body changed.
+- If the design includes a human-gate topic (destructive migration, breaking API, auth, data deletion,
+  infra destroy, major architecture, PROD), set `human_gate:` on every affected task. Confirm with
+  `python3 scripts/gate_scan.py docs/design/REQ-###-design.md`.
 - Traces to FR/NFR ids; `depends_on` reflects real order (API before UI that calls it).
 - Priority = requirement priority unless the design says otherwise.
 
@@ -87,9 +97,10 @@ status BACKLOG). Fill Description, Acceptance Criteria, and Design (SA):
 
 ```markdown
 ## Design (SA)
-See `docs/design/REQ-###-design.md` §5–§7 (FR-1, FR-2).
+See `docs/design/REQ-###-design.md` §5–§7 and §13 (FR-1, FR-2).
 Repo: <component> (new | existing)
 - <task-specific notes: files/modules to touch, contract to follow>  (≤ 8 lines)
+- FE: name the Mantine pieces (AppShell, Card, inputs, empty/loading) from §13; do not leave UI implied
 ```
 
 History row: `— → BACKLOG | SA | Created from REQ-### design`. Add a board row. Fill design §12.
@@ -100,6 +111,7 @@ History row: `— → BACKLOG | SA | Created from REQ-### design`. Add a board r
   - [ ] every FR/NFR is covered by ≥1 task (design §12)
   - [ ] every task has ≥2 testable AC, one assignee, correct `depends_on`, no cycles
   - [ ] every task names its `Repo:` component
+  - [ ] FE work has design §13 UI / UX filled (ADR-0006 kit named)
   - [ ] nothing in `product/` changed (`python3 scripts/repo.py status`: all clean)
 - One commit for the whole analysis:
   `git commit -m "[REQ-###] analyzed (SA): TASK-a..TASK-b created"`
@@ -145,6 +157,7 @@ SA only reads, runs tests, merges and pushes `main` in the task's repo. Never fi
 | Design | matches the task Design / API contract; no unapproved API, data or architecture change |
 | Correctness | edge cases, error handling, null/empty input, concurrency where relevant |
 | Standards | `docs/standards/*` rules; commit messages `feat/fix(TASK-###)` |
+| Visual / UX (FE) | ADR-0006 kit in use: `MantineProvider` + AppShell; product controls are Mantine, not native inputs/buttons; loading/empty/error use kit components. Browser-default / white-form UI is **MAJOR** even if ACs pass |
 | Security | input validated; no secrets, injection, sensitive data in logs or responses |
 | Tests | meaningful assertions, behaviour-named, no disabled or flaky tests |
 | Scope | only task-related changes; no debug or commented-out code |
@@ -162,7 +175,8 @@ Decision: any BLOCKER or MAJOR → CHANGES_REQUESTED; otherwise APPROVED (MINOR 
 ### 5a. Request changes
 - `review_iteration` already `3` → do not request changes; set `BLOCKED` (`blocked_from: CODE_REVIEW`,
   reason "review limit reached"), write the round anyway, commit, report `BLOCKED`. Stop.
-- Append the round (format below), `status: CHANGES_REQUESTED`, `review_iteration += 1`, `updated`,
+- Append the round (format below), write `reviews/TASK-###-round-N.md` (copy `templates/review-round.md`),
+  `status: CHANGES_REQUESTED`, `review_iteration += 1`, `updated`,
   History row, board row.
 - Commit: `[TASK-###] CODE_REVIEW -> CHANGES_REQUESTED (SA): <n> comments (<BLOCKER/MAJOR summary>)`.
 - Report `Outcome: CHANGES_REQUESTED`, `Next: BE|FE — /backend TASK-###` (per assignee).
@@ -174,8 +188,10 @@ In `<repo>`, on `main`:
 2. If `main` had moved since the branch was created (`git merge-base --is-ancestor main <branch>` fails),
    run the build/test again on the merged tree. Failure → `git merge --abort`; go to 5a.
 3. `git commit -m "Merge <branch> (TASK-###)"`; record the sha (`git rev-parse --short=7 HEAD`).
+   Confirm it is a `--no-ff` merge (`git cat-file -p <sha>` has two parents). Refuse MERGED if not.
 
-Then in the team repo: append the APPROVED round with `Merged <sha>.`, set `status: MERGED`,
+Then in the team repo: write `reviews/TASK-###-round-N.md` (decision APPROVED), append the APPROVED
+round with `Merged <sha>.`, set `status: MERGED`,
 `merge_commit: <sha>`, `updated`, History row, board row. With `merge_commit` saved on disk, push:
 `python3 scripts/repo.py push <component>` → add `Pushed main.` (or `Push failed: <error>`) under the
 round. Commit: `[TASK-###] CODE_REVIEW -> MERGED (SA): approved, merged <sha>`.

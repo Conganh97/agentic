@@ -23,6 +23,8 @@ an AC is untested and fails, otherwise a note in the Test run).
   (status code, body excerpt). An AC without evidence is not checked.
 - Also try, within the task's scope: boundaries (e.g. exact limits ±1), empty/missing/invalid input, and
   the behaviour that the task must not break (earlier AC of the same service, pitfalls in `memory/lessons.md`).
+- UI tasks: the rendered app must use the ADR-0006 kit (AppShell, Mantine controls). A browser-default
+  form or unthemed page is FAIL against `docs/standards/frontend.md`, even if the functional ACs click through.
 - Stop every process you started; leave `product/` clean on `main`.
 
 ## Verdict
@@ -31,9 +33,12 @@ an AC is untested and fails, otherwise a note in the Test run).
 - **FAIL**: any AC fails, the build/tests fail, or an in-scope check shows a defect that breaks the design
   or standards (e.g. 500 instead of 400, stack trace in a response).
 - A test that passes only on retry is flaky → FAIL, with both results recorded.
-- Defects outside the task's scope → a new BUG task (workflow §6), not a FAIL of this task.
-- Environment problems (no free port, Docker down) are not a FAIL: write an INCOMPLETE run, keep TESTING,
-  report `NEEDS_INPUT`.
+- Defects outside the task's scope → a new BUG task (workflow §6) plus `bugs/BUG-###.md`, not a FAIL
+  of this task.
+- Environment / tooling problems (no free port, Docker down, binary missing) are **FAILED** (workflow
+  status), not BUG. A single glitch you will retry immediately may stay INCOMPLETE. Persistent env
+  failure → TESTING → FAILED.
+- READY_FOR_DEPLOY is forbidden while any `AC-###` is unchecked or lacks evidence.
 
 ## Bug report (in the Test run)
 

@@ -21,7 +21,7 @@ and their tests · frontmatter of `depends_on` tasks.
 - Task: `## Implementation (BE/FE)`, frontmatter (`status`, `branch`, `updated`), History, board.
 
 **Transitions**: READY → IN_PROGRESS · CHANGES_REQUESTED → IN_PROGRESS · BUG → IN_PROGRESS ·
-IN_PROGRESS → CODE_REVIEW · working state → BLOCKED
+FAILED → IN_PROGRESS · IN_PROGRESS → CODE_REVIEW · IN_PROGRESS → FAILED · working state → BLOCKED
 
 **Forbidden**: committing to `main` in any product repo; pushing `main`; merging; approving; setting MERGED; editing Review or
 Test sections or checking AC; changing APIs, data model or architecture beyond the design;
@@ -32,9 +32,10 @@ editing other component repos (e.g. `product/frontend/`).
 ## Procedure — `/backend TASK-###`
 
 ### 1. Check
-- Read the task from disk. `assignee` must be `BE`; status must be READY, CHANGES_REQUESTED, BUG, or
-  IN_PROGRESS (resume). Otherwise refuse (workflow rule §7).
-- READY: every `depends_on` task must be MERGED or later (read their frontmatter).
+- Read the task from disk. `assignee` must be `BE`; status must be READY, CHANGES_REQUESTED, BUG,
+  FAILED, or IN_PROGRESS (resume). Otherwise refuse (workflow rule §7).
+- READY / start: every `depends_on` task must be MERGED or later (`python3 scripts/deps.py` or
+  frontmatter). Incomplete deps → `NEEDS_INPUT`, no changes.
 - Find `<repo>` in the `project.md` registry. Not registered and the design introduces this service →
   create it with the repo skill (`/repo create <name>-service be`). Not registered otherwise → `NEEDS_INPUT`.
 - `<repo>` must have a clean working tree (`git -C <repo> status --porcelain` empty), and `project.md`
@@ -46,6 +47,7 @@ editing other component repos (e.g. `product/frontend/`).
 | READY | new `feature/TASK-###-<slug>` from `main` |
 | CHANGES_REQUESTED | existing `branch` (not merged yet) |
 | BUG | new `fix/TASK-###-<slug>` from `main` (the feature branch is already merged) |
+| FAILED | existing `branch` (or recreate if missing) |
 | IN_PROGRESS | existing `branch` |
 
 `git -C <repo> checkout main && git -C <repo> pull -q --ff-only`, then create or check out the branch.
@@ -67,8 +69,9 @@ board, commit `[TASK-###] <FROM> -> IN_PROGRESS (BE): ...`).
 
 ### 5. Verify
 - Run `./mvnw -q verify` in every service you touched. All must pass.
-- Still failing after 3 fix attempts → keep IN_PROGRESS, commit work in progress on the branch, report
-  `FAILED` with the error.
+- Still failing after 3 fix attempts → IN_PROGRESS → FAILED (`failed_from: IN_PROGRESS`,
+  `failure_type: build`, `failure_step: verify`, `failure_message: <error>`, `failure_retry: N`,
+  `failure_recoverable: true|false`), commit work on the branch, report `FAILED`.
 - Self-review `git -C <repo> diff main...HEAD`: only task-related changes, no secrets, no debug code,
   no commented-out code, matches the design/API contract, every review comment addressed.
 

@@ -1,8 +1,8 @@
 ---
 requirement: REQ-001
 status: FINAL
-adrs: [ADR-0005]
-updated: 2026-09-23 17:00
+adrs: [ADR-0005, ADR-0006]
+updated: 2026-09-24 08:20
 ---
 
 # REQ-001 Design — Simple Task Management App
@@ -43,6 +43,7 @@ the stack locally. Tests live in the BE and FE implementation tasks, not separat
 | NFR-3 | Reliability | Task data survives service restart when PostgreSQL volume is retained |
 | NFR-4 | Maintainability | API paths `/api/v1/...`; schema via Flyway only; DTO records, no entity leakage |
 | NFR-5 | Compatibility | Task table uses surrogate `id`; no hard-coded single-user assumptions in API paths (future auth can add `user_id`) |
+| NFR-6 | Usability | Task UI uses the ADR-0006 kit (Mantine AppShell, themed controls, toasts). Browser-default inputs/buttons or a CSS-only white page do not meet this NFR |
 
 ## 5. Architecture
 
@@ -112,7 +113,8 @@ Backward compatibility: n/a (new service).
 
 ## 8. Dependencies
 - Internal: TASK-004 depends on TASK-003 API contract; TASK-005 depends on TASK-003; TASK-006 depends on TASK-004 and TASK-005.
-- External: PostgreSQL (existing stack choice ADR-0003); Spring Boot 4, Flyway, React/Vite (ADR-0003).
+- External: PostgreSQL (existing stack choice ADR-0003); Spring Boot 4, Flyway, React/Vite (ADR-0003);
+  Mantine UI kit (ADR-0006).
 
 ## 9. Risks
 | Risk | Impact | Likelihood | Mitigation |
@@ -140,6 +142,24 @@ Backward compatibility: n/a (new service).
 | Task | Title | Assignee | Covers | Depends on |
 |------|-------|----------|--------|------------|
 | TASK-003 | Task service REST API and persistence | BE | FR-1–FR-10, NFR-1–NFR-5 | — |
-| TASK-004 | Task management web UI | FE | FR-1–FR-7, FR-11, NFR-2 | TASK-003 |
+| TASK-004 | Task management web UI | FE | FR-1–FR-7, FR-11, NFR-2, NFR-6 | TASK-003 |
 | TASK-005 | task-service Docker and database compose | DEVOPS | FR-12, NFR-3 | TASK-003 |
 | TASK-006 | Frontend Docker and full-stack compose | DEVOPS | FR-12, NFR-3 | TASK-004, TASK-005 |
+
+## 13. UI / UX
+
+Kit: ADR-0006 (Mantine + Tabler Icons + Inter). One screen: task list.
+
+| Area | Spec |
+|------|------|
+| Shell | `AppShell` header “Tasks”; optional subtitle “Personal task list”; main `maw={720}` |
+| Create | `Card` titled “Add task”: `TextInput` Title (required), `Textarea` Description, primary `Button` Create (`IconPlus`) |
+| Filter | `SegmentedControl` All / Todo / Completed above the list |
+| List | Each task is a `Card`/`Paper`: title, optional description, `Badge` for status, `Group` of actions |
+| Actions | Edit (`IconPencil`), toggle complete (`IconCircleCheck` / `IconCircle`), Delete (`IconTrash`, red subtle). Delete opens `Modal` confirm |
+| Loading | 3 `Skeleton` rows |
+| Empty | `ThemeIcon` + “No tasks yet” + dimmed hint to use Add task |
+| Error | `Alert` color red, `role="alert"` |
+| Feedback | `notifications.show` on create / save / delete / status change success; mutation errors also `Alert` or red notification |
+
+Do not ship native `<input>`/`<button>` as the product UI.

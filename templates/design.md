@@ -53,3 +53,11 @@ Entities/tables/fields added or changed, migrations, backward compatibility.
 | Task | Title | Assignee | Covers | Depends on |
 |------|-------|----------|--------|------------|
 | TASK-XXX | | BE / FE / DEVOPS / TEST | FR-1, NFR-1 | — |
+
+## 13. UI / UX
+Required when any task is assigned to FE. Kit: ADR-0006 (Mantine + Tabler Icons). Write "none" only if there is no web UI.
+
+- **Screens:** one row per view (route, purpose, primary actions).
+- **Shell:** AppShell header title, nav (if any), content width.
+- **Per screen:** Mantine components (Card, TextInput, SegmentedControl, Badge, …), empty / loading / error treatment, confirmations, toasts.
+- **Do not** specify “a form on a blank page” or leave layout to FE improvisation.

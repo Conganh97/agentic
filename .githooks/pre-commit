@@ -2,6 +2,7 @@
 # Enable once per clone: git config core.hooksPath .githooks
 root="$(git rev-parse --show-toplevel)"
 python3 "$root/scripts/check_transitions.py" || exit 1
+python3 "$root/scripts/req.py" check --staged || exit 1
 if git diff --cached --name-only | grep -q '^tasks/'; then
   python3 "$root/scripts/sync_board.py" --staged || exit 1
 fi

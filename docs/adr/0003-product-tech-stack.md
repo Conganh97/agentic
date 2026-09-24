@@ -19,6 +19,8 @@ reviews are consistent.
   route), Vitest + React Testing Library, oxlint + Prettier. Lives in `frontend/`.
   *Amended 2026-09-23 (Phase 8):* linter changed from ESLint to oxlint, which `create-vite` 9 generates;
   the project keeps the scaffolder's tooling instead of swapping it.
+  *Amended 2026-09-24 (ADR-0006):* product UI uses **Mantine** (`@mantine/core`, `@mantine/hooks`,
+  `@mantine/notifications`) + **Tabler Icons** + Inter. Plain CSS is not the product look.
 - **Testing:** JUnit 5, AssertJ, Mockito, Spring slice tests; Testcontainers for PostgreSQL when Docker
   is available; Playwright for end-to-end tests (TEST role).
 
