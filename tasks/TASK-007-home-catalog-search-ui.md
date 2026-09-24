@@ -3,7 +3,7 @@ id: TASK-007
 title: Home, catalog, category and search UI
 type: TASK
 priority: CRITICAL
-status: BACKLOG
+status: READY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 09:15
+updated: 2026-09-24 09:55
 ---
 
 ## Description
@@ -63,3 +63,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-1, FR-2, FR-4, FR-14). Repo: fronte
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 09:15 | — | BACKLOG | SA | Created from REQ-001 design |
+| 2026-09-24 09:55 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002, TASK-006] READY_FOR_DEPLOY |
