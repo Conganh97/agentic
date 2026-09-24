@@ -3,7 +3,7 @@ id: TASK-003
 title: News and static page APIs
 type: TASK
 priority: CRITICAL
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:03
+updated: 2026-09-24 10:07
 ---
 
 ## Description
@@ -78,3 +78,4 @@ Pushed main.
 | 2026-09-24 09:57 | READY | IN_PROGRESS | BE | branch feature/TASK-003-news-pages-api |
 | 2026-09-24 10:00 | IN_PROGRESS | CODE_REVIEW | BE | product commit 571eb47; Implementation Iteration 1 |
 | 2026-09-24 10:03 | CODE_REVIEW | MERGED | SA | merge_commit=a8b6f11; reviews/TASK-003-round-1.md APPROVED; --no-ff on main |
+| 2026-09-24 10:07 | MERGED | TESTING | TEST | run 1; tested sha a8b6f11 is ancestor of main containing merge_commit a8b6f11 |
