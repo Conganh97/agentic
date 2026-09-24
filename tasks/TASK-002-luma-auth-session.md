@@ -3,7 +3,7 @@ id: TASK-002
 title: luma-service members and session
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:03
+updated: 2026-09-24 15:05
 ---
 
 ## Description
@@ -95,3 +95,4 @@ Merged `b110ab945924d95a525c6ae5ce652ab8ff8aa17a`.
 | 2026-09-24 14:56 | READY | IN_PROGRESS | BE | branch feature/TASK-002-luma-auth-session |
 | 2026-09-24 15:01 | IN_PROGRESS | CODE_REVIEW | BE | product d8dffdd feat(TASK-002): members and session authentication; ./mvnw -q verify pass (11) |
 | 2026-09-24 15:03 | CODE_REVIEW | MERGED | SA | Round 1 APPROVED; merge_commit=b110ab945924d95a525c6ae5ce652ab8ff8aa17a (two-parent --no-ff); ./mvnw -q verify PASS |
+| 2026-09-24 15:05 | MERGED | TESTING | TEST | merge_commit=b110ab945924d95a525c6ae5ce652ab8ff8aa17a is ancestor of luma-service main @ b110ab945924d95a525c6ae5ce652ab8ff8aa17a |
