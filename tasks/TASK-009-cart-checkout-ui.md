@@ -3,7 +3,7 @@ id: TASK-009
 title: Cart and checkout UI
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: frontend
 depends_on: [TASK-005, TASK-006]
 sprint:
 branch: feature/TASK-009-cart-checkout-ui
-merge_commit:
+merge_commit: b4bd0ef
 release:
 review_iteration: 1
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 11:34
+updated: 2026-09-24 11:36
 ---
 
 ## Description
@@ -73,6 +73,14 @@ Reviewed: feature/TASK-009-cart-checkout-ui @ 79a9a63 · Build/tests: `npm run l
 | 2 | src/features/cart/CartPage.tsx:151 | MAJOR | `QuantityField` `setValue`s before PATCH. On `mutateAsync` failure the remount key is still `item.quantity` from cache, so the field keeps the failed value while totals stay on the server cart. Reset the input to `item.quantity` when PATCH fails. |
 | 3 | src/features/cart/CartCheckout.test.tsx:186 | MAJOR | AC-002 requires on-screen totals to match `totalQuantity` / `totalPriceVnd` after PATCH. The mutation test asserts the fetch and the deleted name, not the updated totals or header indicator. After qty 1→3 on line A, assert totals 5 and 207.000₫ (and header 5). |
 
+### Round 2 — APPROVED
+Reviewed: feature/TASK-009-cart-checkout-ui @ 050dc18 · Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (49 tests)
+Previous round: #1 resolved, #2 resolved, #3 resolved
+No comments.
+
+Merged b4bd0ef.
+Pushed main.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -87,3 +95,4 @@ Reviewed: feature/TASK-009-cart-checkout-ui @ 79a9a63 · Build/tests: `npm run l
 | 2026-09-24 11:32 | CODE_REVIEW | CHANGES_REQUESTED | SA | Review round 1; 3 MAJOR (qty PATCH on clamp-to-1, failed PATCH stale input, AC-002 totals after PATCH untested) |
 | 2026-09-24 11:33 | CHANGES_REQUESTED | IN_PROGRESS | FE | Addressing review round 1 on feature/TASK-009-cart-checkout-ui |
 | 2026-09-24 11:34 | IN_PROGRESS | CODE_REVIEW | FE | Product 050dc18; Implementation Iteration 2 |
+| 2026-09-24 11:36 | CODE_REVIEW | MERGED | SA | Review round 2 APPROVED @ 050dc18; merge_commit=b4bd0ef |
