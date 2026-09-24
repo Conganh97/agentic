@@ -3,7 +3,7 @@ id: TASK-004
 title: Frontend shell and authentication screens
 type: TASK
 priority: HIGH
-status: CHANGES_REQUESTED
+status: IN_PROGRESS
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:22
+updated: 2026-09-24 15:24
 ---
 
 ## Description
@@ -90,4 +90,5 @@ onto `MantineProvider`. Do not invent a second look.
 | 2026-09-24 15:11 | READY | IN_PROGRESS | FE | branch feature/TASK-004-luma-auth-ui |
 | 2026-09-24 15:18 | IN_PROGRESS | CODE_REVIEW | FE | product c78d7d5; FE verify pass (11); Implementation iteration 1 |
 | 2026-09-24 15:22 | CODE_REVIEW | CHANGES_REQUESTED | UX/UI | review 1 CHANGES_REQUESTED; docs/design/ux/reviews/TASK-004-review-1.md; MAJOR `/` grain/image slot; uxui_review_iteration 1 |
+| 2026-09-24 15:24 | CHANGES_REQUESTED | IN_PROGRESS | FE | branch feature/TASK-004-luma-auth-ui |
 
