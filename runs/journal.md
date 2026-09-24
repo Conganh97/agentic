@@ -80,3 +80,6 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 11:53 | RUN-002 | FE | REQ-001 | TASK-013 | READY | IN_PROGRESS | start Playwright specs | branch feature/TASK-013-playwright-critical-flows |
 | 2026-09-24 11:53 | RUN-002 | FE | REQ-001 | TASK-013 | IN_PROGRESS | CODE_REVIEW | implementation completed | product 6c81b4c; team c13afbb; Iteration 1 |
 | 2026-09-24 11:58 | RUN-002 | SA | REQ-001 | TASK-013 | CODE_REVIEW | MERGED | approved round 1 | reviews/TASK-013-round-1.md APPROVED; merge_commit 1a1a6f2 --no-ff; team f5eb5b4; push failed GitHub 443 |
+| 2026-09-24 12:00 | RUN-002 | TEST | REQ-001 | TASK-013 | MERGED | TESTING | start run 1 | tested sha 1a1a6f2 ancestor of main |
+| 2026-09-24 12:00 | RUN-002 | TEST | REQ-001 | TASK-013 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-013-run-1.md PASS; AC-001..AC-005 checked; team 3f78b67 |
+| 2026-09-24 12:00 | RUN-002 | SCRUM | REQ-001 | TASK-012 | BACKLOG | BACKLOG | waiting DEVOPS skill (contract-only Phase 9) | all other REQ-001 tasks READY_FOR_DEPLOY |
