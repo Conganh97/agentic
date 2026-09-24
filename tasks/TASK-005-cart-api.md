@@ -3,7 +3,7 @@ id: TASK-005
 title: Cart APIs and guest merge
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: shop-service
 depends_on: [TASK-002, TASK-004]
 sprint:
 branch: feature/TASK-005-cart-api
-merge_commit:
+merge_commit: ded64f8
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 11:09
+updated: 2026-09-24 11:13
 ---
 
 ## Description
@@ -60,6 +60,12 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-5, FR-6). Repo: shop-service (
 - Notes: Flyway V7 (V1–V6 already used). `cart_items.unit_price_vnd` stores the product price copied at add/update (column not listed in design §7). Guest `cart_token` is httpOnly SameSite=Lax Path=/ 30 days; issued only when a new guest cart is created. POST add increments an existing line and caps at 99, then refreshes unit price. Merge runs on login and register; same `product_id` sums qty (max 99) and keeps the user line’s unit price; guest-only lines keep the stored guest price; guest cart row is deleted. Invalid/expired session falls back to guest/empty cart (no 401). Invalid `cart_token` is ignored. Branch pushed.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-005-cart-api @ ac3c4f2 · Build/tests: ./mvnw -q verify PASS (88 tests)
+No comments.
+
+Merged ded64f8.
+Pushed main.
 
 ## Test (TEST)
 
@@ -72,3 +78,4 @@ See `docs/design/REQ-001-design.md` §6–§7 (FR-5, FR-6). Repo: shop-service (
 | 2026-09-24 11:04 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002, TASK-004] READY_FOR_DEPLOY |
 | 2026-09-24 11:05 | READY | IN_PROGRESS | BE | branch feature/TASK-005-cart-api |
 | 2026-09-24 11:09 | IN_PROGRESS | CODE_REVIEW | BE | product ac3c4f2; Implementation Iteration 1; ./mvnw -q verify pass (88 tests) |
+| 2026-09-24 11:13 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=ded64f8 (--no-ff); ./mvnw -q verify PASS (88 tests) |
