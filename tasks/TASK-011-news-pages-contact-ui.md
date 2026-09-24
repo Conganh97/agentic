@@ -3,7 +3,7 @@ id: TASK-011
 title: News, policy pages and contact UI
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 10:37
+updated: 2026-09-24 10:40
 ---
 
 ## Description
@@ -34,16 +34,16 @@ News listing and article detail, seven information pages, and the contact page (
 Footer and nav must reach every page slug.
 
 ## Acceptance Criteria
-- [ ] AC-001 `/news` lists articles (title, excerpt, optional image) from `GET /api/v1/articles`;
+- [x] AC-001 `/news` lists articles (title, excerpt, optional image) from `GET /api/v1/articles`;
       a row opens `/news/:slug`
-- [ ] AC-002 `/news/:slug` shows title and content; prev/next or back-to-list anchors work;
+- [x] AC-002 `/news/:slug` shows title and content; prev/next or back-to-list anchors work;
       missing slug shows `Alert`
-- [ ] AC-003 `/pages/about`, `/pages/shipping`, `/pages/privacy`, `/pages/warranty`,
+- [x] AC-003 `/pages/about`, `/pages/shipping`, `/pages/privacy`, `/pages/warranty`,
       `/pages/terms`, `/pages/shopping-guide` each render `title` + body from the API (plain text
       `Text` paragraphs; no `dangerouslySetInnerHTML`)
-- [ ] AC-004 `/contact` shows hotline, email, Zalo from `/shop/settings` and a Mantine form
+- [x] AC-004 `/contact` shows hotline, email, Zalo from `/shop/settings` and a Mantine form
       (name, email, phone, message) that POSTs `/api/v1/contact` and toasts on 202
-- [ ] AC-005 RTL tests for news list, article detail, one policy page, and contact validation
+- [x] AC-005 RTL tests for news list, article detail, one policy page, and contact validation
       error; footer links include all of the above
 
 ## Design (SA)
@@ -69,6 +69,16 @@ Merged 580b15c.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ 580b15c (contains merge `580b15c`), service on port 15173 (shop-service 18081)
+- Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (37 tests)
+- AC-001 pass — browser `/news` H1 `Tin tức`; 3 API cards title+excerpt; click → `/news/chuan-bi-can-cau-buoi-som`
+- AC-002 pass — detail title/content/image; prev/next/back; `/news/khong-ton-tai` Alert `Không tìm thấy bài viết`
+- AC-003 pass — six `/pages/*` slugs H1 + Mantine `Text` body; no `dangerouslySetInnerHTML`
+- AC-004 pass — `/contact` settings + Mantine form; empty validation; POST 202 toast `Đã nhận liên hệ`
+- AC-005 pass — 37 Vitest tests (news list, article detail, about page, contact validation + footer paths)
+- Exploratory: AppShell teal/Inter; home news teaser; `/products` 18 cards; unknown page Alert; product repo left clean
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -81,3 +91,4 @@ Pushed main.
 | 2026-09-24 10:31 | IN_PROGRESS | CODE_REVIEW | FE | product 49a6757; Implementation Iteration 1 |
 | 2026-09-24 10:35 | CODE_REVIEW | MERGED | SA | approved round 1; merge_commit=580b15c |
 | 2026-09-24 10:37 | MERGED | TESTING | TEST | run 1; tested sha 580b15c is ancestor of main containing merge_commit 580b15c |
+| 2026-09-24 10:40 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-011-run-1.md PASS; every AC-001..AC-005 checked; tested sha 580b15c |
