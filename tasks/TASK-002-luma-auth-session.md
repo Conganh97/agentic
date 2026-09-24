@@ -3,7 +3,7 @@ id: TASK-002
 title: luma-service members and session
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 14:56
+updated: 2026-09-24 15:01
 ---
 
 ## Description
@@ -63,6 +63,12 @@ NFR-3, NFR-4, NFR-7. `requirement_revision: 3`, `content_hash: 54839e9b074480c8`
 
 ## Implementation (BE/FE)
 
+### Iteration 1
+- Branch: `feature/TASK-002-luma-auth-session` @ d8dffdd
+- Changed: `auth/api`, `auth/application`, `member/domain`, `member/infrastructure`, `shared/security`, `shared/error`, `shared/config`, Flyway `V1__members.sql`
+- Tests: `./mvnw -q verify` → pass (11)
+- Notes: created `luma-service` (Boot 4.0.8); cookie `LUMA_SESSION` HttpOnly SameSite=Lax; CORS localhost + 127.0.0.1:15173 credentials; BCrypt; ProblemDetail; Testcontainers PostgreSQL
+
 ## UX/UI Review
 
 ## Review (SA)
@@ -77,3 +83,4 @@ NFR-3, NFR-4, NFR-7. `requirement_revision: 3`, `content_hash: 54839e9b074480c8`
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001; repo luma-service; human_gate=auth; deps [] |
 | 2026-09-24 14:53 | BACKLOG | READY | HUMAN (os_anhbc) | DoR met; deps []; approved auth gate |
 | 2026-09-24 14:56 | READY | IN_PROGRESS | BE | branch feature/TASK-002-luma-auth-session |
+| 2026-09-24 15:01 | IN_PROGRESS | CODE_REVIEW | BE | product d8dffdd feat(TASK-002): members and session authentication; ./mvnw -q verify pass (11) |
