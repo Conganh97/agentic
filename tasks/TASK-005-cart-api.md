@@ -3,7 +3,7 @@ id: TASK-005
 title: Cart APIs and guest merge
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 11:18
+updated: 2026-09-24 11:20
 ---
 
 ## Description
@@ -35,16 +35,16 @@ quantity, remove, and correct totals. When the customer signs in, merge guest li
 cart by `product_id` (sum quantity, cap 99).
 
 ## Acceptance Criteria
-- [ ] AC-001 `POST /api/v1/cart/items` with a valid `productId` and quantity 1–99 returns 200
+- [x] AC-001 `POST /api/v1/cart/items` with a valid `productId` and quantity 1–99 returns 200
       `Cart` with that line and may `Set-Cookie: cart_token` for a guest; unknown product → 404;
       quantity 0 or 100 → 400
-- [ ] AC-002 `GET /api/v1/cart` returns items with `unitPriceVnd`, `quantity`, `lineTotalVnd`,
+- [x] AC-002 `GET /api/v1/cart` returns items with `unitPriceVnd`, `quantity`, `lineTotalVnd`,
       `totalQuantity` (sum of qty), `totalPriceVnd` (sum of line totals); empty cart is 200 with zeros
-- [ ] AC-003 `PATCH /api/v1/cart/items/{productId}` updates quantity; `DELETE` removes the line;
+- [x] AC-003 `PATCH /api/v1/cart/items/{productId}` updates quantity; `DELETE` removes the line;
       missing line → 404
-- [ ] AC-004 After a successful sign-in while a guest `cart_token` is present, guest lines merge
+- [x] AC-004 After a successful sign-in while a guest `cart_token` is present, guest lines merge
       into the user cart (same product: quantities added, max 99); later GET uses the user cart
-- [ ] AC-005 Tests cover add, update, delete, totals, empty cart, and merge-on-sign-in
+- [x] AC-005 Tests cover add, update, delete, totals, empty cart, and merge-on-sign-in
 
 ## Design (SA)
 See `docs/design/REQ-001-design.md` §6–§7 (FR-5, FR-6). Repo: shop-service (existing).
@@ -68,6 +68,16 @@ Merged ded64f8.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ ded64f8 (contains merge `ded64f8`), service on port 18081
+- Build/tests: `./mvnw -q verify` PASS (88 tests)
+- AC-001 pass — `POST /api/v1/cart/items` valid qty 1 → 200 Cart line + `Set-Cookie: cart_token` HttpOnly SameSite=Lax Path=/ Max-Age=2592000; unknown product → 404 `Product not found`; qty 0 and 100 → 400 ProblemDetail
+- AC-002 pass — empty GET → 200 zeros; after A×1+B×2 items have `unitPriceVnd`/`quantity`/`lineTotalVnd`; `totalQuantity` 3; `totalPriceVnd` 149000
+- AC-003 pass — PATCH A to 5 → 200 qty 5; DELETE B → 200 remaining A; missing PATCH/DELETE → 404 `Cart item not found`
+- AC-004 pass — login with guest `cart_token` (guest A×5 + user A×80) → GET 200 qty 85; cap 30+80 → 99; register-merge B×3 → session GET uses user cart
+- AC-005 pass — CartApiTest add/update/delete/totals/empty/merge + cap-99; CartControllerTest/CartServiceTest/AuthControllerTest merge; 88 tests
+- Exploratory: POST increment caps 99; PATCH 0/100 → 400, 99 → 200; invalid cart_token ignored (empty 200); `{}` POST 400; `/categories` 200; `/products?size=5` total=18; `/articles` total=3; health UP; unknown path 404 ProblemDetail; Flyway V1–V7; port 18081 free after stop
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -80,3 +90,4 @@ Pushed main.
 | 2026-09-24 11:09 | IN_PROGRESS | CODE_REVIEW | BE | product ac3c4f2; Implementation Iteration 1; ./mvnw -q verify pass (88 tests) |
 | 2026-09-24 11:13 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=ded64f8 (--no-ff); ./mvnw -q verify PASS (88 tests) |
 | 2026-09-24 11:18 | MERGED | TESTING | TEST | run 1; tested sha ded64f8 is ancestor of main containing merge_commit ded64f8 |
+| 2026-09-24 11:20 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-005-run-1.md PASS; every AC-001..AC-005 checked; tested sha ded64f8 |
