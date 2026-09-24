@@ -3,7 +3,7 @@ id: TASK-009
 title: Cart and checkout UI
 type: TASK
 priority: CRITICAL
-status: CHANGES_REQUESTED
+status: IN_PROGRESS
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 11:32
+updated: 2026-09-24 11:33
 ---
 
 ## Description
@@ -79,3 +79,4 @@ Reviewed: feature/TASK-009-cart-checkout-ui @ 79a9a63 · Build/tests: `npm run l
 | 2026-09-24 11:27 | READY | IN_PROGRESS | FE | Started on feature/TASK-009-cart-checkout-ui |
 | 2026-09-24 11:29 | IN_PROGRESS | CODE_REVIEW | FE | Product 79a9a63; Implementation Iteration 1 |
 | 2026-09-24 11:32 | CODE_REVIEW | CHANGES_REQUESTED | SA | Review round 1; 3 MAJOR (qty PATCH on clamp-to-1, failed PATCH stale input, AC-002 totals after PATCH untested) |
+| 2026-09-24 11:33 | CHANGES_REQUESTED | IN_PROGRESS | FE | Addressing review round 1 on feature/TASK-009-cart-checkout-ui |
