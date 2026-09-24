@@ -77,3 +77,5 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 11:45 | RUN-002 | TEST | REQ-001 | TASK-009 | MERGED | TESTING | start run 1 | tested sha b4bd0ef ancestor of main |
 | 2026-09-24 11:45 | RUN-002 | TEST | REQ-001 | TASK-009 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-009-run-1.md PASS; AC-001..AC-005 checked; team 556d2f9 |
 | 2026-09-24 11:45 | RUN-002 | SCRUM | REQ-001 | TASK-013 | BACKLOG | READY | DoR met | deps [TASK-007..010] READY_FOR_DEPLOY; auth approved |
+| 2026-09-24 11:53 | RUN-002 | FE | REQ-001 | TASK-013 | READY | IN_PROGRESS | start Playwright specs | branch feature/TASK-013-playwright-critical-flows |
+| 2026-09-24 11:53 | RUN-002 | FE | REQ-001 | TASK-013 | IN_PROGRESS | CODE_REVIEW | implementation completed | product 6c81b4c; team c13afbb; Iteration 1 |
