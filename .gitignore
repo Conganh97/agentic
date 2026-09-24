@@ -1,6 +1,9 @@
 # Product code (separate git repository)
 product/
 
+# Local tool caches
+.tmp-vite/
+
 # Secrets
 .env
 .env.*

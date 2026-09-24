@@ -1,7 +1,7 @@
 # AGENTS.md — Project-wide Rules
 
 These rules apply to every Cursor agent and human working in this workspace.
-Full plan: `agentic_engineering_team_cursor_plan.md`. Architecture: `docs/architecture/system-overview.md`.
+Architecture: `docs/architecture/system-overview.md`. Workflow: `.cursor/rules/workflow.mdc`.
 
 ## 1. What this workspace is
 
@@ -14,20 +14,17 @@ There is no platform code and no database:
 - **Product code** lives in one git repo per component under `product/` (ADR-0004, registry in
  `project.md`), created and pushed only via `/repo` (`scripts/repo.py`).
 
-## 2. Current phase
+## 2. Operating model
 
-**Phases 0–8, 10 done.** UX/UI (ADR-0008) + Figma MCP. Product QA (ADR-0010). Stack ADR-0009.
-`/scrum run` uses sprints when unfinished tasks > 5 (`scripts/sprint.py`). Pending: Phase 9 DevOps.
+Markdown state + role skills + `/scrum run`. Stack: ADR-0009. UX/UI: ADR-0008. Product QA: ADR-0010.
+Sprints when unfinished tasks > 5 (`scripts/sprint.py`). DevOps skill is contract-only (no deploy yet).
 Skills: `.cursor/skills/{sa,product-qa,ux-ui,backend,frontend,tester,devops,scrum,repo}/SKILL.md`.
-Workflow: `.cursor/rules/workflow.mdc`.
-
-Update this section whenever a phase starts or finishes.
 
 ## 3. Hard rules (never violate)
 
 - A task's `status` in its task file is the only source of truth.
-- Change status only via the Transition Protocol (plan §8) and only with transitions your role is
-  allowed to perform (plan §6–§7).
+- Change status only via the Transition Protocol (`.cursor/rules/workflow.mdc` §5) and only with
+  transitions your role is allowed to perform (§2).
 - Never merge your own work; never approve your own code.
 - No production deployment without `approved_by` set by a human in the task file.
 - A requirement is analyzed only after a human sets its `status: APPROVED`.
@@ -37,7 +34,7 @@ Update this section whenever a phase starts or finishes.
 - Product AC misses are `BUG` (+ `bugs/BUG-###.md`). Execution/tooling misses are `FAILED`.
 - `depends_on` is a graph: no cycles; a task is not READY until deps are MERGED or later.
 - Always read files and run `git` to learn state; never assume it.
-- Read only the files your role needs (plan §12); never load the whole repository.
+- Read only the files your role needs (the skill contract); never load the whole repository.
 - Never write secrets into markdown, commits, or chat.
 - Never bypass or edit guardrails (`.githooks/`, `.cursor/hooks*`, `--no-verify`); report a blocked
  command or rejected commit to the user instead of working around it.
@@ -46,12 +43,11 @@ Update this section whenever a phase starts or finishes.
 
 ## 4. How to work
 
-1. One phase at a time; do not build future phases early.
-2. One chat = one role on one task. Exception: `/scrum run` — the main chat stays SCRUM and delegates
+1. One chat = one role on one task. Exception: `/scrum run` — the main chat stays SCRUM and delegates
  every other role to a fresh subagent per step (one subagent = one role on one task).
-3. Keep changes small; show the diff; commit after each stable step.
-4. Create folders only when their phase starts.
-5. Architectural decisions go into an ADR in `docs/adr/`.
+2. Keep changes small; show the diff; commit after each stable step.
+3. Do not invent task statuses or skip the transition protocol.
+4. Architectural decisions go into an ADR in `docs/adr/`.
 
 ## 5. Where things live
 
@@ -59,18 +55,18 @@ Update this section whenever a phase starts or finishes.
 |------|---------|
 | `project.md` | Product repo registry, stack, commands, environments |
 | `requirements/` | Input requirements (`REQ-###-*.md`) |
-| `tasks/` | Task files and `board.md` (from Phase 1) |
+| `tasks/` | Task files and `board.md` |
 | `bugs/` | Product defect records (`BUG-###`) |
 | `reviews/` | SA review rounds (`TASK-###-round-N.md`) |
 | `tests/` | TEST run reports (`TASK-###-run-N.md`) |
 | `runs/` | `/scrum run` journal (`RUN-###.md`, `journal.md`) |
-| `sprints/`, `releases/` | Sprint and release files (from Phase 9–10) |
+| `sprints/`, `releases/` | Sprint and release files |
 | `docs/architecture/` | Architecture docs |
-| `docs/design/` | SA designs (from Phase 3) |
+| `docs/design/` | SA designs |
 | `docs/design/ux/` | UX/UI design contract and reviews (ADR-0008) |
 | `docs/adr/` | Architecture Decision Records |
-| `docs/standards/` | Product standards (from Phase 4) |
-| `memory/` | Decisions and lessons learned (from Phase 3) |
+| `docs/standards/` | Product standards |
+| `memory/` | Decisions and lessons learned |
 | `.cursor/rules/`, `.cursor/skills/`, `.cursor/hooks.json` | Workflow rule, role skills, guardrails |
 | `scripts/`, `.githooks/` | Task workflow check (pre-commit) |
 | `product/` | Product repos, one per component (ignored here) |

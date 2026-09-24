@@ -45,7 +45,7 @@ Loops: `CODE_REVIEW → CHANGES_REQUESTED → IN_PROGRESS` and `TESTING → BUG 
 Any working state can go to `BLOCKED`; only an explicit unblock returns it.
 Dependencies: `python3 scripts/deps.py`. Evidence: workflow §8.
 
-Full transition table with roles and guards: plan §6. Transition protocol: plan §8.
+Full transition table with roles and guards: `.cursor/rules/workflow.mdc` §2 and §5.
 
 ## 4. Why this design
 
