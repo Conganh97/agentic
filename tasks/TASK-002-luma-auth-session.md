@@ -3,7 +3,7 @@ id: TASK-002
 title: luma-service members and session
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: os_anhbc
 approved_at: 2026-09-24 14:53
-updated: 2026-09-24 15:05
+updated: 2026-09-24 15:07
 ---
 
 ## Description
@@ -45,14 +45,14 @@ Package `com.product.luma`. Default port `SERVER_PORT=18081`.
 
 ## Acceptance Criteria
 
-- [ ] AC-001 `POST /api/v1/auth/sign-up` with valid email, password (≥8), username creates a
+- [x] AC-001 `POST /api/v1/auth/sign-up` with valid email, password (≥8), username creates a
       member, returns 201 without a password field, and sets `LUMA_SESSION`. Duplicate email or
       username returns 409 with a distinct `detail`.
-- [ ] AC-002 `POST /api/v1/auth/sign-in` with valid credentials returns 200 + session cookie.
+- [x] AC-002 `POST /api/v1/auth/sign-in` with valid credentials returns 200 + session cookie.
       Unknown email or wrong password returns 401 `Invalid email or password.` and no session.
-- [ ] AC-003 `GET /api/v1/auth/me` with the cookie returns the member; after
+- [x] AC-003 `GET /api/v1/auth/me` with the cookie returns the member; after
       `POST /api/v1/auth/sign-out` the cookie is expired and `me` is 401.
-- [ ] AC-004 CORS + credentials succeed from `http://localhost:15173` and
+- [x] AC-004 CORS + credentials succeed from `http://localhost:15173` and
       `http://127.0.0.1:15173`. `GET /actuator/health` is 200. Password hashes are BCrypt; passwords
       never appear in JSON.
 
@@ -85,6 +85,15 @@ Merged `b110ab945924d95a525c6ae5ce652ab8ff8aa17a`.
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ b110ab945924d95a525c6ae5ce652ab8ff8aa17a (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS
+- AC-001 pass — `POST /api/v1/auth/sign-up` → 201 + `LUMA_SESSION`; duplicate email/username 409 distinct `detail`
+- AC-002 pass — `POST /api/v1/auth/sign-in` → 200 + cookie; unknown/wrong password 401 `Invalid email or password.` no session
+- AC-003 pass — `GET /api/v1/auth/me` → 200 member; `POST /sign-out` expires cookie; later `me` 401
+- AC-004 pass — CORS OPTIONS/actual from both origins + credentials; `GET /actuator/health` 200; BCrypt `$2a$10$`; no password in JSON
+- Evidence: `tests/TASK-002-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -96,3 +105,4 @@ Merged `b110ab945924d95a525c6ae5ce652ab8ff8aa17a`.
 | 2026-09-24 15:01 | IN_PROGRESS | CODE_REVIEW | BE | product d8dffdd feat(TASK-002): members and session authentication; ./mvnw -q verify pass (11) |
 | 2026-09-24 15:03 | CODE_REVIEW | MERGED | SA | Round 1 APPROVED; merge_commit=b110ab945924d95a525c6ae5ce652ab8ff8aa17a (two-parent --no-ff); ./mvnw -q verify PASS |
 | 2026-09-24 15:05 | MERGED | TESTING | TEST | merge_commit=b110ab945924d95a525c6ae5ce652ab8ff8aa17a is ancestor of luma-service main @ b110ab945924d95a525c6ae5ce652ab8ff8aa17a |
+| 2026-09-24 15:07 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-002-run-1.md PASS; AC-001..AC-004 checked; tested sha=b110ab945924d95a525c6ae5ce652ab8ff8aa17a ancestor of main |
