@@ -3,7 +3,7 @@ id: TASK-010
 title: Account sign-in and register UI
 type: TASK
 priority: CRITICAL
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:21
+updated: 2026-09-24 11:24
 ---
 
 ## Description
@@ -34,14 +34,14 @@ Customer register, sign-in, sign-out, and header account cluster. Session cookie
 `credentials: 'include'`. `human_gate: auth`.
 
 ## Acceptance Criteria
-- [ ] AC-001 `/register` `Paper` form: `TextInput` email, `PasswordInput` password, `TextInput`
+- [x] AC-001 `/register` `Paper` form: `TextInput` email, `PasswordInput` password, `TextInput`
       displayName; valid submit calls `POST /api/v1/auth/register` and then shows the signed-in header
-- [ ] AC-002 `/signin` form calls `POST /api/v1/auth/login`; 401 shows `Alert` role="alert";
+- [x] AC-002 `/signin` form calls `POST /api/v1/auth/login`; 401 shows `Alert` role="alert";
       validation errors map to field messages
-- [ ] AC-003 Signed-out header shows “Đăng nhập” and “Đăng ký”; after session, header shows
+- [x] AC-003 Signed-out header shows “Đăng nhập” and “Đăng ký”; after session, header shows
       `displayName` and “Đăng xuất”
-- [ ] AC-004 “Đăng xuất” calls `POST /api/v1/auth/logout` and returns header to the signed-out cluster
-- [ ] AC-005 RTL tests: register success mock, 401 on sign-in, sign-out restores guest nav;
+- [x] AC-004 “Đăng xuất” calls `POST /api/v1/auth/logout` and returns header to the signed-out cluster
+- [x] AC-005 RTL tests: register success mock, 401 on sign-in, sign-out restores guest nav;
       no native inputs
 
 ## Design (SA)
@@ -66,6 +66,16 @@ Merged f4b6275.
 Pushed main.
 
 ## Test (TEST)
+### Run 1 — PASS
+- Tested: main @ f4b6275 (contains merge `f4b6275`), service on port 15173 (shop-service 18081)
+- Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (40 tests)
+- AC-001 pass — `/register` Paper 420px Mantine Email/Password/Tên hiển thị; POST `/api/v1/auth/register` 201; header `Tester 010` + `Đăng xuất`
+- AC-002 pass — `/signin` POST `/api/v1/auth/login`; empty → field messages; 401 Alert `Không đăng nhập được`; 400 mapped in RTL
+- AC-003 pass — guest header `Đăng nhập`/`Đăng ký`; after session `Tester 010` + `Đăng xuất` (also after reload `/auth/me`)
+- AC-004 pass — `Đăng xuất` POST `/api/v1/auth/logout` 204; header back to guest cluster
+- AC-005 pass — 40 Vitest tests; AccountUi register mock / 401 / sign-out; no native inputs
+- Exploratory: teal/Inter AppShell; 409 Alert; catalog 18 products; cluster clipped at 611px (burger still has links); product repo left clean
+- Bug (FAIL only): n/a
 
 ## Deployment (DEVOPS)
 
@@ -79,3 +89,4 @@ Pushed main.
 | 2026-09-24 11:10 | IN_PROGRESS | CODE_REVIEW | FE | product db64a0b; Implementation Iteration 1 |
 | 2026-09-24 11:16 | CODE_REVIEW | MERGED | SA | reviews/TASK-010-round-1.md APPROVED; merge_commit=f4b6275 (--no-ff, two parents) |
 | 2026-09-24 11:21 | MERGED | TESTING | TEST | run 1; tested sha f4b6275 is ancestor of main containing merge_commit f4b6275 |
+| 2026-09-24 11:24 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-010-run-1.md PASS; every AC-001..AC-005 checked; tested sha f4b6275 |
