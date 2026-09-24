@@ -3,7 +3,7 @@ id: TASK-003
 title: luma-service posts likes profiles seed
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 15:23
+updated: 2026-09-24 15:25
 ---
 
 ## Description
@@ -44,15 +44,15 @@ URLs as-is; store uploaded files under `luma.media.dir` and serve at `GET /api/v
 
 ## Acceptance Criteria
 
-- [ ] AC-001 `GET /api/v1/posts` returns items newest-first; each `PostCard` has `imageUrl`,
+- [x] AC-001 `GET /api/v1/posts` returns items newest-first; each `PostCard` has `imageUrl`,
       `caption`, `author.username`, `author.avatarUrl`, `likeCount`, `likedByMe` (false when no
       session). After migrate + seed the list has ≥6 posts.
-- [ ] AC-002 Signed-in `POST /api/v1/posts` (caption 1–2200 + file XOR `https://` `imageUrl`)
+- [x] AC-002 Signed-in `POST /api/v1/posts` (caption 1–2200 + file XOR `https://` `imageUrl`)
       returns 201 and that post is first in the feed. Missing session is 401. Bad MIME, `http://`
       URL, or file > 8 MiB is 400.
-- [ ] AC-003 `PUT /api/v1/posts/{id}/likes` then `DELETE` toggles `likedByMe` and changes
+- [x] AC-003 `PUT /api/v1/posts/{id}/likes` then `DELETE` toggles `likedByMe` and changes
       `likeCount` by exactly one; a second PUT does not increment again. No session is 401.
-- [ ] AC-004 `GET /api/v1/profiles/{username}` returns username, avatarUrl, bio, postCount.
+- [x] AC-004 `GET /api/v1/profiles/{username}` returns username, avatarUrl, bio, postCount.
       `GET .../posts` lists that user's posts. Unknown user is 404. User with zero posts returns
       empty `items` (not 404).
 
@@ -85,6 +85,15 @@ Merged `9113e93db114032c2f90383a76af872709af33f3`.
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ 9113e93db114032c2f90383a76af872709af33f3 (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS
+- AC-001 pass — `GET /api/v1/posts` → 200, 6 newest-first PostCards, `likedByMe=false` anonymous
+- AC-002 pass — signed-in `POST /posts` → 201 first in feed; no session 401; http/MIME/>8MiB 400
+- AC-003 pass — PUT likeCount +1 then second PUT same; DELETE −1; no session 401
+- AC-004 pass — luna profile+posts; unknown 404; empty003 `items:[]` 200
+- Evidence: `tests/TASK-003-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -96,3 +105,4 @@ Merged `9113e93db114032c2f90383a76af872709af33f3`.
 | 2026-09-24 15:17 | IN_PROGRESS | CODE_REVIEW | BE | product f599ae5; ./mvnw -q verify pass (22) |
 | 2026-09-24 15:20 | CODE_REVIEW | MERGED | SA | reviews/TASK-003-round-1.md APPROVED; merge_commit=9113e93db114032c2f90383a76af872709af33f3 (--no-ff, two parents) |
 | 2026-09-24 15:23 | MERGED | TESTING | TEST | merge_commit=9113e93db114032c2f90383a76af872709af33f3 is ancestor of luma-service main @ 9113e93db114032c2f90383a76af872709af33f3 |
+| 2026-09-24 15:25 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-003-run-1.md PASS; AC-001..AC-004 checked; tested sha=9113e93db114032c2f90383a76af872709af33f3 ancestor of main |
