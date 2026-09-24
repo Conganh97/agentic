@@ -3,7 +3,7 @@ id: TASK-010
 title: Account sign-in and register UI
 type: TASK
 priority: CRITICAL
-status: CODE_REVIEW
+status: MERGED
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -11,7 +11,7 @@ repo: frontend
 depends_on: [TASK-004, TASK-006]
 sprint:
 branch: feature/TASK-010-account-ui
-merge_commit:
+merge_commit: f4b6275
 release:
 review_iteration: 0
 test_iteration: 0
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:10
+updated: 2026-09-24 11:16
 ---
 
 ## Description
@@ -58,6 +58,12 @@ See `docs/design/REQ-001-design.md` §13 (FR-7, FR-8, FR-9). Repo: frontend (exi
 - Notes: Session via `credentials: 'include'` on `/auth/me|register|login|logout`. `GET /auth/me` on shell load; 4xx → guest (401 is the contract). After register/login the header updates from the mutation cache (stay on the form page). Copy: “Email”, “Mật khẩu”, “Tên hiển thị”; submit “Đăng nhập” / “Đăng ký”; anchors “Đã có tài khoản? Đăng nhập” / “Chưa có tài khoản? Đăng ký”; toasts “Đăng ký thành công” / “Đăng nhập thành công”; 401/409 `Alert` “Không đăng nhập được” / “Không đăng ký được”. Client-side field messages in Vietnamese; 400 `ProblemDetail.errors` mapped onto fields. Header account cluster always visible (not `visibleFrom="sm"`). Branch pushed.
 
 ## Review (SA)
+### Round 1 — APPROVED
+Reviewed: feature/TASK-010-account-ui @ db64a0b · Build/tests: npm run lint && npm run format:check && npm test -- --run && npm run build PASS (40 tests)
+No comments.
+
+Merged f4b6275.
+Pushed main.
 
 ## Test (TEST)
 
@@ -71,3 +77,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-7, FR-8, FR-9). Repo: frontend (exi
 | 2026-09-24 11:04 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-004, TASK-006] READY_FOR_DEPLOY; auth approved |
 | 2026-09-24 11:06 | READY | IN_PROGRESS | FE | branch feature/TASK-010-account-ui |
 | 2026-09-24 11:10 | IN_PROGRESS | CODE_REVIEW | FE | product db64a0b; Implementation Iteration 1 |
+| 2026-09-24 11:16 | CODE_REVIEW | MERGED | SA | reviews/TASK-010-round-1.md APPROVED; merge_commit=f4b6275 (--no-ff, two parents) |
