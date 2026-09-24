@@ -13,3 +13,5 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 09:27 | RUN-001 | FE | REQ-001 | TASK-006 | IN_PROGRESS | CODE_REVIEW | implementation completed | product 1a1957a; team aef2fae; Iteration 1; 18 tests |
 | 2026-09-24 09:29 | RUN-001 | SA | REQ-001 | TASK-001 | CODE_REVIEW | MERGED | approved round 1 | reviews/TASK-001-round-1.md APPROVED; merge_commit 48801b6 --no-ff; team e4f2d70 |
 | 2026-09-24 09:32 | RUN-001 | SA | REQ-001 | TASK-006 | CODE_REVIEW | MERGED | approved round 1 | reviews/TASK-006-round-1.md APPROVED; merge_commit cb0c07f --no-ff; team ae0fc43 |
+| 2026-09-24 09:35 | RUN-001 | TEST | REQ-001 | TASK-001 | MERGED | TESTING | start run 1 | tested sha 48801b6 ancestor of main |
+| 2026-09-24 09:35 | RUN-001 | TEST | REQ-001 | TASK-001 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-001-run-1.md PASS; AC-001..AC-005 checked; team 68cf46e |
