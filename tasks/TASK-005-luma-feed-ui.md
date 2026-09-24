@@ -3,7 +3,7 @@ id: TASK-005
 title: Frontend feed create like profile
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: FE
 parent: REQ-001
 requirement_revision: 3
@@ -18,7 +18,7 @@ figma: https://www.figma.com/design/2e7pwemMZdOQ2CX7eYvHoB/Luma?node-id=1-18
 depends_on: [TASK-001, TASK-003, TASK-004]
 sprint:
 branch: feature/TASK-005-luma-feed-ui
-merge_commit:
+merge_commit: ab07b1702e6d70511ba29bf003513c495dda3213
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 15:55
+updated: 2026-09-24 15:57
 ---
 
 ## Description
@@ -76,6 +76,15 @@ NFR-6. `requires_uxui: true`; `depends_on` TASK-001, TASK-003, TASK-004.
 
 ## Review (SA)
 
+### Round 1 — APPROVED
+Reviewed: `feature/TASK-005-luma-feed-ui` @ `0604394` · Build/tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` PASS (23)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | ProfileView.tsx | MINOR | Overlay is a Mantine `Modal` whose title repeats the author already on `PhotoCard`. UX asked for a simple image+caption+heart overlay; UX/UI review already logged this as MINOR. |
+| 2 | useFeed.ts | MINOR | `useCreatePost` prepends the new card then `invalidateQueries(feedQueryKey)`, so the optimistic first row can refetch immediately. Harmless if the API returns the same post first. |
+
+Merged `ab07b1702e6d70511ba29bf003513c495dda3213`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -87,3 +96,4 @@ NFR-6. `requires_uxui: true`; `depends_on` TASK-001, TASK-003, TASK-004.
 | 2026-09-24 15:40 | BACKLOG | READY | SCRUM | DoR met; deps TASK-001 MERGED, TASK-003/004 READY_FOR_DEPLOY |
 | 2026-09-24 15:42 | READY | IN_PROGRESS | FE | branch feature/TASK-005-luma-feed-ui |
 | 2026-09-24 15:47 | IN_PROGRESS | CODE_REVIEW | FE | product 0604394; FE verify pass (23); pushed feature/TASK-005-luma-feed-ui |
+| 2026-09-24 15:57 | CODE_REVIEW | MERGED | SA | reviews/TASK-005-round-1.md APPROVED; merge_commit=ab07b1702e6d70511ba29bf003513c495dda3213 (--no-ff, two parents); FE verify PASS (23); uxui_review APPROVED |
