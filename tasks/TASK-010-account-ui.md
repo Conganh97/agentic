@@ -3,7 +3,7 @@ id: TASK-010
 title: Account sign-in and register UI
 type: TASK
 priority: CRITICAL
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: FE
 parent: REQ-001
 requirement_revision: 1
@@ -25,7 +25,7 @@ failure_recoverable:
 human_gate: auth
 approved_by: HUMAN (os_anhbc)
 approved_at: 2026-09-24 10:48
-updated: 2026-09-24 11:06
+updated: 2026-09-24 11:10
 ---
 
 ## Description
@@ -51,6 +51,11 @@ See `docs/design/REQ-001-design.md` §13 (FR-7, FR-8, FR-9). Repo: frontend (exi
 - `GET /api/v1/auth/me` on app load to restore session. `human_gate: auth`.
 
 ## Implementation (BE/FE)
+### Iteration 1 (initial)
+- Branch: `feature/TASK-010-account-ui` @ db64a0b
+- Changed: `frontend/src/api/auth.ts`, `frontend/src/api/client.ts`, `frontend/src/features/account/*`, `frontend/src/components/AppShellLayout.tsx`, `frontend/src/app/router.tsx`, `frontend/src/app/router.test.tsx`
+- Tests: `npm run lint && npm run format:check && npm test -- --run && npm run build` → pass (40 tests)
+- Notes: Session via `credentials: 'include'` on `/auth/me|register|login|logout`. `GET /auth/me` on shell load; 4xx → guest (401 is the contract). After register/login the header updates from the mutation cache (stay on the form page). Copy: “Email”, “Mật khẩu”, “Tên hiển thị”; submit “Đăng nhập” / “Đăng ký”; anchors “Đã có tài khoản? Đăng nhập” / “Chưa có tài khoản? Đăng ký”; toasts “Đăng ký thành công” / “Đăng nhập thành công”; 401/409 `Alert` “Không đăng nhập được” / “Không đăng ký được”. Client-side field messages in Vietnamese; 400 `ProblemDetail.errors` mapped onto fields. Header account cluster always visible (not `visibleFrom="sm"`). Branch pushed.
 
 ## Review (SA)
 
@@ -65,3 +70,4 @@ See `docs/design/REQ-001-design.md` §13 (FR-7, FR-8, FR-9). Repo: frontend (exi
 | 2026-09-24 10:48 | BACKLOG | BACKLOG | HUMAN (os_anhbc) | approved auth gate; run remaining REQ-001 tasks |
 | 2026-09-24 11:04 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-004, TASK-006] READY_FOR_DEPLOY; auth approved |
 | 2026-09-24 11:06 | READY | IN_PROGRESS | FE | branch feature/TASK-010-account-ui |
+| 2026-09-24 11:10 | IN_PROGRESS | CODE_REVIEW | FE | product db64a0b; Implementation Iteration 1 |
