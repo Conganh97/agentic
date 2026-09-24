@@ -3,7 +3,7 @@ id: TASK-001
 title: Luma UX/UI design contract
 type: TASK
 priority: HIGH
-status: BACKLOG
+status: READY
 assignee: UX/UI
 parent: REQ-001
 requirement_revision: 3
@@ -33,7 +33,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-24 14:44
+updated: 2026-09-24 14:46
 ---
 
 ## Description
@@ -73,3 +73,4 @@ Do not change API or AC. `requirement_revision: 3`, `content_hash: 54839e9b07448
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-24 14:44 | — | BACKLOG | SA | Created from REQ-001 design §13; work_type UX_UI; deps [] |
+| 2026-09-24 14:46 | BACKLOG | READY | SCRUM | DoR met; deps [] |
