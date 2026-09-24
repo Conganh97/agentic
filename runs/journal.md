@@ -63,3 +63,5 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-24 11:10 | RUN-002 | FE | REQ-001 | TASK-010 | IN_PROGRESS | CODE_REVIEW | implementation completed | product db64a0b; team 227d6b9; Iteration 1; 40 tests |
 | 2026-09-24 11:13 | RUN-002 | SA | REQ-001 | TASK-005 | CODE_REVIEW | MERGED | approved round 1 | reviews/TASK-005-round-1.md APPROVED; merge_commit ded64f8 --no-ff; team 856e057 |
 | 2026-09-24 11:17 | RUN-002 | SA | REQ-001 | TASK-010 | CODE_REVIEW | MERGED | approved round 1 | reviews/TASK-010-round-1.md APPROVED; merge_commit f4b6275 --no-ff; team 335ba1a |
+| 2026-09-24 11:20 | RUN-002 | TEST | REQ-001 | TASK-005 | MERGED | TESTING | start run 1 | tested sha ded64f8 ancestor of main |
+| 2026-09-24 11:20 | RUN-002 | TEST | REQ-001 | TASK-005 | TESTING | READY_FOR_DEPLOY | run 1 PASS | tests/TASK-005-run-1.md PASS; AC-001..AC-005 checked; team 09ef71d |
