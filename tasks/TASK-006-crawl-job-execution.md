@@ -3,7 +3,7 @@ id: TASK-006
 title: Crawl job execution, statistics, and item isolation
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:46
+updated: 2026-09-25 15:48
 ---
 
 ## Description
@@ -91,3 +91,4 @@ Reviewed: feature/TASK-006-crawl-job-execution @ `ba57cd9408a7c7e46755a38a45dc33
 | 2026-09-25 15:40 | READY | IN_PROGRESS | BE | branch feature/TASK-006-crawl-job-execution |
 | 2026-09-25 15:44 | IN_PROGRESS | CODE_REVIEW | BE | product sha ba57cd9408a7c7e46755a38a45dc33fe61fc4dc9; Implementation iteration 1; ./mvnw -q verify pass (78) |
 | 2026-09-25 15:46 | CODE_REVIEW | MERGED | SA | reviews/TASK-006-round-1.md APPROVED; merge_commit a79b4957d7a733e65d7c792205b3aecb871c25f6 (--no-ff, parents 3f1d0d4 + ba57cd9); ./mvnw -q verify PASS (78) |
+| 2026-09-25 15:48 | MERGED | TESTING | TEST | tested sha a79b4957d7a733e65d7c792205b3aecb871c25f6 is product main HEAD and contains merge_commit; run 1 started |
