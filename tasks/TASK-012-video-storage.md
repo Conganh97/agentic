@@ -15,7 +15,7 @@ uxui_design:
 uxui_review:
 figma:
 depends_on: [TASK-010]
-sprint:
+sprint: SPRINT-06
 branch:
 merge_commit:
 release:
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:33
+updated: 2026-09-25 16:55
 ---
 
 ## Description
