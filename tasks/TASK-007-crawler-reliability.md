@@ -3,7 +3,7 @@ id: TASK-007
 title: Crawler retry, rate limit, and public-only bounds
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -17,7 +17,7 @@ figma:
 depends_on: [TASK-004]
 sprint:
 branch: feature/TASK-007-crawler-reliability
-merge_commit:
+merge_commit: 3f1d0d4e31239489c3dab81eefe535ce03119a00
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:33
+updated: 2026-09-25 15:36
 ---
 
 ## Description
@@ -69,6 +69,13 @@ PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approv
 ## Review (SA)
 Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
+### Round 1 — APPROVED
+Reviewed: feature/TASK-007-crawler-reliability @ `e276e04312887c921aa1d1e6ff28617a0203cecc` · Build/tests: `./mvnw -q verify` PASS (62)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | CrawlerProperties.java | MINOR | `crawler.discovery.timeout` remains; RestClient now uses `crawler.http.timeout` |
+| 2 | DiscoveryHttpGuard.java | MINOR | `max-attempts=3` is total attempts, so the 4s backoff step is never slept |
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -80,3 +87,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 15:29 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-004] READY_FOR_DEPLOY |
 | 2026-09-25 15:31 | READY | IN_PROGRESS | BE | branch feature/TASK-007-crawler-reliability |
 | 2026-09-25 15:33 | IN_PROGRESS | CODE_REVIEW | BE | product sha e276e04312887c921aa1d1e6ff28617a0203cecc; Implementation iteration 1; ./mvnw -q verify pass (62) |
+| 2026-09-25 15:36 | CODE_REVIEW | MERGED | SA | reviews/TASK-007-round-1.md APPROVED; merge_commit 3f1d0d4e31239489c3dab81eefe535ce03119a00 (--no-ff, parents ecee1ef + e276e04); ./mvnw -q verify PASS (62) |
