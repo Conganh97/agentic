@@ -47,3 +47,13 @@ Append-only. Written by `python3 scripts/run_log.py` during `/scrum run`.
 | 2026-09-25 16:17 | RUN-002 | DEVOPS | REQ-001 | TASK-006 | READY_FOR_DEPLOY | RELEASED | DEV deploy reused compose | d3aa1d5 image dev-607c9c1 |
 | 2026-09-25 16:18 | RUN-002 | DEVOPS | REQ-001 | TASK-007 | READY_FOR_DEPLOY | RELEASED | DEV deploy reused compose | e7b22a0 image dev-607c9c1 |
 | 2026-09-25 16:20 | RUN-002 | DEVOPS | REQ-001 | TASK-008 | READY_FOR_DEPLOY | RELEASED | last child DEV; REQ RELEASED | 8296d71 6cc6ead image dev-607c9c1 |
+| 2026-09-25 16:35 | RUN-003 | SA | REQ-002 |  | APPROVED | ANALYZING | no design yet | 15552e5 TASK-009..TASK-020 drafted |
+| 2026-09-25 16:37 | RUN-003 | PQA | REQ-002 |  | ANALYZING | ANALYZED | plan-1 APPROVED | 7ca2b10 docs/design/reviews/REQ-002-plan-1.md |
+| 2026-09-25 16:38 | RUN-003 | SCRUM | REQ-002 | TASK-009 | BACKLOG | READY | DoR met; deps [] | SPRINT-04; REQ IN_PROGRESS |
+| 2026-09-25 16:49 | RUN-003 | DEVOPS | REQ-002 | TASK-009 | READY | CODE_REVIEW | READY, deps met | ea343e5 product 0e80f73 sibling compose |
+| 2026-09-25 16:51 | RUN-003 | SA | REQ-002 | TASK-009 | CODE_REVIEW | MERGED | review round 1 APPROVED | 5b7086f merge 679d92cc |
+| 2026-09-25 16:51 | RUN-003 | SCRUM | REQ-002 | TASK-010 | BACKLOG | READY | DoR met; deps TASK-009 MERGED | SPRINT-05 |
+| 2026-09-25 16:53 | RUN-003 | BE | REQ-002 | TASK-010 | READY | CODE_REVIEW | READY, deps met | 26e0bab product d77a247 verify 4 |
+| 2026-09-25 16:56 | RUN-003 | SA | REQ-002 | TASK-010 | CODE_REVIEW | MERGED | review round 1 APPROVED | 72da170 merge 8f11a3c |
+| 2026-09-25 16:59 | RUN-003 | TEST | REQ-002 | TASK-010 | MERGED | READY_FOR_DEPLOY | run 1 PASS | 709892c tests/TASK-010-run-1.md |
+| 2026-09-25 16:59 | RUN-003 | SCRUM | REQ-002 | TASK-011 | BACKLOG | READY | DoR met; deps TASK-010 READY_FOR_DEPLOY | SPRINT-06 |
