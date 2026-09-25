@@ -3,7 +3,7 @@ id: TASK-008
 title: Video query API, keyset pagination, and crawl integration tests
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -16,7 +16,7 @@ uxui_review:
 figma:
 depends_on: [TASK-003, TASK-006]
 sprint:
-branch:
+branch: feature/TASK-008-video-query-api
 merge_commit:
 release:
 review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:51
+updated: 2026-09-25 15:53
 ---
 
 ## Description
@@ -71,3 +71,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 |------|------|----|----|------|
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 15:51 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-003, TASK-006] READY_FOR_DEPLOY |
+| 2026-09-25 15:53 | READY | IN_PROGRESS | BE | branch feature/TASK-008-video-query-api from product main a79b495 |
