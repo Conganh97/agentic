@@ -1,8 +1,8 @@
 ---
 requirement: REQ-002
-status: DRAFT
+status: FINAL
 adrs: [ADR-0003, ADR-0004, ADR-0009, ADR-0011, ADR-0012]
-updated: 2026-09-25 16:33
+updated: 2026-09-25 16:37
 ---
 
 # REQ-002 Design — Video Downloader Service
