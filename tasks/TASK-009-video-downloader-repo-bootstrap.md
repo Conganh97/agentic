@@ -3,7 +3,7 @@ id: TASK-009
 title: Create video-downloader-service repo, Docker, GHA, compose
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: DEVOPS
 parent: REQ-002
 requirement_revision: 1
@@ -16,7 +16,7 @@ uxui_review:
 figma:
 depends_on: []
 sprint: SPRINT-04
-branch:
+branch: ops/TASK-009-video-downloader-repo-bootstrap
 merge_commit:
 release:
 review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:37
+updated: 2026-09-25 16:38
 ---
 
 ## Description
@@ -74,3 +74,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 |------|------|----|----|------|
 | 2026-09-25 16:33 | — | BACKLOG | SA | Created from REQ-002 design revision 1 hash b06116020682e658 |
 | 2026-09-25 16:37 | BACKLOG | READY | SCRUM | DoR met; deps [] |
+| 2026-09-25 16:38 | READY | IN_PROGRESS | DEVOPS | branch ops/TASK-009-video-downloader-repo-bootstrap |
