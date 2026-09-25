@@ -3,7 +3,7 @@ id: TASK-007
 title: Crawler retry, rate limit, and public-only bounds
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:31
+updated: 2026-09-25 15:33
 ---
 
 ## Description
@@ -57,6 +57,12 @@ Properties under `crawler.retry.*`, `crawler.rate.*`, `crawler.concurrency`, `cr
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (crawler reliability)
+- Branch: `feature/TASK-007-crawler-reliability` @ e276e04
+- Changed: `discovery/infrastructure/{DiscoveryHttpGuard,TokenBucketRateLimiter,Sleeper,PublicKeywordDiscoveryProvider,DiscoveryConfiguration}`, `shared/config/CrawlerProperties.java`, `application.yaml`
+- Tests: `./mvnw -q verify` → pass (62)
+- Notes: In-process token bucket + semaphore + retry (no Redis, no Resilience4j). Defaults 1 req/s, concurrency 4, HTTP timeout `crawler.http.timeout=10s`, `crawler.retry.max-attempts=3` on timeout/429/5xx only with backoff 1s/2s/4s. 401/403/captcha-like stay permanent. No video-file download or media/AI.
+
 ## UX/UI Review
 PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approve its own look.
 
@@ -73,3 +79,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 15:29 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-004] READY_FOR_DEPLOY |
 | 2026-09-25 15:31 | READY | IN_PROGRESS | BE | branch feature/TASK-007-crawler-reliability |
+| 2026-09-25 15:33 | IN_PROGRESS | CODE_REVIEW | BE | product sha e276e04312887c921aa1d1e6ff28617a0203cecc; Implementation iteration 1; ./mvnw -q verify pass (62) |
