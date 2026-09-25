@@ -3,7 +3,7 @@ id: TASK-011
 title: Download job persistence and status model
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-002
 requirement_revision: 1
@@ -16,7 +16,7 @@ uxui_review:
 figma:
 depends_on: [TASK-010]
 sprint: SPRINT-06
-branch:
+branch: feature/TASK-011-download-job-persistence
 merge_commit:
 release:
 review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:55
+updated: 2026-09-25 17:01
 ---
 
 ## Description
@@ -72,3 +72,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 |------|------|----|----|------|
 | 2026-09-25 16:33 | — | BACKLOG | SA | Created from REQ-002 design revision 1 hash b06116020682e658 |
 | 2026-09-25 16:59 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-010] READY_FOR_DEPLOY |
+| 2026-09-25 17:01 | READY | IN_PROGRESS | BE | branch feature/TASK-011-download-job-persistence |
