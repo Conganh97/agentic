@@ -3,7 +3,7 @@ id: TASK-006
 title: Crawl job execution, statistics, and item isolation
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:48
+updated: 2026-09-25 15:50
 ---
 
 ## Description
@@ -42,11 +42,11 @@ persisted / duplicate / failed items on the job (and `crawl_job_item` rows), and
 COMPLETED, PARTIAL, or FAILED. A single item failure must not abort the rest of the job.
 
 ## Acceptance Criteria
-- [ ] AC-009 A crawl job records the number of discovered videos.
-- [ ] AC-010 A crawl job records the number of newly persisted videos.
-- [ ] AC-011 A crawl job records duplicate videos.
-- [ ] AC-012 A crawl job records failed video processing.
-- [ ] AC-013 A failure processing one video does not automatically terminate the entire crawl job.
+- [x] AC-009 A crawl job records the number of discovered videos.
+- [x] AC-010 A crawl job records the number of newly persisted videos.
+- [x] AC-011 A crawl job records duplicate videos.
+- [x] AC-012 A crawl job records failed video processing.
+- [x] AC-013 A failure processing one video does not automatically terminate the entire crawl job.
 
 ## Design (SA)
 
@@ -81,6 +81,16 @@ Reviewed: feature/TASK-006-crawl-job-execution @ `ba57cd9408a7c7e46755a38a45dc33
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ a79b4957d7a733e65d7c792205b3aecb871c25f6 (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS (78; Testcontainers PostgreSQL 16.15; Flyway v3)
+- AC-009 pass — POST `/api/v1/crawl-jobs` keyword `task006-ac009` limit 3 → GET `discovered=3` COMPLETED
+- AC-010 pass — same GET `persisted=3`
+- AC-011 pass — second POST same keyword → GET `duplicates=3` `persisted=0`
+- AC-012 pass — isolation POST `task006-iso` → GET `failed=1`; item `mock-task006-iso-2` FAILED
+- AC-013 pass — same job `status=PARTIAL`; items 1 and 3 PERSISTED (job not aborted)
+- Evidence: `tests/TASK-006-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -92,3 +102,4 @@ Reviewed: feature/TASK-006-crawl-job-execution @ `ba57cd9408a7c7e46755a38a45dc33
 | 2026-09-25 15:44 | IN_PROGRESS | CODE_REVIEW | BE | product sha ba57cd9408a7c7e46755a38a45dc33fe61fc4dc9; Implementation iteration 1; ./mvnw -q verify pass (78) |
 | 2026-09-25 15:46 | CODE_REVIEW | MERGED | SA | reviews/TASK-006-round-1.md APPROVED; merge_commit a79b4957d7a733e65d7c792205b3aecb871c25f6 (--no-ff, parents 3f1d0d4 + ba57cd9); ./mvnw -q verify PASS (78) |
 | 2026-09-25 15:48 | MERGED | TESTING | TEST | tested sha a79b4957d7a733e65d7c792205b3aecb871c25f6 is product main HEAD and contains merge_commit; run 1 started |
+| 2026-09-25 15:50 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-006-run-1.md PASS; AC-009 AC-010 AC-011 AC-012 AC-013 checked; ./mvnw -q verify PASS (78); POST 202 + GET counters + PARTIAL isolation |
