@@ -3,7 +3,7 @@ id: TASK-001
 title: Create douyin-crawler-service repo, Docker, GHA, compose
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: DEVOPS
 parent: REQ-001
 requirement_revision: 1
@@ -17,7 +17,7 @@ figma:
 depends_on: []
 sprint: SPRINT-01
 branch: ops/TASK-001-douyin-crawler-repo-bootstrap
-merge_commit:
+merge_commit: 70231b22e7517430ecfcd6ca5c2794b21235ebf7
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:37
+updated: 2026-09-25 14:39
 ---
 
 ## Description
@@ -71,6 +71,15 @@ PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approv
 ## Review (SA)
 Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
+### Round 1 — APPROVED
+Reviewed: ops/TASK-001-douyin-crawler-repo-bootstrap @ `ffacbe111746b644e1f68b47d4df1726e604c38e` · Build/tests: SKIP (docker daemon down; no Spring scaffold — TASK-002)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | ops/compose/.env.example | MINOR | Example pins DEV ports only; a STG/PROD copy would override compose defaults |
+| 2 | .github/workflows/ci.yml | MINOR | GHCR login still runs when verify/build are skipped (harmless) |
+
+Merged `70231b22e7517430ecfcd6ca5c2794b21235ebf7`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -82,3 +91,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:35 | BACKLOG | READY | SCRUM | DoR met; deps [] |
 | 2026-09-25 14:36 | READY | IN_PROGRESS | DEVOPS | branch ops/TASK-001-douyin-crawler-repo-bootstrap |
 | 2026-09-25 14:37 | IN_PROGRESS | CODE_REVIEW | DEVOPS | product sha ffacbe1; compose ops/compose/{dev,stg,prod}.yml; docker build skipped (daemon down, no scaffold) |
+| 2026-09-25 14:39 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=70231b22e7517430ecfcd6ca5c2794b21235ebf7 --no-ff parents 3aabfce + ffacbe1; reviews/TASK-001-round-1.md |
