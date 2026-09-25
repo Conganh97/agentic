@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:26
+updated: 2026-09-25 14:32
 ---
 
 ## Description
@@ -42,6 +42,9 @@ and dispatches work on a `TaskExecutor`; `GET /api/v1/crawl-jobs/{jobId}` return
 Micrometer job/video counters and `crawler.job.duration`. A no-op or stub runner is enough until
 TASK-006 implements full execution.
 
+NFR-5: mark stale `RUNNING` jobs older than `crawler.job.stale-after` (default 30m) as
+`FAILED` on the next create or status read. An optional scheduled sweep may use the same rule.
+
 ## Acceptance Criteria
 - [ ] AC-002 The service can create a crawl job through an API.
 - [ ] AC-003 A crawl job executes asynchronously and does not require the API request to remain open until crawling finishes.
@@ -50,9 +53,15 @@ TASK-006 implements full execution.
 
 ## Design (SA)
 
-`docs/design/REQ-001-design.md` §6 job endpoints, NFR-2, NFR-7, FR-2, FR-3. States: PENDING,
+`docs/design/REQ-001-design.md` §6 job endpoints, §4 NFR-5, NFR-2, NFR-7, FR-2, FR-3.
+Flyway ownership: this task owns `crawl_job` (do not leave it to TASK-003). States: PENDING,
 RUNNING, COMPLETED, PARTIAL, FAILED. RFC 9457 errors. `/actuator/prometheus` must include the
 named meters (values may stay 0 until TASK-006 increments them).
+
+NFR-5: a `RUNNING` row with `started_at` older than `crawler.job.stale-after` (default 30m),
+or `RUNNING` with null `started_at` older than that window from `created_at`, is marked
+`FAILED` with an error message on `POST /api/v1/crawl-jobs` and `GET /api/v1/crawl-jobs/{jobId}`.
+Optional `@Scheduled` sweep applies the same rule so jobs fail even if no one reads them.
 
 ## Implementation (BE/FE)
 

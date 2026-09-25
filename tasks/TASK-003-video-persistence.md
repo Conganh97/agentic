@@ -32,15 +32,16 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:26
+updated: 2026-09-25 14:32
 ---
 
 ## Description
 
-Add Flyway schema and the `video` feature: persist discovered video metadata in PostgreSQL,
-enforce uniqueness on `(source, source_video_id)` in the database, and insert metric snapshots
-without overwriting previous rows. Provide repositories usable by later crawl tasks. No REST
-query API yet (TASK-008).
+Add Flyway schema for `video` / `video_metric` and the `video` feature: persist discovered
+video metadata in PostgreSQL, enforce uniqueness on `(source, source_video_id)` in the
+database, and insert metric snapshots without overwriting previous rows. Provide repositories
+usable by later crawl tasks. No REST query API yet (TASK-008). Do not create `crawl_job` or
+`crawl_job_item` here (TASK-005 / TASK-006).
 
 ## Acceptance Criteria
 - [ ] AC-006 Successfully discovered videos are persisted in PostgreSQL.
@@ -52,8 +53,9 @@ query API yet (TASK-008).
 ## Design (SA)
 
 `docs/design/REQ-001-design.md` §7 tables `video` and `video_metric`, FR-5, FR-6, FR-11.
-If `source_video_id` is missing, derive a stable id as SHA-256 of the canonical URL. Unique
-constraint is required. Domain unit tests for id derivation and snapshot-append rules.
+Flyway ownership: this task owns `video` and `video_metric` only. If `source_video_id` is
+missing, derive a stable id as SHA-256 of the canonical URL. Unique constraint is required.
+Domain unit tests for id derivation and snapshot-append rules.
 
 ## Implementation (BE/FE)
 

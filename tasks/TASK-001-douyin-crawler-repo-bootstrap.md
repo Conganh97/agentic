@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:26
+updated: 2026-09-25 14:32
 ---
 
 ## Description
@@ -42,17 +42,17 @@ GitHub repo with `python3 scripts/repo.py create douyin-crawler-service --type b
 `Dockerfile` and `.github/workflows/ci.yml`, and wire DEV/STG/PROD compose so this API +
 PostgreSQL run **without** a frontend container.
 
-Do not scaffold Spring application code (that is TASK-002). Do not add Redis.
+Do not scaffold Spring application code (that is TASK-002). Do not add Redis. AC-001 (service
+can start) is owned by TASK-002.
 
 ## Acceptance Criteria
-- [ ] AC-001 The service can start successfully using the documented local development setup.
 - [ ] AC-030 The application can run using Docker.
 
 ## Design (SA)
 
-`docs/design/REQ-001-design.md` §5, §8, §12 (TASK-001), FR-1, FR-16. Registry row in `project.md`
-after `repo.py create`. Compose: postgres:16 + this API image only. Ports follow `project.md`
-(DEV API 18081, DB 15440).
+`docs/design/REQ-001-design.md` §5, §8, §12 (TASK-001), FR-16, AC-030. Registry row in
+`project.md` after `repo.py create`. Compose: postgres:16 + this API image only. Ports follow
+`project.md` (DEV API 18081, DB 15440). Docker/GHA/compose only; the process-start AC is TASK-002.
 
 ## Implementation (BE/FE)
 

@@ -32,26 +32,30 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:26
+updated: 2026-09-25 14:32
 ---
 
 ## Description
 
 Scaffold `product/services/douyin-crawler-service` as a Java 21 Spring Boot 4 Maven app
 (`com.product.douyincrawler`), package-by-feature with `shared` only. Enable Actuator health,
-structured JSON logs, and springdoc OpenAPI. `server.port: ${SERVER_PORT:18081}`. No crawl or
-video features yet.
+structured JSON logs, and springdoc OpenAPI. `server.port: ${SERVER_PORT:18081}`. The process
+must start from the documented local setup (compose + `SERVER_PORT`). No crawl or video
+features yet.
 
 ## Acceptance Criteria
+- [ ] AC-001 The service can start successfully using the documented local development setup.
 - [ ] AC-022 Application logs are structured and contain sufficient information to investigate crawl failures.
 - [ ] AC-024 Application health checks are available.
 - [ ] AC-025 APIs are documented through OpenAPI.
 
 ## Design (SA)
 
-`docs/design/REQ-001-design.md` §5 Stack, §6 ops paths, NFR-6, NFR-8, NFR-9, ADR-0012.
+`docs/design/REQ-001-design.md` §5 Stack, §6 ops paths, FR-1, NFR-6, NFR-8, NFR-9, ADR-0012.
 `GET /actuator/health`, `GET /v3/api-docs`. Structured logging via Boot (no PII). Empty OpenAPI
-until later controllers appear is acceptable if the endpoint is live.
+until later controllers appear is acceptable if the endpoint is live. AC-001 is demonstrated
+here (this task scaffolds the app), not on TASK-001. Crawl-specific log fields (`jobId`,
+`sourceVideoId`, outcome) are emitted by TASK-006; this task provides the JSON logging stack.
 
 ## Implementation (BE/FE)
 

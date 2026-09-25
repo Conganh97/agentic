@@ -2,7 +2,7 @@
 requirement: REQ-001
 status: DRAFT
 adrs: [ADR-0003, ADR-0004, ADR-0009, ADR-0011, ADR-0012]
-updated: 2026-09-25 14:26
+updated: 2026-09-25 14:32
 ---
 
 # REQ-001 Design — Douyin Video Crawler Service
@@ -182,7 +182,9 @@ public interface VideoDiscoveryProvider {
 
 ## 7. Data Model Changes
 
-New schema (Flyway `V1__crawler.sql`). One database per service.
+New schema (Flyway). One database per service. Table ownership is split by task:
+`video` / `video_metric` = TASK-003; `crawl_job` = TASK-005; `crawl_job_item` = TASK-006.
+Each owning task adds its own migration (do not put all tables in one TASK-003 script).
 
 **`crawl_job`**
 
@@ -289,12 +291,12 @@ Backward compatibility: first schema, no existing clients.
 
 | Task | Title | Assignee | Covers | Depends on |
 |------|-------|----------|--------|------------|
-| TASK-001 | Create douyin-crawler-service repo, Docker, GHA, compose | DEVOPS | FR-1, FR-16, AC-001, AC-030 | — |
-| TASK-002 | Service skeleton: health, structured logs, OpenAPI | BE | FR-1 (app process), NFR-6, NFR-8, NFR-9, AC-022, AC-024, AC-025 | TASK-001 |
+| TASK-001 | Create douyin-crawler-service repo, Docker, GHA, compose | DEVOPS | FR-16, AC-030 | — |
+| TASK-002 | Service skeleton: health, structured logs, OpenAPI | BE | FR-1, NFR-6 (logging stack), NFR-8, NFR-9, AC-001, AC-022, AC-024, AC-025 | TASK-001 |
 | TASK-003 | Video + metric persistence and uniqueness | BE | FR-5–FR-6, FR-11, AC-006, AC-007, AC-008, AC-021, AC-026 | TASK-002 |
 | TASK-004 | Discovery port, mock, public keyword provider | BE | FR-4, FR-5, FR-12, FR-13, AC-004, AC-005, AC-028, AC-029, AC-031 | TASK-002 |
-| TASK-005 | Crawl job API and async dispatch | BE | FR-2, FR-3 (status), NFR-2, NFR-7, AC-002, AC-003, AC-017, AC-023 | TASK-003 |
-| TASK-006 | Job execution, stats, item isolation | BE | FR-3, FR-4, FR-7, AC-009–AC-013 | TASK-004, TASK-005, TASK-007 |
+| TASK-005 | Crawl job API and async dispatch | BE | FR-2, FR-3 (status), NFR-2, NFR-5, NFR-7, AC-002, AC-003, AC-017, AC-023 | TASK-003 |
+| TASK-006 | Job execution, stats, item isolation | BE | FR-3, FR-4, FR-7, NFR-6 (emit crawl fields), AC-009–AC-013 | TASK-004, TASK-005, TASK-007 |
 | TASK-007 | Retry, rate, concurrency; public-only / no-download | BE | FR-8, FR-9, FR-14, FR-15, AC-014, AC-015, AC-016, AC-032, AC-033 | TASK-004 |
 | TASK-008 | Video query API, keyset pagination, crawl integration tests | BE | FR-10, NFR-3, NFR-10, AC-018, AC-019, AC-020, AC-027, AC-034 | TASK-003, TASK-006 |
 

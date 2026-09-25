@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:26
+updated: 2026-09-25 14:32
 ---
 
 ## Description
@@ -51,7 +51,12 @@ COMPLETED, PARTIAL, or FAILED. A single item failure must not abort the rest of 
 ## Design (SA)
 
 `docs/design/REQ-001-design.md` §6 job resource + final status rules, §7 `crawl_job` /
-`crawl_job_item`, FR-3, FR-4, FR-7. Use the mock provider in tests. Increment TASK-005 meters.
+`crawl_job_item`, FR-3, FR-4, FR-7. Flyway ownership: this task owns `crawl_job_item`
+(TASK-005 owns `crawl_job`). Use the mock provider in tests. Increment TASK-005 meters.
+
+NFR-6 / AC-022 crawl fields: structured logs from the runner must include `jobId`,
+`sourceVideoId` (when known), and item/job `outcome`. Do not log tokens or cookies.
+TASK-002 provides the JSON logging stack; this task emits the crawl-specific fields.
 
 ## Implementation (BE/FE)
 
