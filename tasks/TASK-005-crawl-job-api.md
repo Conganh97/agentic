@@ -3,7 +3,7 @@ id: TASK-005
 title: Crawl job API and async dispatch
 type: TASK
 priority: HIGH
-status: READY_FOR_DEPLOY
+status: DEPLOYING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:28
+updated: 2026-09-25 16:15
 ---
 
 ## Description
@@ -107,3 +107,4 @@ Reviewed: feature/TASK-005-crawl-job-api @ `0c24091821bdfa4fad83f4ff9e5105a7b19a
 | 2026-09-25 15:25 | CODE_REVIEW | MERGED | SA | reviews/TASK-005-round-1.md APPROVED; merge_commit ecee1ef0ed1dc917c4e57691b469c2ba3a084844 (--no-ff, parents 8088e33 + 0c24091); ./mvnw -q verify PASS (51) |
 | 2026-09-25 15:26 | MERGED | TESTING | TEST | tested sha ecee1ef0ed1dc917c4e57691b469c2ba3a084844 is main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 15:28 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-005-run-1.md PASS; AC-002 AC-003 AC-017 AC-023 checked; ./mvnw -q verify PASS (51); POST 202 + GET 200 + prometheus meters |
+| 2026-09-25 16:15 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
