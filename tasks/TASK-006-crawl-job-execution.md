@@ -3,7 +3,7 @@ id: TASK-006
 title: Crawl job execution, statistics, and item isolation
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:40
+updated: 2026-09-25 15:44
 ---
 
 ## Description
@@ -60,6 +60,12 @@ TASK-002 provides the JSON logging stack; this task emits the crawl-specific fie
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (crawl job execution)
+- Branch: `feature/TASK-006-crawl-job-execution` @ ba57cd9
+- Changed: `crawljob/{application,domain,infrastructure}`, `V3__crawl_job_item.sql`; replaced `StubCrawlJobRunner` with `ExecuteCrawlJobService`
+- Tests: `./mvnw -q verify` → pass (78)
+- Notes: Runner calls `VideoDiscoveryProvider`, persists via `PersistVideoService`, writes `crawl_job_item` (PERSISTED/DUPLICATE/FAILED). One item exception does not abort remaining items. Final status COMPLETED / PARTIAL / FAILED per design §6. Increments TASK-005 meters. Structured logs include `jobId`, `sourceVideoId` (when known), and item/job `outcome`. Tests use `crawler.provider=mock`.
+
 ## UX/UI Review
 PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approve its own look.
 
@@ -76,3 +82,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 15:39 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-004, TASK-005, TASK-007] READY_FOR_DEPLOY |
 | 2026-09-25 15:40 | READY | IN_PROGRESS | BE | branch feature/TASK-006-crawl-job-execution |
+| 2026-09-25 15:44 | IN_PROGRESS | CODE_REVIEW | BE | product sha ba57cd9408a7c7e46755a38a45dc33fe61fc4dc9; Implementation iteration 1; ./mvnw -q verify pass (78) |
