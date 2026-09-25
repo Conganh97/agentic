@@ -1,5 +1,7 @@
 # PROD — this machine until a remote host exists. Human approved_by required.
-# REQ-001: API + PostgreSQL only (no frontend container).
+# REQ-001: crawler API + PostgreSQL (api / db).
+# REQ-002: downloader API + own PostgreSQL + video volume (profile: downloader).
+# Do not reuse API_IMAGE for the downloader.
 services:
   db:
     image: postgres:16
@@ -28,5 +30,39 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  downloader_db:
+    profiles: ["downloader"]
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${DOWNLOADER_POSTGRES_DB:-app}
+      POSTGRES_USER: ${DOWNLOADER_POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${DOWNLOADER_POSTGRES_PASSWORD:-app}
+    ports:
+      - "${DOWNLOADER_DB_PORT:-5433}:5432"
+    volumes:
+      - downloader_pg_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DOWNLOADER_POSTGRES_USER:-app}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  downloader_api:
+    profiles: ["downloader"]
+    image: ${DOWNLOADER_API_IMAGE}
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://downloader_db:5432/${DOWNLOADER_POSTGRES_DB:-app}
+      SPRING_DATASOURCE_USERNAME: ${DOWNLOADER_POSTGRES_USER:-app}
+      SPRING_DATASOURCE_PASSWORD: ${DOWNLOADER_POSTGRES_PASSWORD:-app}
+      SERVER_PORT: "8080"
+      DOWNLOADER_STORAGE_ROOT: ${DOWNLOADER_STORAGE_ROOT:-/data/videos}
+    ports:
+      - "${DOWNLOADER_API_PORT:-8082}:8080"
+    volumes:
+      - downloader_videos_prod:/data/videos
+    depends_on:
+      downloader_db:
+        condition: service_healthy
 volumes:
   pg_prod:
+  downloader_pg_prod:
+  downloader_videos_prod:

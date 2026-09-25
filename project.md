@@ -74,11 +74,14 @@ are starting points, not locks.
 No remote app host. DevOps builds images here, pushes GHCR, and `docker compose up` on this Mac
 (ADR-0011). Images: `ghcr.io/Conganh97/product-<component>:<env>-<sha>`.
 
-| Env | Compose | Web | API | DB | Approval |
-|-----|---------|-----|-----|-----|----------|
-| DEV | `ops/compose/dev.yml` | 15173 | 18081 | 15440 | none |
-| STG | `ops/compose/stg.yml` | 25173 | 28081 | 25440 | none |
-| PROD | `ops/compose/prod.yml` | 80 | 8080 | 5432 | human `approved_by` |
+| Env | Compose | Web | Crawler API | Crawler DB | Downloader API | Downloader DB | Approval |
+|-----|---------|-----|-------------|------------|----------------|---------------|----------|
+| DEV | `ops/compose/dev.yml` | 15173 | 18081 | 15440 | 18082 | 15441 | none |
+| STG | `ops/compose/stg.yml` | 25173 | 28081 | 25440 | 28082 | 25441 | none |
+| PROD | `ops/compose/prod.yml` | 80 | 8080 | 5432 | 8082 | 5433 | human `approved_by` |
+
+Downloader is a sibling stack (`DOWNLOADER_API_IMAGE`, compose profile `downloader`). It does not
+replace crawler `API_IMAGE`. `python3 scripts/deploy.py --env DEV --component video-downloader-service`.
 
 `python3 scripts/deploy.py --env DEV`. Secrets in gitignored `ops/compose/.env.<env>`. Optional
 self-hosted GitHub Actions runner on this Mac repeats the image push on `main`.

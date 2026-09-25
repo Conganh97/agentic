@@ -3,7 +3,7 @@ id: TASK-009
 title: Create video-downloader-service repo, Docker, GHA, compose
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: DEVOPS
 parent: REQ-002
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:38
+updated: 2026-09-25 16:42
 ---
 
 ## Description
@@ -59,6 +59,17 @@ crawler `API_IMAGE`. Docker/GHA/compose only.
 
 ## Implementation (BE/FE)
 
+### Iteration 1
+- Branch: `ops/TASK-009-video-downloader-repo-bootstrap` @ `0e80f738cc098868dc32755a21d0950d770af592` (product repo `video-downloader-service`)
+- Remote: https://github.com/Conganh97/product-video-downloader-service (private)
+- Registry: `project.md` row `video-downloader-service` → `product/services/video-downloader-service`
+- Docker/GHA: repaired `Dockerfile` (non-plain Boot jar), added `.dockerignore`, GHA verify + GHCR push skip until `pom.xml`/`mvnw` exist (TASK-010)
+- Team stack: `ops/compose/{dev,stg,prod}.yml` + `.env.example` — sibling `downloader_db` + `downloader_api` + `downloader_videos_*` volume (profile `downloader`); crawler `api`/`db`/`API_IMAGE` unchanged. Ports DEV 18082/15441, STG 28082/25441, PROD 8082/5433
+- `deploy.py`: `--component video-downloader-service` writes `DOWNLOADER_API_IMAGE` only (does not overwrite crawler `API_IMAGE`)
+- AC-046 evidence (unchecked; TEST owns the box): compose + Dockerfile + GHA paths above; `docker build` skipped — Docker daemon down and Spring app not scaffolded (TASK-010)
+- Verify: `./mvnw verify` skipped (no Maven wrapper/app). GHCR push skipped (no image to build)
+- Skip TEST after MERGED (`work_type: DEVOPS`)
+
 ## UX/UI Review
 PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approve its own look.
 
@@ -75,3 +86,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 16:33 | — | BACKLOG | SA | Created from REQ-002 design revision 1 hash b06116020682e658 |
 | 2026-09-25 16:37 | BACKLOG | READY | SCRUM | DoR met; deps [] |
 | 2026-09-25 16:38 | READY | IN_PROGRESS | DEVOPS | branch ops/TASK-009-video-downloader-repo-bootstrap |
+| 2026-09-25 16:42 | IN_PROGRESS | CODE_REVIEW | DEVOPS | product sha 0e80f73; compose ops/compose/{dev,stg,prod}.yml; deploy.py DOWNLOADER_API_IMAGE; docker build skipped (daemon down, no scaffold) |

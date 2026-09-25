@@ -21,11 +21,20 @@ import repo  # noqa: E402
 
 ENVS = {
     "DEV": {"file": "dev.yml", "env": ".env.dev", "channel": "dev",
-            "api": 18081, "web": 15173},
+            "api": 18081, "web": 15173, "db": 15440,
+            "downloader_api": 18082, "downloader_db": 15441},
     "STG": {"file": "stg.yml", "env": ".env.stg", "channel": "stg",
-            "api": 28081, "web": 25173},
+            "api": 28081, "web": 25173, "db": 25440,
+            "downloader_api": 28082, "downloader_db": 25441},
     "PROD": {"file": "prod.yml", "env": ".env.prod", "channel": "prod",
-             "api": 8080, "web": 80},
+            "api": 8080, "web": 80, "db": 5432,
+            "downloader_api": 8082, "downloader_db": 5433},
+}
+
+# Sibling BE images — never write video-downloader-service onto API_IMAGE.
+BE_IMAGE_ENV = {
+    "douyin-crawler-service": "API_IMAGE",
+    "video-downloader-service": "DOWNLOADER_API_IMAGE",
 }
 
 
@@ -75,17 +84,37 @@ def image_name(owner: str, component: str, channel: str, sha: str) -> tuple[str,
     return f"{base}:{channel}-{sha}", f"{base}:{channel}"
 
 
+def image_env_key(name: str, kind: str) -> str:
+    if kind == "FE":
+        return "WEB_IMAGE"
+    mapped = BE_IMAGE_ENV.get(name)
+    if mapped:
+        return mapped
+    fail(
+        f"{name}: compose has no sibling image env; update ops/compose before deploy "
+        "(do not overwrite API_IMAGE)",
+        2,
+    )
+
+
 def write_env(path: pathlib.Path, values: dict[str, str], defaults: dict) -> None:
     lines = [
         f"GITHUB_OWNER={values.get('GITHUB_OWNER', '')}",
         f"API_IMAGE={values.get('API_IMAGE', '')}",
         f"WEB_IMAGE={values.get('WEB_IMAGE', '')}",
+        f"DOWNLOADER_API_IMAGE={values.get('DOWNLOADER_API_IMAGE', '')}",
         f"POSTGRES_DB={values.get('POSTGRES_DB', 'app')}",
         f"POSTGRES_USER={values.get('POSTGRES_USER', 'app')}",
         f"POSTGRES_PASSWORD={values.get('POSTGRES_PASSWORD', 'app')}",
         f"API_PORT={values.get('API_PORT', str(defaults['api']))}",
         f"WEB_PORT={values.get('WEB_PORT', str(defaults['web']))}",
-        f"DB_PORT={values.get('DB_PORT', '')}",
+        f"DB_PORT={values.get('DB_PORT', str(defaults.get('db', '')))}",
+        f"DOWNLOADER_API_PORT={values.get('DOWNLOADER_API_PORT', str(defaults['downloader_api']))}",
+        f"DOWNLOADER_DB_PORT={values.get('DOWNLOADER_DB_PORT', str(defaults['downloader_db']))}",
+        f"DOWNLOADER_POSTGRES_DB={values.get('DOWNLOADER_POSTGRES_DB', values.get('POSTGRES_DB', 'app'))}",
+        f"DOWNLOADER_POSTGRES_USER={values.get('DOWNLOADER_POSTGRES_USER', values.get('POSTGRES_USER', 'app'))}",
+        f"DOWNLOADER_POSTGRES_PASSWORD={values.get('DOWNLOADER_POSTGRES_PASSWORD', values.get('POSTGRES_PASSWORD', 'app'))}",
+        f"DOWNLOADER_STORAGE_ROOT={values.get('DOWNLOADER_STORAGE_ROOT', '/data/videos')}",
     ]
     path.write_text("\n".join(lines) + "\n")
 
@@ -134,10 +163,18 @@ def main() -> int:
     if not rows:
         fail("no components registered; DevOps creates them with scripts/repo.py create", 2)
     if not args.component:
-        be_n = sum(1 for r in rows.values() if r["type"].upper() == "BE")
+        unknown_be = [
+            n for n, r in rows.items()
+            if r["type"].upper() == "BE" and n not in BE_IMAGE_ENV
+        ]
         fe_n = sum(1 for r in rows.values() if r["type"].upper() == "FE")
-        if be_n > 1:
-            fail("compose has one API_IMAGE; pass --component or update ops/compose for multiple services", 2)
+        if unknown_be:
+            fail(
+                "compose has no sibling image env for: "
+                + ", ".join(unknown_be)
+                + "; pass --component or update ops/compose (do not overwrite API_IMAGE)",
+                2,
+            )
         if fe_n > 1:
             fail("compose has one WEB_IMAGE; pass --component or update ops/compose for multiple frontends", 2)
 
@@ -166,14 +203,15 @@ def main() -> int:
     env_path = ROOT / "ops" / "compose" / spec["env"]
     values = load_env(env_path)
     values["GITHUB_OWNER"] = owner
+    smoked_keys: list[str] = []
     for name, row in rows.items():
         kind = row["type"].upper()
-        if kind == "BE":
-            values["API_IMAGE"] = pushed[name]
-        if kind == "FE":
-            values["WEB_IMAGE"] = pushed[name]
+        key = image_env_key(name, kind)
+        values[key] = pushed[name]
+        smoked_keys.append(key)
     values.setdefault("API_PORT", str(spec["api"]))
     values.setdefault("WEB_PORT", str(spec["web"]))
+    values.setdefault("DOWNLOADER_API_PORT", str(spec["downloader_api"]))
     write_env(env_path, values, spec)
     print(f"wrote {env_path.relative_to(ROOT)}")
 
@@ -183,16 +221,22 @@ def main() -> int:
     compose = ROOT / "ops" / "compose" / spec["file"]
     if not compose.is_file():
         fail(f"missing {compose}")
-    cmd = ["docker", "compose", "-f", str(compose), "--env-file", str(env_path), "up", "-d"]
+    cmd = ["docker", "compose", "-f", str(compose), "--env-file", str(env_path)]
+    if "DOWNLOADER_API_IMAGE" in smoked_keys:
+        cmd.extend(["--profile", "downloader"])
+    cmd.extend(["up", "-d"])
     run(cmd, cwd=ROOT / "ops" / "compose")
     print("compose up")
 
     api_port = values.get("API_PORT") or str(spec["api"])
     web_port = values.get("WEB_PORT") or str(spec["web"])
-    if values.get("API_IMAGE"):
+    downloader_port = values.get("DOWNLOADER_API_PORT") or str(spec["downloader_api"])
+    if "API_IMAGE" in smoked_keys:
         print(smoke(f"http://127.0.0.1:{api_port}/actuator/health"))
-    if values.get("WEB_IMAGE"):
+    if "WEB_IMAGE" in smoked_keys:
         print(smoke(f"http://127.0.0.1:{web_port}/"))
+    if "DOWNLOADER_API_IMAGE" in smoked_keys:
+        print(smoke(f"http://127.0.0.1:{downloader_port}/actuator/health"))
     print("deploy ok")
     return 0
 
