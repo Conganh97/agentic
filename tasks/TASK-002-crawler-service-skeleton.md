@@ -3,7 +3,7 @@ id: TASK-002
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: DEPLOYING
+status: RELEASED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -18,7 +18,7 @@ depends_on: [TASK-001]
 sprint: SPRINT-02
 branch: feature/TASK-002-crawler-service-skeleton
 merge_commit: 9d951ba14568ca1c6fa5eaf84c7317407b47c178
-release:
+release: DEV
 review_iteration: 0
 uxui_review_iteration: 0
 test_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:07
+updated: 2026-09-25 16:11
 ---
 
 ## Description
@@ -93,6 +93,12 @@ Merged `9d951ba14568ca1c6fa5eaf84c7317407b47c178`.
 
 ## Deployment (DEVOPS)
 
+### DEV — 2026-09-25 16:11 — OK
+- Images: `ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1` and `:dev`
+- Command: `python3 scripts/deploy.py --env DEV --component douyin-crawler-service`
+- Smoke: `http://127.0.0.1:18081/actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`
+- Rollback: `docker compose -f ops/compose/dev.yml up -d` with the previous tag
+
 ## History
 | Time | From | To | By | Note |
 |------|------|----|----|------|
@@ -104,3 +110,4 @@ Merged `9d951ba14568ca1c6fa5eaf84c7317407b47c178`.
 | 2026-09-25 14:47 | MERGED | TESTING | TEST | tested sha 9d951ba14568ca1c6fa5eaf84c7317407b47c178 is main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 14:48 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-002-run-1.md PASS; AC-001 AC-022 AC-024 AC-025 checked; ./mvnw -q verify PASS; health+openapi 200 |
 | 2026-09-25 16:07 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; python3 scripts/deploy.py --env DEV --component douyin-crawler-service |
+| 2026-09-25 16:11 | DEPLOYING | RELEASED | DEVOPS | DEV compose up OK; image ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1; smoke GET http://127.0.0.1:18081/actuator/health → 200 status=UP; release=DEV |
