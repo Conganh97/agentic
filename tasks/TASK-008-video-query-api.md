@@ -3,7 +3,7 @@ id: TASK-008
 title: Video query API, keyset pagination, and crawl integration tests
 type: TASK
 priority: HIGH
-status: READY_FOR_DEPLOY
+status: DEPLOYING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:03
+updated: 2026-09-25 16:19
 ---
 
 ## Description
@@ -100,3 +100,4 @@ Reviewed: feature/TASK-008-video-query-api @ `d0b1436b4e0790094032cfb2628b2a71c8
 | 2026-09-25 15:59 | CODE_REVIEW | MERGED | SA | reviews/TASK-008-round-1.md APPROVED; merge_commit 607c9c1d8cd7a795c8913d77aeb36fdeaec74261 (--no-ff, parents a79b495 + d0b1436); ./mvnw -q verify PASS (100) |
 | 2026-09-25 16:00 | MERGED | TESTING | TEST | tested sha 607c9c1d8cd7a795c8913d77aeb36fdeaec74261 is product main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 16:03 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-008-run-1.md PASS; AC-018 AC-019 AC-020 AC-027 AC-034 checked; ./mvnw -q verify PASS (100); mock crawl + GET /api/v1/videos keyset + GET by id; OpenAPI 3.1.0 |
+| 2026-09-25 16:19 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
