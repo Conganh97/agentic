@@ -3,7 +3,7 @@ id: TASK-005
 title: Crawl job API and async dispatch
 type: TASK
 priority: HIGH
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:32
+updated: 2026-09-25 15:11
 ---
 
 ## Description
@@ -79,3 +79,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
+| 2026-09-25 15:11 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-003] READY_FOR_DEPLOY |
