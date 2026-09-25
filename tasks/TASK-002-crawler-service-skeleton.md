@@ -3,7 +3,7 @@ id: TASK-002
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:42
+updated: 2026-09-25 14:44
 ---
 
 ## Description
@@ -59,6 +59,12 @@ here (this task scaffolds the app), not on TASK-001. Crawl-specific log fields (
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (skeleton)
+- Branch: `feature/TASK-002-crawler-service-skeleton` @ 523e282
+- Changed: `pom.xml`, `src/main/java/com/product/douyincrawler/`, `shared/config/OpenApiConfiguration.java`, `application.yaml`, `ServiceSkeletonTest.java`, `README.md`
+- Tests: `./mvnw -q verify` → pass (4)
+- Notes: Java 21 / Boot 4.0.8 / springdoc 3.0.3. Actuator health + ECS JSON console logs + `/v3/api-docs`. No crawl/video, no datasource (db health comes with TASK-003). Crawl log fields stay TASK-006.
+
 ## UX/UI Review
 PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approve its own look.
 
@@ -75,3 +81,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 14:40 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] MERGED |
 | 2026-09-25 14:42 | READY | IN_PROGRESS | BE | branch feature/TASK-002-crawler-service-skeleton |
+| 2026-09-25 14:44 | IN_PROGRESS | CODE_REVIEW | BE | product sha 523e282; Implementation iteration 1; ./mvnw -q verify pass (4) |
