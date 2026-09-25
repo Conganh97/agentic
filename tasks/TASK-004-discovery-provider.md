@@ -3,7 +3,7 @@ id: TASK-004
 title: Discovery port, mock, and public keyword provider
 type: TASK
 priority: HIGH
-status: DEPLOYING
+status: RELEASED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -18,7 +18,7 @@ depends_on: [TASK-002]
 sprint: SPRINT-03
 branch: feature/TASK-004-discovery-provider
 merge_commit: 8088e33e0cfa4c7490c984dd320e058dac58f919
-release:
+release: DEV
 review_iteration: 0
 uxui_review_iteration: 0
 test_iteration: 0
@@ -92,6 +92,12 @@ Merged `8088e33e0cfa4c7490c984dd320e058dac58f919`.
 
 ## Deployment (DEVOPS)
 
+### DEV — 2026-09-25 16:14 — OK
+- Images: `ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1` and `:dev`
+- Command: reused healthy `ops/compose/dev.yml` (TASK-002 image already up; `python3 scripts/deploy.py --env DEV --component douyin-crawler-service` not re-run)
+- Smoke: `http://127.0.0.1:18081/actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`
+- Rollback: `docker compose -f ops/compose/dev.yml up -d` with the previous tag
+
 ## History
 | Time | From | To | By | Note |
 |------|------|----|----|------|
@@ -103,3 +109,4 @@ Merged `8088e33e0cfa4c7490c984dd320e058dac58f919`.
 | 2026-09-25 15:09 | MERGED | TESTING | TEST | tested sha 8088e33e0cfa4c7490c984dd320e058dac58f919 is product main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 15:10 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-004-run-1.md PASS; AC-004 AC-005 AC-028 AC-029 AC-031 checked; ./mvnw -q verify PASS (30) |
 | 2026-09-25 16:14 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
+| 2026-09-25 16:14 | DEPLOYING | RELEASED | DEVOPS | DEV compose reused OK; image ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1; smoke GET http://127.0.0.1:18081/actuator/health → 200 status=UP; release=DEV |
