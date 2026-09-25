@@ -3,7 +3,7 @@ id: TASK-004
 title: Discovery port, mock, and public keyword provider
 type: TASK
 priority: HIGH
-status: READY_FOR_DEPLOY
+status: DEPLOYING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:10
+updated: 2026-09-25 16:14
 ---
 
 ## Description
@@ -102,3 +102,4 @@ Merged `8088e33e0cfa4c7490c984dd320e058dac58f919`.
 | 2026-09-25 15:08 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit 8088e33e0cfa4c7490c984dd320e058dac58f919 (--no-ff, parents 677bedb + 710f929); ./mvnw -q verify PASS (30) |
 | 2026-09-25 15:09 | MERGED | TESTING | TEST | tested sha 8088e33e0cfa4c7490c984dd320e058dac58f919 is product main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 15:10 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-004-run-1.md PASS; AC-004 AC-005 AC-028 AC-029 AC-031 checked; ./mvnw -q verify PASS (30) |
+| 2026-09-25 16:14 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
