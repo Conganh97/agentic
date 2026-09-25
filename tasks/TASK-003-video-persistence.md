@@ -3,7 +3,7 @@ id: TASK-003
 title: Video and metric persistence with uniqueness
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -17,7 +17,7 @@ figma:
 depends_on: [TASK-002]
 sprint: SPRINT-03
 branch: feature/TASK-003-video-persistence
-merge_commit:
+merge_commit: 677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:53
+updated: 2026-09-25 14:56
 ---
 
 ## Description
@@ -71,6 +71,15 @@ PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approv
 ## Review (SA)
 Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
+### Round 1 — APPROVED
+Reviewed: feature/TASK-003-video-persistence @ `f442c78e7259fe645bb5e9dd0faa19a7d2434110` · Build/tests: `./mvnw -q verify` PASS (15)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | JpaVideoRepository.java | MINOR | Name says JPA; writes use JDBC `ON CONFLICT DO NOTHING` (correct for FR-6) |
+| 2 | VideoMetricSnapshots.java | MINOR | `historyWith` is unit-test only; persist inserts new rows |
+
+Merged `677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -82,3 +91,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:49 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002] MERGED |
 | 2026-09-25 14:51 | READY | IN_PROGRESS | BE | branch feature/TASK-003-video-persistence |
 | 2026-09-25 14:53 | IN_PROGRESS | CODE_REVIEW | BE | product sha f442c78; Implementation iteration 1; ./mvnw -q verify pass (15) |
+| 2026-09-25 14:56 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2 --no-ff parents 9d951ba + f442c78; reviews/TASK-003-round-1.md |
