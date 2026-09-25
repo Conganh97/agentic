@@ -3,7 +3,7 @@ id: TASK-010
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-002
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:55
+updated: 2026-09-25 16:57
 ---
 
 ## Description
@@ -92,3 +92,4 @@ Merged `8f11a3c29f25f63ef053afcb20fb27ff3f95a26c`.
 | 2026-09-25 16:52 | READY | IN_PROGRESS | BE | branch feature/TASK-010-downloader-service-skeleton |
 | 2026-09-25 16:53 | IN_PROGRESS | CODE_REVIEW | BE | product sha d77a24778f7674f31425e658eeba28b7ebbdd975; Implementation iteration 1; ./mvnw -q verify pass (4) |
 | 2026-09-25 16:55 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=8f11a3c29f25f63ef053afcb20fb27ff3f95a26c --no-ff parents 679d92c + d77a247; reviews/TASK-010-round-1.md |
+| 2026-09-25 16:57 | MERGED | TESTING | TEST | tested sha 8f11a3c29f25f63ef053afcb20fb27ff3f95a26c is product main HEAD and contains merge_commit; run 1 started |
