@@ -3,7 +3,7 @@ id: TASK-007
 title: Crawler retry, rate limit, and public-only bounds
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:36
+updated: 2026-09-25 15:37
 ---
 
 ## Description
@@ -88,3 +88,4 @@ Reviewed: feature/TASK-007-crawler-reliability @ `e276e04312887c921aa1d1e6ff2861
 | 2026-09-25 15:31 | READY | IN_PROGRESS | BE | branch feature/TASK-007-crawler-reliability |
 | 2026-09-25 15:33 | IN_PROGRESS | CODE_REVIEW | BE | product sha e276e04312887c921aa1d1e6ff28617a0203cecc; Implementation iteration 1; ./mvnw -q verify pass (62) |
 | 2026-09-25 15:36 | CODE_REVIEW | MERGED | SA | reviews/TASK-007-round-1.md APPROVED; merge_commit 3f1d0d4e31239489c3dab81eefe535ce03119a00 (--no-ff, parents ecee1ef + e276e04); ./mvnw -q verify PASS (62) |
+| 2026-09-25 15:37 | MERGED | TESTING | TEST | tested sha 3f1d0d4e31239489c3dab81eefe535ce03119a00 is product main HEAD and contains merge_commit; run 1 started |
