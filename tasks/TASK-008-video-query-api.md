@@ -3,7 +3,7 @@ id: TASK-008
 title: Video query API, keyset pagination, and crawl integration tests
 type: TASK
 priority: HIGH
-status: DEPLOYING
+status: RELEASED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -18,7 +18,7 @@ depends_on: [TASK-003, TASK-006]
 sprint:
 branch: feature/TASK-008-video-query-api
 merge_commit: 607c9c1d8cd7a795c8913d77aeb36fdeaec74261
-release:
+release: DEV
 review_iteration: 0
 uxui_review_iteration: 0
 test_iteration: 0
@@ -90,6 +90,12 @@ Reviewed: feature/TASK-008-video-query-api @ `d0b1436b4e0790094032cfb2628b2a71c8
 
 ## Deployment (DEVOPS)
 
+### DEV — 2026-09-25 16:19 — OK
+- Images: `ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1` and `:dev`
+- Command: reused healthy `ops/compose/dev.yml` (TASK-002 image already up; `python3 scripts/deploy.py --env DEV --component douyin-crawler-service` not re-run)
+- Smoke: `http://127.0.0.1:18081/actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`; POST `/api/v1/crawl-jobs` keyword `task008-dev-smoke` limit 3 → 202 `{"jobId":"7836aa7a-…","status":"PENDING"}`; GET same job → 200 `COMPLETED` `discovered=3` `persisted=3`; GET `/api/v1/videos?limit=3` → 200 `items` `mock-task008-dev-smoke-3`..`-1` + `nextCursor`
+- Rollback: `docker compose -f ops/compose/dev.yml up -d` with the previous tag
+
 ## History
 | Time | From | To | By | Note |
 |------|------|----|----|------|
@@ -101,3 +107,4 @@ Reviewed: feature/TASK-008-video-query-api @ `d0b1436b4e0790094032cfb2628b2a71c8
 | 2026-09-25 16:00 | MERGED | TESTING | TEST | tested sha 607c9c1d8cd7a795c8913d77aeb36fdeaec74261 is product main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 16:03 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-008-run-1.md PASS; AC-018 AC-019 AC-020 AC-027 AC-034 checked; ./mvnw -q verify PASS (100); mock crawl + GET /api/v1/videos keyset + GET by id; OpenAPI 3.1.0 |
 | 2026-09-25 16:19 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
+| 2026-09-25 16:19 | DEPLOYING | RELEASED | DEVOPS | DEV compose reused OK; image ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1; smoke GET http://127.0.0.1:18081/actuator/health → 200 status=UP; POST /api/v1/crawl-jobs → 202 PENDING; GET COMPLETED discovered=3 persisted=3; GET /api/v1/videos?limit=3 → 200 mock-task008-dev-smoke-* + nextCursor; release=DEV |
