@@ -1,8 +1,8 @@
 ---
 requirement: REQ-001
-status: DRAFT
+status: FINAL
 adrs: [ADR-0003, ADR-0004, ADR-0009, ADR-0011, ADR-0012]
-updated: 2026-09-25 14:32
+updated: 2026-09-25 14:34
 ---
 
 # REQ-001 Design — Douyin Video Crawler Service
