@@ -3,7 +3,7 @@ id: TASK-003
 title: Video and metric persistence with uniqueness
 type: TASK
 priority: HIGH
-status: DEPLOYING
+status: RELEASED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -18,7 +18,7 @@ depends_on: [TASK-002]
 sprint: SPRINT-03
 branch: feature/TASK-003-video-persistence
 merge_commit: 677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2
-release:
+release: DEV
 review_iteration: 0
 uxui_review_iteration: 0
 test_iteration: 0
@@ -94,6 +94,12 @@ Merged `677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2`.
 
 ## Deployment (DEVOPS)
 
+### DEV — 2026-09-25 16:13 — OK
+- Images: `ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1` and `:dev`
+- Command: reused healthy `ops/compose/dev.yml` (TASK-002 image already up; `python3 scripts/deploy.py --env DEV --component douyin-crawler-service` not re-run)
+- Smoke: `http://127.0.0.1:18081/actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`; persist: Flyway v1 `video and video metric` success; `video`/`video_metric` present; `video` count 13
+- Rollback: `docker compose -f ops/compose/dev.yml up -d` with the previous tag
+
 ## History
 | Time | From | To | By | Note |
 |------|------|----|----|------|
@@ -105,3 +111,4 @@ Merged `677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2`.
 | 2026-09-25 14:57 | MERGED | TESTING | TEST | tested sha 677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2 is product main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 14:59 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-003-run-1.md PASS; AC-006 AC-007 AC-008 AC-021 AC-026 checked; ./mvnw -q verify PASS (15) |
 | 2026-09-25 16:13 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
+| 2026-09-25 16:13 | DEPLOYING | RELEASED | DEVOPS | DEV compose reused OK; image ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1; smoke GET http://127.0.0.1:18081/actuator/health → 200 status=UP; Flyway v1 video tables present; release=DEV |
