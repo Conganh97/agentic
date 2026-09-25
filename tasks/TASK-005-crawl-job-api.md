@@ -3,7 +3,7 @@ id: TASK-005
 title: Crawl job API and async dispatch
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -17,7 +17,7 @@ figma:
 depends_on: [TASK-003]
 sprint:
 branch: feature/TASK-005-crawl-job-api
-merge_commit:
+merge_commit: ecee1ef0ed1dc917c4e57691b469c2ba3a084844
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:22
+updated: 2026-09-25 15:25
 ---
 
 ## Description
@@ -77,6 +77,13 @@ PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approv
 ## Review (SA)
 Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
+### Round 1 — APPROVED
+Reviewed: feature/TASK-005-crawl-job-api @ `0c24091821bdfa4fad83f4ff9e5105a7b19a8ea0` · Build/tests: `./mvnw -q verify` PASS (51)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | JpaCrawlJobRepository.java | MINOR | Insert path constructs a new entity then immediately `copyFrom` (harmless duplication) |
+| 2 | CreateCrawlJobService.java | MINOR | After-commit dispatch relies on `insertPending` being the `@Transactional` boundary; wrapping `create()` later would race the runner |
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -88,3 +95,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 15:11 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-003] READY_FOR_DEPLOY |
 | 2026-09-25 15:17 | READY | IN_PROGRESS | BE | branch feature/TASK-005-crawl-job-api |
 | 2026-09-25 15:22 | IN_PROGRESS | CODE_REVIEW | BE | product sha 0c24091821bdfa4fad83f4ff9e5105a7b19a8ea0; Implementation iteration 1; ./mvnw -q verify pass (51) |
+| 2026-09-25 15:25 | CODE_REVIEW | MERGED | SA | reviews/TASK-005-round-1.md APPROVED; merge_commit ecee1ef0ed1dc917c4e57691b469c2ba3a084844 (--no-ff, parents 8088e33 + 0c24091); ./mvnw -q verify PASS (51) |
