@@ -3,7 +3,7 @@ id: TASK-003
 title: Video and metric persistence with uniqueness
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:57
+updated: 2026-09-25 14:59
 ---
 
 ## Description
@@ -44,11 +44,11 @@ usable by later crawl tasks. No REST query API yet (TASK-008). Do not create `cr
 `crawl_job_item` here (TASK-005 / TASK-006).
 
 ## Acceptance Criteria
-- [ ] AC-006 Successfully discovered videos are persisted in PostgreSQL.
-- [ ] AC-007 The same Douyin video cannot be persisted multiple times.
-- [ ] AC-008 Video uniqueness is enforced at the persistence layer and is not dependent only on application-level checks.
-- [ ] AC-021 Historical video metrics can be stored as separate snapshots without overwriting previous snapshots.
-- [ ] AC-026 Unit tests cover the core application and domain behaviour.
+- [x] AC-006 Successfully discovered videos are persisted in PostgreSQL.
+- [x] AC-007 The same Douyin video cannot be persisted multiple times.
+- [x] AC-008 Video uniqueness is enforced at the persistence layer and is not dependent only on application-level checks.
+- [x] AC-021 Historical video metrics can be stored as separate snapshots without overwriting previous snapshots.
+- [x] AC-026 Unit tests cover the core application and domain behaviour.
 
 ## Design (SA)
 
@@ -82,6 +82,16 @@ Merged `677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2`.
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ 677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2 (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS (15; Testcontainers PostgreSQL 16.15; Flyway v1)
+- AC-006 pass — `VideoPersistenceTest#ac006_persistsDiscoveredVideoInPostgres` → row count 1 in `video`
+- AC-007 pass — same video persisted twice → `duplicate=true`, count 1
+- AC-008 pass — raw INSERT same `(source, source_video_id)` → `DuplicateKeyException`; UNIQUE constraint
+- AC-021 pass — two metric snapshots (likes 10 then 20), distinct ids, no overwrite
+- AC-026 pass — `SourceVideoIdsTest` (3) + `VideoMetricSnapshotsTest` (1) + `PersistVideoServiceTest` (2) + SHA-256 IT
+- Evidence: `tests/TASK-003-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -93,3 +103,4 @@ Merged `677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2`.
 | 2026-09-25 14:53 | IN_PROGRESS | CODE_REVIEW | BE | product sha f442c78; Implementation iteration 1; ./mvnw -q verify pass (15) |
 | 2026-09-25 14:56 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2 --no-ff parents 9d951ba + f442c78; reviews/TASK-003-round-1.md |
 | 2026-09-25 14:57 | MERGED | TESTING | TEST | tested sha 677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2 is product main HEAD and contains merge_commit; run 1 started |
+| 2026-09-25 14:59 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-003-run-1.md PASS; AC-006 AC-007 AC-008 AC-021 AC-026 checked; ./mvnw -q verify PASS (15) |
