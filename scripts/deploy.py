@@ -71,7 +71,7 @@ def sha_of(path: pathlib.Path) -> str:
 
 
 def image_name(owner: str, component: str, channel: str, sha: str) -> tuple[str, str]:
-    base = f"ghcr.io/{owner}/product-{component}"
+    base = f"ghcr.io/{owner.lower()}/product-{component.lower()}"
     return f"{base}:{channel}-{sha}", f"{base}:{channel}"
 
 
