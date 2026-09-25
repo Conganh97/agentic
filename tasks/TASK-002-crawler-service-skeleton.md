@@ -3,7 +3,7 @@ id: TASK-002
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: READY_FOR_DEPLOY
+status: DEPLOYING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:48
+updated: 2026-09-25 16:07
 ---
 
 ## Description
@@ -103,3 +103,4 @@ Merged `9d951ba14568ca1c6fa5eaf84c7317407b47c178`.
 | 2026-09-25 14:46 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=9d951ba14568ca1c6fa5eaf84c7317407b47c178 --no-ff parents 70231b2 + 523e282; reviews/TASK-002-round-1.md |
 | 2026-09-25 14:47 | MERGED | TESTING | TEST | tested sha 9d951ba14568ca1c6fa5eaf84c7317407b47c178 is main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 14:48 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-002-run-1.md PASS; AC-001 AC-022 AC-024 AC-025 checked; ./mvnw -q verify PASS; health+openapi 200 |
+| 2026-09-25 16:07 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; python3 scripts/deploy.py --env DEV --component douyin-crawler-service |
