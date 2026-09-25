@@ -3,7 +3,7 @@ id: TASK-007
 title: Crawler retry, rate limit, and public-only bounds
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:37
+updated: 2026-09-25 15:38
 ---
 
 ## Description
@@ -43,11 +43,11 @@ video-file download and no media/AI features; the HTTP provider only uses public
 blocked/captcha-like responses as permanent failures.
 
 ## Acceptance Criteria
-- [ ] AC-014 Transient crawler failures are retried according to configurable retry settings.
-- [ ] AC-015 Permanent failures are not endlessly retried.
-- [ ] AC-016 Crawler request rate and concurrency are configurable.
-- [ ] AC-032 The implementation does not include video downloading or any downstream AI/video-processing functionality.
-- [ ] AC-033 The crawler only accesses publicly available content and does not implement credential collection, CAPTCHA solving, or platform-security bypass mechanisms.
+- [x] AC-014 Transient crawler failures are retried according to configurable retry settings.
+- [x] AC-015 Permanent failures are not endlessly retried.
+- [x] AC-016 Crawler request rate and concurrency are configurable.
+- [x] AC-032 The implementation does not include video downloading or any downstream AI/video-processing functionality.
+- [x] AC-033 The crawler only accesses publicly available content and does not implement credential collection, CAPTCHA solving, or platform-security bypass mechanisms.
 
 ## Design (SA)
 
@@ -78,6 +78,16 @@ Reviewed: feature/TASK-007-crawler-reliability @ `e276e04312887c921aa1d1e6ff2861
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ 3f1d0d4e31239489c3dab81eefe535ce03119a00 (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS (62; WireMock + unit; Testcontainers PostgreSQL 16.15 for wiring/regression; no live Douyin)
+- AC-014 pass — timeout/429/5xx retried up to max-attempts; WireMock 500 then success (2 GETs)
+- AC-015 pass — 401/403/captcha/400 and non-timeout IO not retried
+- AC-016 pass — concurrency semaphore + token-bucket rate; yaml defaults 1 req/s, concurrency 4, timeout 10s
+- AC-032 pass — no video download / media / AI in main sources (grep + CrawlerReliabilityBoundsTest)
+- AC-033 pass — public GET only; captcha/401/403 permanent; no cookie/signature/CAPTCHA solver
+- Evidence: `tests/TASK-007-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -89,3 +99,4 @@ Reviewed: feature/TASK-007-crawler-reliability @ `e276e04312887c921aa1d1e6ff2861
 | 2026-09-25 15:33 | IN_PROGRESS | CODE_REVIEW | BE | product sha e276e04312887c921aa1d1e6ff28617a0203cecc; Implementation iteration 1; ./mvnw -q verify pass (62) |
 | 2026-09-25 15:36 | CODE_REVIEW | MERGED | SA | reviews/TASK-007-round-1.md APPROVED; merge_commit 3f1d0d4e31239489c3dab81eefe535ce03119a00 (--no-ff, parents ecee1ef + e276e04); ./mvnw -q verify PASS (62) |
 | 2026-09-25 15:37 | MERGED | TESTING | TEST | tested sha 3f1d0d4e31239489c3dab81eefe535ce03119a00 is product main HEAD and contains merge_commit; run 1 started |
+| 2026-09-25 15:38 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-007-run-1.md PASS; AC-014 AC-015 AC-016 AC-032 AC-033 checked; ./mvnw -q verify PASS (62) |
