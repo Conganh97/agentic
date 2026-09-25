@@ -3,7 +3,7 @@ id: TASK-001
 title: Create douyin-crawler-service repo, Docker, GHA, compose
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: DEVOPS
 parent: REQ-001
 requirement_revision: 1
@@ -16,7 +16,7 @@ uxui_review:
 figma:
 depends_on: []
 sprint: SPRINT-01
-branch:
+branch: ops/TASK-001-douyin-crawler-repo-bootstrap
 merge_commit:
 release:
 review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:35
+updated: 2026-09-25 14:36
 ---
 
 ## Description
@@ -71,3 +71,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 |------|------|----|----|------|
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 14:35 | BACKLOG | READY | SCRUM | DoR met; deps [] |
+| 2026-09-25 14:36 | READY | IN_PROGRESS | DEVOPS | branch ops/TASK-001-douyin-crawler-repo-bootstrap |
