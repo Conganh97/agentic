@@ -3,7 +3,7 @@ id: TASK-010
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-002
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:57
+updated: 2026-09-25 16:58
 ---
 
 ## Description
@@ -44,10 +44,10 @@ must start from the documented local setup (compose + `SERVER_PORT`). No downloa
 features yet.
 
 ## Acceptance Criteria
-- [ ] AC-001 The service can start successfully using the documented local development setup.
-- [ ] AC-038 Structured logs are available.
-- [ ] AC-040 Health checks are available.
-- [ ] AC-041 OpenAPI documentation is available.
+- [x] AC-001 The service can start successfully using the documented local development setup.
+- [x] AC-038 Structured logs are available.
+- [x] AC-040 Health checks are available.
+- [x] AC-041 OpenAPI documentation is available.
 
 ## Design (SA)
 
@@ -82,6 +82,15 @@ Merged `8f11a3c29f25f63ef053afcb20fb27ff3f95a26c`.
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ 8f11a3c29f25f63ef053afcb20fb27ff3f95a26c (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS (4)
+- AC-001 pass — `SERVER_PORT=18082 ./mvnw spring-boot:run` → Started VideoDownloaderApplication; Tomcat 18082
+- AC-038 pass — ECS JSON console (`ecs.version=8.11`, `@timestamp`, `log.level`, `service.name`); download fields TASK-017
+- AC-040 pass — `GET /actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`
+- AC-041 pass — `GET /v3/api-docs` → 200 OpenAPI 3.1.0 empty `paths`
+- Evidence: `tests/TASK-010-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -93,3 +102,4 @@ Merged `8f11a3c29f25f63ef053afcb20fb27ff3f95a26c`.
 | 2026-09-25 16:53 | IN_PROGRESS | CODE_REVIEW | BE | product sha d77a24778f7674f31425e658eeba28b7ebbdd975; Implementation iteration 1; ./mvnw -q verify pass (4) |
 | 2026-09-25 16:55 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=8f11a3c29f25f63ef053afcb20fb27ff3f95a26c --no-ff parents 679d92c + d77a247; reviews/TASK-010-round-1.md |
 | 2026-09-25 16:57 | MERGED | TESTING | TEST | tested sha 8f11a3c29f25f63ef053afcb20fb27ff3f95a26c is product main HEAD and contains merge_commit; run 1 started |
+| 2026-09-25 16:58 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-010-run-1.md PASS; AC-001 AC-038 AC-040 AC-041 checked; ./mvnw -q verify PASS; health+openapi 200 |
