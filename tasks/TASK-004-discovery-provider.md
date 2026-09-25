@@ -3,7 +3,7 @@ id: TASK-004
 title: Discovery port, mock, and public keyword provider
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:09
+updated: 2026-09-25 15:10
 ---
 
 ## Description
@@ -43,11 +43,11 @@ public GETs via `RestClient` and maps available metadata. Application code must 
 HTTP class. Default `crawler.provider=mock` in `test`.
 
 ## Acceptance Criteria
-- [ ] AC-004 The crawler can discover public Douyin videos using at least one supported discovery strategy.
-- [ ] AC-005 Discovered videos contain the required metadata when that metadata is publicly available.
-- [ ] AC-028 Integration tests can run without requiring a real Douyin account.
-- [ ] AC-029 A mock discovery provider is available for automated tests.
-- [ ] AC-031 The crawler implementation is isolated behind an abstraction that allows another provider implementation to be introduced later.
+- [x] AC-004 The crawler can discover public Douyin videos using at least one supported discovery strategy.
+- [x] AC-005 Discovered videos contain the required metadata when that metadata is publicly available.
+- [x] AC-028 Integration tests can run without requiring a real Douyin account.
+- [x] AC-029 A mock discovery provider is available for automated tests.
+- [x] AC-031 The crawler implementation is isolated behind an abstraction that allows another provider implementation to be introduced later.
 
 ## Design (SA)
 
@@ -80,6 +80,16 @@ Merged `8088e33e0cfa4c7490c984dd320e058dac58f919`.
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ 8088e33e0cfa4c7490c984dd320e058dac58f919 (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS (30; mock + WireMock; Testcontainers PostgreSQL 16.15 for wiring/regression)
+- AC-004 pass — KEYWORD mock + WireMock public GET; 401/403/captcha → permanent failure (not a live-Douyin fail)
+- AC-005 pass — mock required fields; parser maps public JSON and leaves missing fields null
+- AC-028 pass — Spring IT uses mock; HTTP tests hit WireMock only (no Douyin account)
+- AC-029 pass — `crawler.provider=mock` default; injected bean is `MockVideoDiscoveryProvider`
+- AC-031 pass — application depends on `VideoDiscoveryProvider` only; no HTTP/infrastructure imports
+- Evidence: `tests/TASK-004-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -91,3 +101,4 @@ Merged `8088e33e0cfa4c7490c984dd320e058dac58f919`.
 | 2026-09-25 15:05 | IN_PROGRESS | CODE_REVIEW | BE | product sha 710f929e83d16570f25ee23f73bd9f2f2999c979; Implementation iteration 1; ./mvnw -q verify pass (30) |
 | 2026-09-25 15:08 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit 8088e33e0cfa4c7490c984dd320e058dac58f919 (--no-ff, parents 677bedb + 710f929); ./mvnw -q verify PASS (30) |
 | 2026-09-25 15:09 | MERGED | TESTING | TEST | tested sha 8088e33e0cfa4c7490c984dd320e058dac58f919 is product main HEAD and contains merge_commit; run 1 started |
+| 2026-09-25 15:10 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-004-run-1.md PASS; AC-004 AC-005 AC-028 AC-029 AC-031 checked; ./mvnw -q verify PASS (30) |
