@@ -3,7 +3,7 @@ id: TASK-002
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:46
+updated: 2026-09-25 14:47
 ---
 
 ## Description
@@ -92,3 +92,4 @@ Merged `9d951ba14568ca1c6fa5eaf84c7317407b47c178`.
 | 2026-09-25 14:42 | READY | IN_PROGRESS | BE | branch feature/TASK-002-crawler-service-skeleton |
 | 2026-09-25 14:44 | IN_PROGRESS | CODE_REVIEW | BE | product sha 523e282; Implementation iteration 1; ./mvnw -q verify pass (4) |
 | 2026-09-25 14:46 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=9d951ba14568ca1c6fa5eaf84c7317407b47c178 --no-ff parents 70231b2 + 523e282; reviews/TASK-002-round-1.md |
+| 2026-09-25 14:47 | MERGED | TESTING | TEST | tested sha 9d951ba14568ca1c6fa5eaf84c7317407b47c178 is main HEAD and contains merge_commit; run 1 started |
