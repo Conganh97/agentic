@@ -4,7 +4,7 @@ id: REQ-001
 
 title: Douyin Video Crawler Service
 
-status: APPROVED
+status: ANALYZING
 
 revision: 1
 
@@ -14,15 +14,15 @@ priority: HIGH
 
 owner: anhbc
 
-design:               
+design: docs/design/REQ-001-design.md
 
 pqa_plan:            
 
 pqa_accept:        
 
-tasks: []
+tasks: [TASK-001, TASK-002, TASK-003, TASK-004, TASK-005, TASK-006, TASK-007, TASK-008]
 
-updated: 2026-09-25 14:23
+updated: 2026-09-25 14:26
 
 ---
 
