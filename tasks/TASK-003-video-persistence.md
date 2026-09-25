@@ -3,7 +3,7 @@ id: TASK-003
 title: Video and metric persistence with uniqueness
 type: TASK
 priority: HIGH
-status: READY_FOR_DEPLOY
+status: DEPLOYING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:59
+updated: 2026-09-25 16:13
 ---
 
 ## Description
@@ -104,3 +104,4 @@ Merged `677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2`.
 | 2026-09-25 14:56 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2 --no-ff parents 9d951ba + f442c78; reviews/TASK-003-round-1.md |
 | 2026-09-25 14:57 | MERGED | TESTING | TEST | tested sha 677bedb02fc9bedfa0e96fa46cf21ba1fcfeebe2 is product main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 14:59 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-003-run-1.md PASS; AC-006 AC-007 AC-008 AC-021 AC-026 checked; ./mvnw -q verify PASS (15) |
+| 2026-09-25 16:13 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
