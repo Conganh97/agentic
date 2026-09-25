@@ -3,7 +3,7 @@ id: TASK-004
 title: Discovery port, mock, and public keyword provider
 type: TASK
 priority: HIGH
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:49
+updated: 2026-09-25 14:59
 ---
 
 ## Description
@@ -71,3 +71,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
+| 2026-09-25 14:59 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002] MERGED |
