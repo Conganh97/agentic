@@ -3,7 +3,7 @@ id: TASK-004
 title: Discovery port, mock, and public keyword provider
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:08
+updated: 2026-09-25 15:09
 ---
 
 ## Description
@@ -90,3 +90,4 @@ Merged `8088e33e0cfa4c7490c984dd320e058dac58f919`.
 | 2026-09-25 15:02 | READY | IN_PROGRESS | BE | branch feature/TASK-004-discovery-provider |
 | 2026-09-25 15:05 | IN_PROGRESS | CODE_REVIEW | BE | product sha 710f929e83d16570f25ee23f73bd9f2f2999c979; Implementation iteration 1; ./mvnw -q verify pass (30) |
 | 2026-09-25 15:08 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit 8088e33e0cfa4c7490c984dd320e058dac58f919 (--no-ff, parents 677bedb + 710f929); ./mvnw -q verify PASS (30) |
+| 2026-09-25 15:09 | MERGED | TESTING | TEST | tested sha 8088e33e0cfa4c7490c984dd320e058dac58f919 is product main HEAD and contains merge_commit; run 1 started |
