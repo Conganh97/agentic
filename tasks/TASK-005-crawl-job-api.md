@@ -3,7 +3,7 @@ id: TASK-005
 title: Crawl job API and async dispatch
 type: TASK
 priority: HIGH
-status: MERGED
+status: TESTING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:25
+updated: 2026-09-25 15:26
 ---
 
 ## Description
@@ -96,3 +96,4 @@ Reviewed: feature/TASK-005-crawl-job-api @ `0c24091821bdfa4fad83f4ff9e5105a7b19a
 | 2026-09-25 15:17 | READY | IN_PROGRESS | BE | branch feature/TASK-005-crawl-job-api |
 | 2026-09-25 15:22 | IN_PROGRESS | CODE_REVIEW | BE | product sha 0c24091821bdfa4fad83f4ff9e5105a7b19a8ea0; Implementation iteration 1; ./mvnw -q verify pass (51) |
 | 2026-09-25 15:25 | CODE_REVIEW | MERGED | SA | reviews/TASK-005-round-1.md APPROVED; merge_commit ecee1ef0ed1dc917c4e57691b469c2ba3a084844 (--no-ff, parents 8088e33 + 0c24091); ./mvnw -q verify PASS (51) |
+| 2026-09-25 15:26 | MERGED | TESTING | TEST | tested sha ecee1ef0ed1dc917c4e57691b469c2ba3a084844 is main HEAD and contains merge_commit; run 1 started |
