@@ -3,7 +3,7 @@ id: TASK-002
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -17,7 +17,7 @@ figma:
 depends_on: [TASK-001]
 sprint: SPRINT-02
 branch: feature/TASK-002-crawler-service-skeleton
-merge_commit:
+merge_commit: 9d951ba14568ca1c6fa5eaf84c7317407b47c178
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:44
+updated: 2026-09-25 14:46
 ---
 
 ## Description
@@ -71,6 +71,15 @@ PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approv
 ## Review (SA)
 Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
+### Round 1 — APPROVED
+Reviewed: feature/TASK-002-crawler-service-skeleton @ `523e282b4fddd27778e9bf9e1a8a084834f9282e` · Build/tests: `./mvnw -q verify` PASS (4)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | ServiceSkeletonTest.java | MINOR | AC-001 asserts context + yaml port, not a bound HTTP port |
+| 2 | application.yaml | MINOR | springdoc UI/docs on in all profiles; ADR-0012 says non-prod |
+
+Merged `9d951ba14568ca1c6fa5eaf84c7317407b47c178`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -82,3 +91,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:40 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-001] MERGED |
 | 2026-09-25 14:42 | READY | IN_PROGRESS | BE | branch feature/TASK-002-crawler-service-skeleton |
 | 2026-09-25 14:44 | IN_PROGRESS | CODE_REVIEW | BE | product sha 523e282; Implementation iteration 1; ./mvnw -q verify pass (4) |
+| 2026-09-25 14:46 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=9d951ba14568ca1c6fa5eaf84c7317407b47c178 --no-ff parents 70231b2 + 523e282; reviews/TASK-002-round-1.md |
