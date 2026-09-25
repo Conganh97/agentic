@@ -4,7 +4,7 @@ id: REQ-002
 
 title: Video Downloader Service
 
-status: ANALYZED
+status: IN_PROGRESS
 
 revision: 1
 
