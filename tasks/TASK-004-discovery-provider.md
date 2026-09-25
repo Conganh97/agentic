@@ -3,7 +3,7 @@ id: TASK-004
 title: Discovery port, mock, and public keyword provider
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -17,7 +17,7 @@ figma:
 depends_on: [TASK-002]
 sprint: SPRINT-03
 branch: feature/TASK-004-discovery-provider
-merge_commit:
+merge_commit: 8088e33e0cfa4c7490c984dd320e058dac58f919
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:05
+updated: 2026-09-25 15:08
 ---
 
 ## Description
@@ -69,6 +69,15 @@ PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approv
 ## Review (SA)
 Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
+### Round 1 — APPROVED
+Reviewed: feature/TASK-004-discovery-provider @ `710f929e83d16570f25ee23f73bd9f2f2999c979` · Build/tests: `./mvnw -q verify` PASS (30)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | DiscoverVideosServiceTest.java | MINOR | Package-name isolation assert is tautological; source-walk test is the real FR-13 check |
+| 2 | DiscoveryProviderWiringTest.java | MINOR | `getBeansOfType(PublicKeyword…)` is empty because `@Bean` returns the port; `instanceof Mock` is the real default-provider assertion |
+
+Merged `8088e33e0cfa4c7490c984dd320e058dac58f919`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -80,3 +89,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:59 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002] MERGED |
 | 2026-09-25 15:02 | READY | IN_PROGRESS | BE | branch feature/TASK-004-discovery-provider |
 | 2026-09-25 15:05 | IN_PROGRESS | CODE_REVIEW | BE | product sha 710f929e83d16570f25ee23f73bd9f2f2999c979; Implementation iteration 1; ./mvnw -q verify pass (30) |
+| 2026-09-25 15:08 | CODE_REVIEW | MERGED | SA | reviews/TASK-004-round-1.md APPROVED; merge_commit 8088e33e0cfa4c7490c984dd320e058dac58f919 (--no-ff, parents 677bedb + 710f929); ./mvnw -q verify PASS (30) |
