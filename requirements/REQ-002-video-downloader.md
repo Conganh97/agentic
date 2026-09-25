@@ -4,7 +4,7 @@ id: REQ-002
 
 title: Video Downloader Service
 
-status: APPROVED
+status: ANALYZING
 
 revision: 1
 
@@ -14,15 +14,15 @@ priority: HIGH
 
 owner: anhbc
 
-design:               
+design: docs/design/REQ-002-design.md
 
 pqa_plan:            
 
 pqa_accept:        
 
-tasks: []
+tasks: [TASK-009, TASK-010, TASK-011, TASK-012, TASK-013, TASK-014, TASK-015, TASK-016, TASK-017, TASK-018, TASK-019, TASK-020]
 
-updated: 2026-09-25 16:29
+updated: 2026-09-25 16:33
 
 ---
 
