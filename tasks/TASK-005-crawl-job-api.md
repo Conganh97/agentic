@@ -3,7 +3,7 @@ id: TASK-005
 title: Crawl job API and async dispatch
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:26
+updated: 2026-09-25 15:28
 ---
 
 ## Description
@@ -46,10 +46,10 @@ NFR-5: mark stale `RUNNING` jobs older than `crawler.job.stale-after` (default 3
 `FAILED` on the next create or status read. An optional scheduled sweep may use the same rule.
 
 ## Acceptance Criteria
-- [ ] AC-002 The service can create a crawl job through an API.
-- [ ] AC-003 A crawl job executes asynchronously and does not require the API request to remain open until crawling finishes.
-- [ ] AC-017 Crawl job status can be queried through an API.
-- [ ] AC-023 Application metrics are exposed for crawler jobs, discovered videos, persisted videos, duplicates, failures, and crawl duration.
+- [x] AC-002 The service can create a crawl job through an API.
+- [x] AC-003 A crawl job executes asynchronously and does not require the API request to remain open until crawling finishes.
+- [x] AC-017 Crawl job status can be queried through an API.
+- [x] AC-023 Application metrics are exposed for crawler jobs, discovered videos, persisted videos, duplicates, failures, and crawl duration.
 
 ## Design (SA)
 
@@ -86,6 +86,15 @@ Reviewed: feature/TASK-005-crawl-job-api @ `0c24091821bdfa4fad83f4ff9e5105a7b19a
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ ecee1ef0ed1dc917c4e57691b469c2ba3a084844 (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS (51; Testcontainers PostgreSQL 16.15; Flyway v2)
+- AC-002 pass — POST `/api/v1/crawl-jobs` → 202 `{"jobId":"559f14b3-…","status":"PENDING"}`
+- AC-003 pass — POST `real 0.22` (220 ms) returned PENDING; GET immediately COMPLETED (stub after-commit, not request-held)
+- AC-017 pass — GET `/api/v1/crawl-jobs/{jobId}` → 200 job resource + counters (videos 0; stub)
+- AC-023 pass — GET `/actuator/prometheus` exposes `crawler_jobs_total`, `crawler_videos_*`, `crawler_job_duration_seconds`
+- Evidence: `tests/TASK-005-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -97,3 +106,4 @@ Reviewed: feature/TASK-005-crawl-job-api @ `0c24091821bdfa4fad83f4ff9e5105a7b19a
 | 2026-09-25 15:22 | IN_PROGRESS | CODE_REVIEW | BE | product sha 0c24091821bdfa4fad83f4ff9e5105a7b19a8ea0; Implementation iteration 1; ./mvnw -q verify pass (51) |
 | 2026-09-25 15:25 | CODE_REVIEW | MERGED | SA | reviews/TASK-005-round-1.md APPROVED; merge_commit ecee1ef0ed1dc917c4e57691b469c2ba3a084844 (--no-ff, parents 8088e33 + 0c24091); ./mvnw -q verify PASS (51) |
 | 2026-09-25 15:26 | MERGED | TESTING | TEST | tested sha ecee1ef0ed1dc917c4e57691b469c2ba3a084844 is main HEAD and contains merge_commit; run 1 started |
+| 2026-09-25 15:28 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-005-run-1.md PASS; AC-002 AC-003 AC-017 AC-023 checked; ./mvnw -q verify PASS (51); POST 202 + GET 200 + prometheus meters |
