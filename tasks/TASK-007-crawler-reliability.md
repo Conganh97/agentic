@@ -3,7 +3,7 @@ id: TASK-007
 title: Crawler retry, rate limit, and public-only bounds
 type: TASK
 priority: HIGH
-status: READY_FOR_DEPLOY
+status: DEPLOYING
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:38
+updated: 2026-09-25 16:18
 ---
 
 ## Description
@@ -100,3 +100,4 @@ Reviewed: feature/TASK-007-crawler-reliability @ `e276e04312887c921aa1d1e6ff2861
 | 2026-09-25 15:36 | CODE_REVIEW | MERGED | SA | reviews/TASK-007-round-1.md APPROVED; merge_commit 3f1d0d4e31239489c3dab81eefe535ce03119a00 (--no-ff, parents ecee1ef + e276e04); ./mvnw -q verify PASS (62) |
 | 2026-09-25 15:37 | MERGED | TESTING | TEST | tested sha 3f1d0d4e31239489c3dab81eefe535ce03119a00 is product main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 15:38 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-007-run-1.md PASS; AC-014 AC-015 AC-016 AC-032 AC-033 checked; ./mvnw -q verify PASS (62) |
+| 2026-09-25 16:18 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
