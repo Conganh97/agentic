@@ -4,7 +4,7 @@ id: REQ-001
 
 title: Douyin Video Crawler Service
 
-status: ANALYZED
+status: IN_PROGRESS
 
 revision: 1
 
@@ -22,7 +22,7 @@ pqa_accept:
 
 tasks: [TASK-001, TASK-002, TASK-003, TASK-004, TASK-005, TASK-006, TASK-007, TASK-008]
 
-updated: 2026-09-25 14:34
+updated: 2026-09-25 14:35
 
 ---
 
