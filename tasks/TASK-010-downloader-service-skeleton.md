@@ -3,7 +3,7 @@ id: TASK-010
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-002
 requirement_revision: 1
@@ -16,7 +16,7 @@ uxui_review:
 figma:
 depends_on: [TASK-009]
 sprint: SPRINT-05
-branch:
+branch: feature/TASK-010-downloader-service-skeleton
 merge_commit:
 release:
 review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:50
+updated: 2026-09-25 16:52
 ---
 
 ## Description
@@ -74,3 +74,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 |------|------|----|----|------|
 | 2026-09-25 16:33 | — | BACKLOG | SA | Created from REQ-002 design revision 1 hash b06116020682e658 |
 | 2026-09-25 16:51 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-009] MERGED |
+| 2026-09-25 16:52 | READY | IN_PROGRESS | BE | branch feature/TASK-010-downloader-service-skeleton |
