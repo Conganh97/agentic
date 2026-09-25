@@ -3,7 +3,7 @@ id: TASK-005
 title: Crawl job API and async dispatch
 type: TASK
 priority: HIGH
-status: DEPLOYING
+status: RELEASED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -18,7 +18,7 @@ depends_on: [TASK-003]
 sprint:
 branch: feature/TASK-005-crawl-job-api
 merge_commit: ecee1ef0ed1dc917c4e57691b469c2ba3a084844
-release:
+release: DEV
 review_iteration: 0
 uxui_review_iteration: 0
 test_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:15
+updated: 2026-09-25 16:16
 ---
 
 ## Description
@@ -97,6 +97,12 @@ Reviewed: feature/TASK-005-crawl-job-api @ `0c24091821bdfa4fad83f4ff9e5105a7b19a
 
 ## Deployment (DEVOPS)
 
+### DEV — 2026-09-25 16:16 — OK
+- Images: `ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1` and `:dev`
+- Command: reused healthy `ops/compose/dev.yml` (TASK-002 image already up; `python3 scripts/deploy.py --env DEV --component douyin-crawler-service` not re-run)
+- Smoke: `http://127.0.0.1:18081/actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`; optional POST `/api/v1/crawl-jobs` → 202 `{"jobId":"1721bb6f-…","status":"PENDING"}`; GET same job → 200 `COMPLETED`
+- Rollback: `docker compose -f ops/compose/dev.yml up -d` with the previous tag
+
 ## History
 | Time | From | To | By | Note |
 |------|------|----|----|------|
@@ -108,3 +114,4 @@ Reviewed: feature/TASK-005-crawl-job-api @ `0c24091821bdfa4fad83f4ff9e5105a7b19a
 | 2026-09-25 15:26 | MERGED | TESTING | TEST | tested sha ecee1ef0ed1dc917c4e57691b469c2ba3a084844 is main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 15:28 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-005-run-1.md PASS; AC-002 AC-003 AC-017 AC-023 checked; ./mvnw -q verify PASS (51); POST 202 + GET 200 + prometheus meters |
 | 2026-09-25 16:15 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
+| 2026-09-25 16:16 | DEPLOYING | RELEASED | DEVOPS | DEV compose reused OK; image ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1; smoke GET http://127.0.0.1:18081/actuator/health → 200 status=UP; POST /api/v1/crawl-jobs → 202 PENDING; release=DEV |
