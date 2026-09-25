@@ -19,6 +19,10 @@ updated:
 
 ## Page Structure
 
+| Screen | `page_type` | Route |
+|--------|-------------|-------|
+| | FEED / LIST / GRID / DASHBOARD / DETAIL / FORM / AUTH / LANDING / SYSTEM | |
+
 ## Interaction Rules
 
 ## Loading States
@@ -31,9 +35,12 @@ updated:
 
 ## Density
 
+Content-dense types (FEED/LIST/GRID/DASHBOARD): ≥2 units above the fold. AUTH/FORM/SYSTEM:
+describe the intended fold; do not pad fake units.
+
 | Viewport | Above the fold (must list real content, not “nav + empty”) |
 |----------|--------------------------------------------------------------|
-| Mobile 390 | ≥2 units (cards, tiles, or full-bleed hero) |
+| Mobile 390 | |
 | Desktop 1280 | nav + content use the width; no unused canvas |
 
 ## Responsive Behavior

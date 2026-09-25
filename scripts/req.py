@@ -21,6 +21,11 @@ COMPLETE = {
     "READY_FOR_RELEASE": {"READY_FOR_DEPLOY", "DEPLOYING", "RELEASED"},
     "RELEASED": {"RELEASED"},
 }
+# UX_UI / DEVOPS skip TEST and stay MERGED; they still count as done for REQ completion.
+SKIP_TEST_OK = {
+    "READY_FOR_RELEASE": {"MERGED", "READY_FOR_DEPLOY", "DEPLOYING", "RELEASED"},
+    "RELEASED": {"MERGED", "RELEASED"},
+}
 
 
 def frontmatter(text: str) -> dict[str, str]:
@@ -85,6 +90,20 @@ def load_tasks() -> dict[str, dict]:
     return tasks
 
 
+def skip_test_child(tf: dict) -> bool:
+    work = (tf.get("work_type") or "").strip()
+    assignee = (tf.get("assignee") or "").strip()
+    return work in {"UX_UI", "DEVOPS"} or assignee in {"UX/UI", "DEVOPS"}
+
+
+def allowed_child_status(req_status: str, tf: dict) -> set[str] | None:
+    if req_status not in COMPLETE:
+        return None
+    if skip_test_child(tf):
+        return SKIP_TEST_OK[req_status]
+    return COMPLETE[req_status]
+
+
 def check_one(path: str, new: str, old: str | None, tasks: dict[str, dict]) -> list[str]:
     errors = []
     nf = frontmatter(new)
@@ -100,12 +119,13 @@ def check_one(path: str, new: str, old: str | None, tasks: dict[str, dict]) -> l
             errors.append(f"{path}: requirement body changed but revision is still {rev_new}; bump revision")
     status = nf.get("status", "")
     listed = TASK_ID.findall(nf.get("tasks", ""))
-    allowed = COMPLETE.get(status)
-    if allowed is not None:
+    if status in COMPLETE:
         if not listed:
             errors.append(f"{path}: {status} requires tasks: [TASK-…]")
         for tid in listed:
-            st = tasks.get(tid, {}).get("status", "missing")
+            tf = tasks.get(tid, {})
+            st = tf.get("status", "missing")
+            allowed = allowed_child_status(status, tf) or COMPLETE[status]
             if st not in allowed:
                 errors.append(f"{path}: cannot be {status} while {tid} is {st}")
     rid = nf.get("id", "")

@@ -222,6 +222,38 @@ body
         errors = req.check_one("requirements/REQ-001-x.md", req_text, None, {"TASK-001": {"status": "BACKLOG", "parent": "REQ-001", "requirement_revision": "1"}})
         self.assertTrue(any("RELEASED" in e for e in errors))
 
+    def test_req_ready_for_release_allows_uxui_merged(self):
+        import req
+        req_text = """---
+id: REQ-001
+status: READY_FOR_RELEASE
+revision: 1
+content_hash: PLACEHOLDER
+tasks: [TASK-001, TASK-002]
+---
+
+body
+"""
+        req_text = req_text.replace("PLACEHOLDER", req.content_hash(req_text))
+        tasks = {
+            "TASK-001": {"status": "MERGED", "work_type": "UX_UI", "assignee": "UX/UI", "parent": "REQ-001"},
+            "TASK-002": {"status": "READY_FOR_DEPLOY", "work_type": "BACKEND", "assignee": "BE", "parent": "REQ-001"},
+        }
+        self.assertEqual(req.check_one("requirements/REQ-001-x.md", req_text, None, tasks), [])
+
+    def test_uxui_cannot_request_code_review_changes(self):
+        old = task(status="CODE_REVIEW")
+        new = task(
+            status="CHANGES_REQUESTED",
+            extra="work_type: UX_UI\nuxui_review_iteration: 1\n",
+            history=[
+                "| 2026-01-01 00:00 | — | BACKLOG | SA | Created |",
+                "| 2026-01-01 02:00 | CODE_REVIEW | CHANGES_REQUESTED | UX/UI | density |",
+            ],
+        )
+        errors = ct.check("tasks/TASK-001-x.md", old, new, {"TASK-001": "CHANGES_REQUESTED"})
+        self.assertTrue(any("not allowed" in e for e in errors))
+
     def test_next_idle_empty(self):
         import next as nxt
         step = nxt.next_step("REQ-999")

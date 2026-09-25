@@ -11,6 +11,8 @@ Product repo: **only** `git merge --no-ff` + `scripts/repo.py push` after **code
 Never edit product files or the REQ body. Never merge `work_type: UX_UI` (PQA does). Never visual-approve FE.
 
 **Transitions:** create → BACKLOG · CODE_REVIEW → CHANGES_REQUESTED | MERGED (code tasks only).
+Do not check task AC boxes (TEST only). **Transition discipline:** workflow §5. Never `--no-verify`.
+`NEEDS_INPUT` is an outcome, not a status.
 
 ---
 
@@ -49,8 +51,11 @@ PQA sets `ANALYZED` + design `FINAL` when the plan is APPROVED. Do not skip that
 | Fail | If |
 |------|-----|
 | BLOCKER | AC unmet, build/test fail, security, design/API break |
-| MAJOR | missing AC test, standards miss, wrong kit vs §5, FE ignores the **written** UX contract |
+| MAJOR | missing implementation-level AC coverage on the task branch, standards miss, wrong kit vs §5, FE ignores the **written** UX contract |
 | MINOR | style — never blocks. Visual density is PQA, not you |
+
+SA may review implementation-level tests. TEST owns post-merge black-box evidence.
+Do not require `tests/TASK-###-run-N.md` before merge.
 
 BLOCKER/MAJOR → CHANGES_REQUESTED (`review_iteration += 1`; already 3 → BLOCKED).
 `reviews/TASK-###-round-N.md`. Approve: `--no-ff` merge, `merge_commit` two parents, `repo.py` push.

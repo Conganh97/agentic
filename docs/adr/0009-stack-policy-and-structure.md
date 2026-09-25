@@ -3,7 +3,7 @@
 - **Status:** Accepted
 - **Date:** 2026-09-24
 - **Deciders:** Project owner
-- **Supersedes:** ADR-0006 (Mantine is no longer the global UI kit). Amends ADR-0003.
+- **Supersedes:** ADR-0006. Amends ADR-0003.
 
 ## Decision
 

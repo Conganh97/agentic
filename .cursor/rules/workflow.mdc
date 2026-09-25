@@ -90,12 +90,32 @@ Circular or missing `depends_on` ids are invalid. Detect with `python3 scripts/d
    Next:    <ROLE> — <what they should do>   (NEEDS_INPUT: the question for the human)
    ```
 
-On `NEEDS_INPUT` the status does not change (steps 4–8 may still record notes).
+### NEEDS_INPUT
+
+`NEEDS_INPUT` is an **execution outcome only**. It is never a task `status`.
+
+When a role reports `NEEDS_INPUT`: keep `status` unchanged; record what input is required;
+stop that role; Scrum reports the human action; resume only after the input exists.
+Do not write `status: NEEDS_INPUT`.
+
 A commit that records notes without a status change adds no History row and uses
 `[TASK-001] note (ROLE): short note`.
 
 `FAILED` **is** a status (execution could not finish). Do not use Outcome FAILED while leaving
 IN_PROGRESS after the retry limit — transition IN_PROGRESS → FAILED.
+
+### FAILED recovery
+
+`FAILED` is a recovery state, not an implementation restart. Allowed sources: `IN_PROGRESS`,
+`TESTING`, `DEPLOYING` only (not `CODE_REVIEW`).
+
+1. Read `failed_from`.
+2. Fix the recorded tooling / environment / process failure.
+3. Transition `FAILED → failed_from` via this protocol; clear `failed_from`.
+4. Resume from that workflow state.
+5. Do not force `FAILED → IN_PROGRESS` unless `failed_from` is `IN_PROGRESS`.
+
+Product defects remain `BUG`, not `FAILED`.
 
 ## 6. Creating tasks
 
@@ -151,3 +171,63 @@ blocked step. Reasons: `destructive_migration` · `breaking_api` · `security` �
 exists and `human_gate` is empty. Only HUMAN sets `approved_by` / `approved_at`.
 
 Handoff files: `docs/standards/artifacts.md`.
+
+## 11. AC Traceability
+
+Every acceptance criterion must be traceable:
+
+`REQ / Design → AC-### → exactly one implementing task → implementation evidence → SA review → post-merge TEST evidence → READY_FOR_DEPLOY`
+
+- AC originates from the approved requirement/design. Agents must not invent or silently rewrite ACs.
+- Each AC belongs to exactly one task.
+- Implementation agents provide implementation/test evidence for applicable ACs.
+- **TEST** is the only role that checks/unchecks task AC acceptance checkboxes.
+- A task cannot reach `READY_FOR_DEPLOY` while any AC lacks PASS evidence.
+- PQA does not replace TEST’s task-level AC ownership. SA may review **implementation-level**
+  coverage on the branch; SA must not require `tests/TASK-###-run-N.md` before merge.
+
+## 12. Sources of truth
+
+When two artifacts conflict, use the owning source and escalate; do not silently rewrite
+another role’s artifact.
+
+| Concern | Source of truth |
+|---------|-----------------|
+| Requirement | `requirements/REQ-###-*.md` |
+| Task state | `tasks/TASK-###-*.md` |
+| Architecture / API | `docs/design/REQ-###-design.md` |
+| UX contract | `docs/design/ux/` |
+| Visual design | Figma referenced by the UX contract |
+| Product implementation | `product/<component>/` |
+| Acceptance evidence | `tests/` |
+| Bugs | `bugs/` |
+| Deployment evidence | that task’s `## Deployment` |
+| Release | `releases/` |
+| Audit | Git + task `## History` |
+
+### Conflict routing
+
+- Requirement / AC ambiguity → HUMAN / SA
+- Architecture / API ambiguity → SA
+- UX contract ambiguity → UX/UI
+- UX acceptance / visual quality → PQA
+- Implementation defect → owning implementation role
+- Acceptance defect → TEST → `BUG`
+- Deployment / tooling defect → DEVOPS → `FAILED`
+
+## 13. Requirement status
+
+REQ `status` is not a task state. A **child task** of a REQ is a task whose `parent` equals
+that REQ id (direct children only; `depends_on` is a separate graph).
+
+| REQ status | Who | When |
+|------------|-----|------|
+| `APPROVED` | HUMAN | body hashed; they set it |
+| `ANALYZING` | SA | analyze started |
+| `ANALYZED` | PQA | plan APPROVED |
+| `IN_PROGRESS` | SCRUM | first child leaves BACKLOG |
+| `READY_FOR_RELEASE` | PQA | `pqa_accept` PASS and every child is `READY_FOR_DEPLOY` or later (UX_UI / DEVOPS may be `MERGED`) |
+| `RELEASED` | DEVOPS | every direct child is `RELEASED` and `req.py check` passes |
+| `CANCELLED` | HUMAN | they cancel |
+
+`TESTING` on a REQ is unused. `pqa_accept` authorizes deploy; PQA does not deploy or set task `RELEASED`.

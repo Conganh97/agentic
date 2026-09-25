@@ -17,6 +17,12 @@ Skill: `.cursor/skills/devops/SKILL.md`. ADR-0011. Envs: **DEV · STG · PROD**.
 
 Compose **pulls** those tags. Do not run unpacked jars/dist as the deploy.
 
+Default compose is one `api` + one `web`. Multiple BE/FE services need an explicit compose
+change; `deploy.py` refuses to overwrite `API_IMAGE` / `WEB_IMAGE` silently.
+
+A compose up may start several images. Each task still records its own `## Deployment` and
+its own `DEPLOYING → RELEASED`. Do not mutate sibling task status as a side effect.
+
 ## Local pipeline
 
 No remote app host. DevOps (or a self-hosted Actions runner on this Mac) builds and pushes here,

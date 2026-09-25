@@ -24,7 +24,7 @@ TRANSITIONS = {
     ("READY", "IN_PROGRESS"): {"ASSIGNEE"},
     ("IN_PROGRESS", "CODE_REVIEW"): {"ASSIGNEE"},
     ("IN_PROGRESS", "FAILED"): {"ASSIGNEE"},
-    ("CODE_REVIEW", "CHANGES_REQUESTED"): {"SA", "PQA", "UX/UI"},
+    ("CODE_REVIEW", "CHANGES_REQUESTED"): {"SA", "PQA"},
     ("CODE_REVIEW", "MERGED"): {"SA", "PQA"},
     ("CHANGES_REQUESTED", "IN_PROGRESS"): {"ASSIGNEE"},
     ("MERGED", "TESTING"): {"TEST"},
@@ -335,7 +335,7 @@ def check(path, old, new, statuses=None):
 
     tid = nf.get("id", "")
     if status in {"MERGED", "CHANGES_REQUESTED"}:
-        visual = by in {"UX/UI", "PQA"} and (is_uxui_work(nf) or uxui_required(nf))
+        visual = by == "PQA" and (is_uxui_work(nf) or uxui_required(nf))
         if visual:
             if tid and not list((ROOT / "docs" / "design" / "ux" / "reviews").glob(f"{tid}-review-*.md")):
                 err(f"{path}: missing docs/design/ux/reviews/{tid}-review-N.md (copy templates/ux-review.md)")
@@ -345,7 +345,7 @@ def check(path, old, new, statuses=None):
         if tid and not list((ROOT / "tests").glob(f"{tid}-run-*.md")):
             err(f"{path}: missing tests/{tid}-run-N.md (copy templates/test-report.md)")
 
-    if before == "CODE_REVIEW" and status == "CHANGES_REQUESTED" and by in {"UX/UI", "PQA"}:
+    if before == "CODE_REVIEW" and status == "CHANGES_REQUESTED" and by == "PQA":
         o, n = as_int(of.get("uxui_review_iteration")), as_int(nf.get("uxui_review_iteration"))
         if o is None or n != o + 1:
             err(f"{path}: uxui_review_iteration must increase by 1 ({of.get('uxui_review_iteration')} -> {nf.get('uxui_review_iteration')})")

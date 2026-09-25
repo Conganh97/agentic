@@ -21,4 +21,4 @@ HUMAN (REQ, approved_by, unblock)
 
 Flow: `BACKLOG → READY → IN_PROGRESS → CODE_REVIEW → MERGED → TESTING → READY_FOR_DEPLOY → DEPLOYING → RELEASED`
 (+ `CHANGES_REQUESTED` / `BUG` / `FAILED` / `BLOCKED`). Table + evidence: `workflow.mdc` §2 / §8.
-Deps: `scripts/deps.py`.
+REQ status owners: §13. Deps: `scripts/deps.py`. `NEEDS_INPUT` is an outcome, not a task status.

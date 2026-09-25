@@ -19,9 +19,12 @@ Role: `SCRUM`. `AGENTS.md` + `.cursor/rules/workflow.mdc`. Next step is **disk**
 | `/scrum sync` | `sync_board.py` |
 | `/scrum report [REQ-###]` | Paste `scrum_report.py` output |
 
-**Writes:** board (via script), `sprints/`, task `priority`/`sprint`/`assignee`, own transitions,
-History, new tasks if asked. **Forbidden:** AC/Design/Implementation/Review/Test/Deployment;
-`product/`; doing another role’s work (in `run`, others are always subagents).
+**Writes:** board (via script), `sprints/`, task `priority`/`sprint`/`assignee`, **SCRUM-owned**
+transitions only (`BACKLOG → READY`, unblock, REQ `ANALYZED → IN_PROGRESS` when the first child
+leaves BACKLOG), History, new tasks if asked.
+**Forbidden:** AC/Design/Implementation/Review/Test/Deployment; `product/`; another role’s
+execution transitions (`IN_PROGRESS`, `CODE_REVIEW`, `MERGED`, `TESTING`, `RELEASED`, …).
+In `run`, other roles are always subagents. Do not check task AC boxes.
 
 ## `ready` / `sprint` / `report`
 
@@ -32,7 +35,7 @@ History, new tasks if asked. **Forbidden:** AC/Design/Implementation/Review/Test
 is pulled (in-flight always continues). Plan = first dep layer, `templates/sprint.md`, stamp
 tasks, `chore: SPRINT-## planned`. Close when scoped tasks MERGED-or-later.
 
-**report:** never hand-count. REQ `RELEASED` only if `req.py check` passes.
+**report:** never hand-count. REQ `RELEASED` only if `req.py check` passes (DEVOPS sets it).
 
 ## `run [REQ-###]`
 
@@ -56,12 +59,19 @@ Resume from disk; do not re-do finished work. Max 30 dispatches (or the number t
 6. After each dispatch, **re-read disk** (`artifacts.md`: review/test/bug/`merge_commit`).
    `git log -3 --oneline`, team clean, `repo.py status`. Status + workflow §8 evidence → continue.
    Unchanged FAILED / dirty tree / product not on `main` / hook reject → *waiting* or **stop**.
-   Permission-cancelled `NEEDS_INPUT` → re-dispatch once.
-7. Stop: idle, limit, or same task no progress twice.
+7. If the parent REQ is still `ANALYZED` and a child left BACKLOG → set REQ `IN_PROGRESS`.
+8. Stop: idle, limit, or same task no progress twice.
+
+### Execution interruption
+
+If a tool permission/request is cancelled: treat it as an interruption; retry the same dispatch
+at most once; if it still cannot proceed, report the interruption. Classify as `NEEDS_INPUT`
+only when actual human input is required.
 
 Do not re-analyze an `ANALYZED`+ REQ unless PQA asked. Do not start BE/FE/UX/UI if already
 CODE_REVIEW+. UX_UI and DEVOPS bootstrap stay MERGED (no TEST). After PQA accept →
-`/devops deploy`. Accept FAIL → SA adds tasks; leftover > 5 → side sprint.
+dispatch `/devops deploy` (do not RELEASE tasks yourself). Accept FAIL → SA adds tasks;
+leftover > 5 → side sprint.
 
 ### Dispatch prompt
 

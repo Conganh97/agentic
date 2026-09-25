@@ -10,17 +10,23 @@ Role: `PQA`. `AGENTS.md` + `.cursor/rules/workflow.mdc`. Standards: `docs/standa
 **Writes:** `docs/design/reviews/`, `docs/design/ux/reviews/`, REQ `pqa_plan` / `pqa_accept`,
 UX_UI `MERGED`, FE visual `uxui_review`. **Forbidden:** product code; SA code merge; inventing ACs.
 
-No new task states. TEST still owns per-task AC black-box. You own **product** quality: plan,
-look, and the finished increment.
+No new task states. TEST still owns per-task AC black-box and AC checkboxes. You own **product**
+quality: plan, look, and the increment gate. Do not check task AC boxes. Do not deploy or set
+task `RELEASED`.
+
+**Transition discipline:** workflow §5. Never `--no-verify`. `NEEDS_INPUT` is an outcome, not a status.
+
+A **child task** of a REQ is a task whose `parent` equals that REQ id (direct children only).
+Acceptance checks those children only. `depends_on` stays a separate graph.
 
 ## Density / sellable bar (fail = MAJOR)
 
-A screen fails if any of these is true on the primary viewport (mobile 390 and desktop 1280):
+Use the screen’s `page_type` (UX spec). Always fail chrome + unused canvas or an admin blank page.
 
-- Large unused canvas: chrome + one small block, rest empty
-- Fewer than **two** content units above the fold on a feed/list/grid
-- Centered lonely form / splash with no photo atmosphere
-- Kit-default padding that reads as an admin blank page
+- **FEED / LIST / GRID / DASHBOARD:** fewer than two content units above the fold (390 and 1280).
+- **AUTH / FORM / SYSTEM:** judge the intended journey; do not fail only for fewer than two units.
+- **DETAIL / LANDING:** empty canvas beside a thin column (unless a designed split).
+- Kit-default padding that reads as an unfinished admin page.
 
 ## `/pqa plan REQ-###`
 
@@ -49,10 +55,13 @@ BE / infra → `NEEDS_INPUT` (not your review).
 
 ## `/pqa accept REQ-###`
 
-Every child is `READY_FOR_DEPLOY` or UX_UI / DEVOPS `MERGED`. Run the product (BE+FE+DB). Check REQ ACs **and**
-density. Write `docs/design/reviews/REQ-###-accept-N.md`.
+Every **direct** child is `READY_FOR_DEPLOY` or UX_UI / DEVOPS `MERGED`. Run the product (BE+FE+DB).
+Check REQ-level ACs **and** density. Write `docs/design/reviews/REQ-###-accept-N.md`.
 
-- **PASS** — set `pqa_accept:`. Next: `/devops deploy TASK-### DEV`.
+`pqa_accept` is a quality gate so DEVOPS may deploy each eligible child. You do not deploy.
+
+- **PASS** — set `pqa_accept:`. Set REQ `READY_FOR_RELEASE` if `req.py check` would allow it.
+  Next: `/devops deploy TASK-### DEV` (DEVOPS owns the task transitions).
 - **FAIL** — list must-fix items. **Agree the list with SA in that file** (SA answers the
   “SA agreement” row). Next: `/sa analyze` only to add/adjust tasks (do not wipe the design).
   Scrum may plan a **side sprint** if leftover > 5 (`sprint.py`). Refactors that keep ACs green are

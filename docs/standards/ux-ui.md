@@ -16,8 +16,12 @@ Playwright-only (`requires_uxui: false`).
 Small REQ: one spec + tokens + one Figma file.
 
 Must define: brand/tokens, reusable components, named flows, per-page layout + 4 states,
-responsive **layout change**, a11y, real image slots, **density** (fold contents at 390 / 1280).
-Kit-default or sparse (chrome + empty canvas) pages are not done.
+responsive **layout change**, a11y, real image slots, **`page_type`** and **density**
+(fold contents at 390 / 1280). Kit-default or chrome + empty canvas pages are not done.
+
+`page_type`: `FEED` | `LIST` | `GRID` | `DASHBOARD` | `DETAIL` | `FORM` | `AUTH` | `LANDING` | `SYSTEM`.
+Content-dense types (FEED/LIST/GRID/DASHBOARD) need ≥2 content units above the fold.
+AUTH/FORM/SYSTEM are judged against the intended journey — do not fail only for fewer than two units.
 
 PQA reviews the contract and the FE (ADR-0010). UX/UI does not approve its own look.
 

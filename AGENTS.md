@@ -18,15 +18,17 @@ Stack ADR-0009 (Java 21 + Spring, React). UX ADR-0008. PQA ADR-0010. DevOps ADR-
 ## 2. Hard rules
 
 - Change `status` only via workflow §5, only transitions your role may do (§2).
+- `NEEDS_INPUT` is an outcome, never a task status. `FAILED` recovers to `failed_from`.
 - Never merge or approve your own work. Never set `approved_by`.
 - No PROD deploy without human `approved_by`.
-- Analyze a REQ only after human `APPROVED`. READY needs `AC-###`.
+- Analyze a REQ only after human `APPROVED`. READY needs `AC-###`. TEST owns AC checkboxes.
 - Code `MERGED` only after SA `--no-ff`; `merge_commit` is that sha on `main`.
 - Review/test loops max 3 → then `BLOCKED`. Product miss = `BUG`. Tooling miss = `FAILED`.
 - `depends_on` is a graph (no cycles). READY only when every dep is MERGED or later.
 - Read only files your skill lists. Learn state from disk + `git`, never assume.
 - No secrets in markdown/commits/chat. No bypass of `.githooks/` / `--no-verify`.
 - Planning, review, merge, release live only in this repo’s markdown.
+- Conflicts: escalate to the owning role (workflow §12); do not rewrite another role’s artifact.
 
 ## 3. How to work
 

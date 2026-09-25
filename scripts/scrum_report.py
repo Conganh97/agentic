@@ -75,7 +75,7 @@ def main(argv: list[str]) -> int:
     if req_id:
         children = list(tasks.values())
         if children and all(c["status"] == "RELEASED" for c in children):
-            print(f"Requirement {req_id}: all tasks RELEASED → may set READY_FOR_RELEASE / RELEASED")
+            print(f"Requirement {req_id}: all tasks RELEASED → DEVOPS may set REQ RELEASED")
         elif children:
             print(f"Requirement {req_id}: incomplete — do not mark RELEASED")
     return 0

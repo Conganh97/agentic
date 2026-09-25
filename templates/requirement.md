@@ -1,7 +1,9 @@
 ---
 id: REQ-XXX
 title:
-status: DRAFT          # DRAFT | APPROVED | ANALYZING | ANALYZED | IN_PROGRESS | TESTING | READY_FOR_RELEASE | RELEASED | BLOCKED | CANCELLED
+status: DRAFT          # DRAFT | APPROVED | ANALYZING | ANALYZED | IN_PROGRESS | READY_FOR_RELEASE | RELEASED | BLOCKED | CANCELLED
+                       # Owners: HUMAN APPROVED/CANCELLED · SA ANALYZING · PQA ANALYZED + READY_FOR_RELEASE · SCRUM IN_PROGRESS · DEVOPS RELEASED
+                       # TESTING on a REQ is unused. Never NEEDS_INPUT.
 revision: 1
 content_hash:            # python3 scripts/req.py hash requirements/REQ-XXX-*.md
 priority: MEDIUM       # LOW | MEDIUM | HIGH | CRITICAL

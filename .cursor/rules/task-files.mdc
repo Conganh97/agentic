@@ -11,7 +11,7 @@ alwaysApply: false
   - `type`: EPIC | STORY | TASK | BUG | TECHNICAL_TASK
   - `priority`: LOW | MEDIUM | HIGH | CRITICAL
   - `assignee`: SCRUM | SA | PQA | UX/UI | BE | FE | TEST | DEVOPS
-  - `status`: see `.cursor/rules/workflow.mdc` (includes `FAILED`)
+  - `status`: see `.cursor/rules/workflow.mdc` (includes `FAILED`). Never `NEEDS_INPUT`.
   - `work_type` (optional): BACKEND | FRONTEND | UX_UI | TEST | DEVOPS
   - `requires_uxui`: `true` / `false`. Default implied `true` when `work_type: FRONTEND`.
     Explicit `false` skips UX/UI (e.g. Playwright-only). Unused on non-UI tasks.
@@ -20,7 +20,7 @@ alwaysApply: false
 - `depends_on` is a YAML list of task ids, e.g. `[TASK-002, TASK-003]`. No cycles; ids must exist.
 - `requirement_revision` matches the parent requirement's `revision` (empty = any).
 - `human_gate` empty, or a reason string; then `/scrum run` waits until HUMAN sets `approved_by`.
-- `failed_from` / `failure` used only for `FAILED` (clear `failed_from` on recover).
+- `failed_from` / `failure` used only for `FAILED`. Recover `FAILED → failed_from`, then clear `failed_from`.
 - `updated` and History times use `YYYY-MM-DD HH:MM` from `date "+%Y-%m-%d %H:%M"`.
 - Keep section headings exactly as in the template, in the same order.
 - Sections are append-only: add `### Round N` / `### Run N`; never edit or delete earlier rounds.

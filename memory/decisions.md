@@ -14,3 +14,4 @@ Index of architecture decisions and rejected options. Append-only. Details live 
 | 2026-09-24 | ADR-0009 | Locked: Java 21 + Spring, React. SA chooses kit/DB/etc. Package-by-feature FE/BE layouts | Global Mantine lock (ADR-0006) |
 | 2026-09-24 | ADR-0010 | Product QA: plan loop, UX review, increment accept. SA = code only | SA merges UX; designer self-review FE |
 | 2026-09-24 | ADR-0011 | DevOps owns repos + Docker + GHA; DEV/STG/PROD on this machine; GHCR images | Cloud-only runners; images never pushed; UAT |
+| 2026-09-25 | workflow | FAILED recovers to `failed_from`; NEEDS_INPUT outcome-only; REQ status owners; PQA child = `parent`; deploy evidence per task; density by `page_type` | Generic FAILED→IN_PROGRESS; UX/UI visual self-review; silent sibling RELEASED |

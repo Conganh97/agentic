@@ -2,7 +2,7 @@
 task: TASK-XXX
 review_round: 1
 status: CHANGES_REQUESTED   # APPROVED | CHANGES_REQUESTED | BLOCKED
-reviewer: UX/UI
+reviewer: PQA
 updated:
 ---
 

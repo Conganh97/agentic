@@ -12,7 +12,8 @@ from a short SA §13 note. A dedicated design contract is required before FE imp
 
 ## Decision
 
-Add role `UX/UI` (`/uxui`, `/uxui review`) without new task states.
+Add role `UX/UI` (`/uxui`) without new task states. Visual sign-off is `/pqa review` (ADR-0010);
+`/uxui review` is retired.
 
 - SA still owns architecture, API, data, and task breakdown.
 - UX/UI owns journeys, IA, design system, page specs, responsive behavior, UI states, and a11y.

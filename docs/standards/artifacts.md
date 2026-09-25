@@ -15,12 +15,16 @@ only after the artifacts below exist on disk.
 | PQA → SA (FE) | `docs/design/ux/reviews/TASK-###-review-N.md` **APPROVED** · `uxui_review` set |
 | BE / FE → SA | Implementation iteration · product branch · `branch` set |
 | SA → TEST | `reviews/TASK-###-round-N.md` **APPROVED** · `merge_commit` on `main` (skip TEST for `UX_UI` / `DEVOPS`) |
-| TEST → PQA | every child `READY_FOR_DEPLOY` (UX_UI / DEVOPS `MERGED`) |
-| PQA → DEVOPS | `pqa_accept` APPROVED · then `/devops deploy TASK-### DEV` |
+| TEST → PQA | every **direct** child (`parent` = REQ id) `READY_FOR_DEPLOY` (UX_UI / DEVOPS `MERGED`) |
+| PQA → DEVOPS | `pqa_accept` APPROVED (quality gate only) · then `/devops deploy TASK-### DEV` |
 | DEVOPS → HUMAN | `## Deployment` · GHCR image tags · compose smoke · `release` on RELEASED · `releases/REL-###.md` for PROD |
 | PQA → SA (accept fail) | `docs/design/reviews/REQ-###-accept-N.md` CHANGES_REQUESTED + agreed fix list |
 | TEST → Scrum | `tests/TASK-###-run-N.md` · AC results · `bugs/BUG-###-*.md` on FAIL |
 | Scrum (each dispatch) | Append `runs/journal.md` · current `runs/RUN-###.md` |
 | Scrum (large work) | ACTIVE `sprints/SPRINT-##.md` · tasks stamped `sprint:` (`scripts/sprint.py`) |
+
+A **child task** is a task whose `parent` equals the REQ id (not recursive). REQ status owners:
+HUMAN `APPROVED` · SA `ANALYZING` · PQA `ANALYZED` + `READY_FOR_RELEASE` · SCRUM `IN_PROGRESS` ·
+DEVOPS `RELEASED`. Sources of truth and conflict routing: workflow §12.
 
 Commands: `python3 scripts/scrum_report.py` · `python3 scripts/next.py` · `python3 scripts/sprint.py` · `python3 scripts/req.py check` · `python3 scripts/deploy.py --env DEV`.

@@ -30,7 +30,8 @@ Cursor, without writing or maintaining platform code or infrastructure.
 
 **Negative / risks**
 - Rules are guidance; agents can make mistakes → mitigated by pre-commit check, hooks, human review.
-- No automatic scheduling; a human starts each agent chat (Scrum `next` suggests what to run).
+- Scheduling is `/scrum run` (SCRUM chat dispatches role subagents from `next.py`). A human
+  still starts that run and handles gates (`APPROVED`, `approved_by`, unblock).
 - Concurrent edits to shared files (e.g. `board.md`) can conflict → one agent per task; board is derived.
 
 ## Alternatives considered

@@ -72,8 +72,9 @@ Required when any task is assigned to FE. Write "none" only if there is no web U
 SA lists **constraints** here. The sellable visual contract is the UX/UI task (`docs/design/ux/`, ADR-0008).
 
 - **Screens:** one row per view (route, purpose, primary actions, data/API it needs).
-- **Constraints:** auth, i18n, the UI kit named in §5, legally fixed copy, **density**
-  (feed/list ≥2 content units above the fold; no chrome+void).
+- **Constraints:** auth, i18n, the UI kit named in §5, legally fixed copy, **density by
+  `page_type`** (FEED/LIST/GRID/DASHBOARD ≥2 units above the fold; AUTH/FORM/SYSTEM judged
+  against the journey; no chrome+void).
 - **UX/UI task:** id that will write `docs/design/ux/REQ-###-ux.md` and page specs. Every FE
   implementation task `depends_on` that UX/UI task and sets `requires_uxui: true`.
 - Do **not** write the visual spec here (UX/UI + Figma). A blank-page form is not a design.

@@ -28,8 +28,8 @@ Do not clone `product/` by hand — `/repo create`.
 
 ## Deliver a requirement
 
-1. Copy `templates/requirement.md` → `requirements/REQ-###-<slug>.md`. Hash:
-   `python3 scripts/req.py hash …`. Body edit → bump `revision` + re-hash.
+1. Copy `templates/requirement.md` → `requirements/REQ-###-<slug>.md` (see `requirements/README.md`).
+   Hash: `python3 scripts/req.py hash …`. Body edit → bump `revision` + re-hash.
 2. You set `status: APPROVED`.
 3. `/scrum run REQ-###` (main chat = SCRUM). Or call a role (`/backend TASK-###`, …).
 4. You: approve DRAFT REQ, set `approved_by` on gates/PROD, unblock `BLOCKED`. Keep Docker up.

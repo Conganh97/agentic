@@ -133,6 +133,13 @@ def main() -> int:
         rows = {args.component: rows[args.component]}
     if not rows:
         fail("no components registered; DevOps creates them with scripts/repo.py create", 2)
+    if not args.component:
+        be_n = sum(1 for r in rows.values() if r["type"].upper() == "BE")
+        fe_n = sum(1 for r in rows.values() if r["type"].upper() == "FE")
+        if be_n > 1:
+            fail("compose has one API_IMAGE; pass --component or update ops/compose for multiple services", 2)
+        if fe_n > 1:
+            fail("compose has one WEB_IMAGE; pass --component or update ops/compose for multiple frontends", 2)
 
     need_docker()
     if not args.skip_push:
