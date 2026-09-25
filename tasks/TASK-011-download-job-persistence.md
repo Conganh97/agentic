@@ -3,7 +3,7 @@ id: TASK-011
 title: Download job persistence and status model
 type: TASK
 priority: HIGH
-status: BACKLOG
+status: READY
 assignee: BE
 parent: REQ-002
 requirement_revision: 1
@@ -71,3 +71,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | Time | From | To | By | Note |
 |------|------|----|----|------|
 | 2026-09-25 16:33 | — | BACKLOG | SA | Created from REQ-002 design revision 1 hash b06116020682e658 |
+| 2026-09-25 16:59 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-010] READY_FOR_DEPLOY |
