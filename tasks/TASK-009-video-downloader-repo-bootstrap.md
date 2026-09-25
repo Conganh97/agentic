@@ -3,7 +3,7 @@ id: TASK-009
 title: Create video-downloader-service repo, Docker, GHA, compose
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: DEVOPS
 parent: REQ-002
 requirement_revision: 1
@@ -17,7 +17,7 @@ figma:
 depends_on: []
 sprint: SPRINT-04
 branch: ops/TASK-009-video-downloader-repo-bootstrap
-merge_commit:
+merge_commit: 679d92cc29157282db2e90645202dd3320435e66
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 16:42
+updated: 2026-09-25 16:50
 ---
 
 ## Description
@@ -76,6 +76,16 @@ PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approv
 ## Review (SA)
 Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
+### Round 1 — APPROVED
+Reviewed: ops/TASK-009-video-downloader-repo-bootstrap @ `0e80f738cc098868dc32755a21d0950d770af592` · Build/tests: SKIP (docker daemon down; no Spring scaffold — TASK-010)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | ops/compose/.env.example | MINOR | Example pins DEV ports only; a STG/PROD copy would override compose defaults |
+| 2 | .github/workflows/ci.yml | MINOR | GHCR login still runs when verify/build are skipped (harmless) |
+| 3 | scripts/deploy.py | MINOR | `docker build` is not gated on `pom.xml`/`mvnw`; will fail until TASK-010 scaffolds the app |
+
+Merged `679d92cc29157282db2e90645202dd3320435e66`.
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -87,3 +97,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 16:37 | BACKLOG | READY | SCRUM | DoR met; deps [] |
 | 2026-09-25 16:38 | READY | IN_PROGRESS | DEVOPS | branch ops/TASK-009-video-downloader-repo-bootstrap |
 | 2026-09-25 16:42 | IN_PROGRESS | CODE_REVIEW | DEVOPS | product sha 0e80f73; compose ops/compose/{dev,stg,prod}.yml; deploy.py DOWNLOADER_API_IMAGE; docker build skipped (daemon down, no scaffold) |
+| 2026-09-25 16:50 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=679d92cc29157282db2e90645202dd3320435e66 --no-ff parents 83785c4 + 0e80f73; reviews/TASK-009-round-1.md |
