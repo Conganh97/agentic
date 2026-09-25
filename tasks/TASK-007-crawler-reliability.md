@@ -3,7 +3,7 @@ id: TASK-007
 title: Crawler retry, rate limit, and public-only bounds
 type: TASK
 priority: HIGH
-status: DEPLOYING
+status: RELEASED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -18,7 +18,7 @@ depends_on: [TASK-004]
 sprint:
 branch: feature/TASK-007-crawler-reliability
 merge_commit: 3f1d0d4e31239489c3dab81eefe535ce03119a00
-release:
+release: DEV
 review_iteration: 0
 uxui_review_iteration: 0
 test_iteration: 0
@@ -90,6 +90,12 @@ Reviewed: feature/TASK-007-crawler-reliability @ `e276e04312887c921aa1d1e6ff2861
 
 ## Deployment (DEVOPS)
 
+### DEV — 2026-09-25 16:18 — OK
+- Images: `ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1` and `:dev`
+- Command: reused healthy `ops/compose/dev.yml` (TASK-002 image already up; `python3 scripts/deploy.py --env DEV --component douyin-crawler-service` not re-run)
+- Smoke: `http://127.0.0.1:18081/actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`; POST `/api/v1/crawl-jobs` keyword `task007-dev-smoke` limit 3 → 202 `{"jobId":"1d2dfa6e-…","status":"PENDING"}`; GET same job → 200 `COMPLETED` `discovered=3` `persisted=3`
+- Rollback: `docker compose -f ops/compose/dev.yml up -d` with the previous tag
+
 ## History
 | Time | From | To | By | Note |
 |------|------|----|----|------|
@@ -101,3 +107,4 @@ Reviewed: feature/TASK-007-crawler-reliability @ `e276e04312887c921aa1d1e6ff2861
 | 2026-09-25 15:37 | MERGED | TESTING | TEST | tested sha 3f1d0d4e31239489c3dab81eefe535ce03119a00 is product main HEAD and contains merge_commit; run 1 started |
 | 2026-09-25 15:38 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-007-run-1.md PASS; AC-014 AC-015 AC-016 AC-032 AC-033 checked; ./mvnw -q verify PASS (62) |
 | 2026-09-25 16:18 | READY_FOR_DEPLOY | DEPLOYING | DEVOPS | DEV deploy started; PQA accept APPROVED docs/design/reviews/REQ-001-accept-1.md; reuse healthy compose ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1 |
+| 2026-09-25 16:18 | DEPLOYING | RELEASED | DEVOPS | DEV compose reused OK; image ghcr.io/conganh97/product-douyin-crawler-service:dev-607c9c1; smoke GET http://127.0.0.1:18081/actuator/health → 200 status=UP; POST /api/v1/crawl-jobs → 202 PENDING; GET COMPLETED discovered=3 persisted=3; release=DEV |
