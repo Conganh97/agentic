@@ -3,7 +3,7 @@ id: TASK-004
 title: Discovery port, mock, and public keyword provider
 type: TASK
 priority: HIGH
-status: READY
+status: IN_PROGRESS
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -16,7 +16,7 @@ uxui_review:
 figma:
 depends_on: [TASK-002]
 sprint: SPRINT-03
-branch:
+branch: feature/TASK-004-discovery-provider
 merge_commit:
 release:
 review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:59
+updated: 2026-09-25 15:02
 ---
 
 ## Description
@@ -72,3 +72,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 |------|------|----|----|------|
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 14:59 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002] MERGED |
+| 2026-09-25 15:02 | READY | IN_PROGRESS | BE | branch feature/TASK-004-discovery-provider |
