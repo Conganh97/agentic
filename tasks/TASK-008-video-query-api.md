@@ -3,7 +3,7 @@ id: TASK-008
 title: Video query API, keyset pagination, and crawl integration tests
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:53
+updated: 2026-09-25 15:57
 ---
 
 ## Description
@@ -56,6 +56,12 @@ Integration tests: Testcontainers + `crawler.provider=mock` only.
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (video query API)
+- Branch: `feature/TASK-008-video-query-api` @ d0b1436
+- Changed: `video/{api,application,domain,infrastructure}`, `V4__video_keyset_index.sql`, `ApiExceptionHandler`
+- Tests: `./mvnw -q verify` → pass (100)
+- Notes: GET `/api/v1/videos` keyset on `(crawled_at DESC, id DESC)`, default limit 20 max 100, opaque `nextCursor`, no `COUNT(*)` on `video`. GET `/api/v1/videos/{id}` returns latest snapshot fields. OpenAPI documents both paths (`listVideos`, `getVideo`). Integration: Testcontainers + `crawler.provider=mock` crawl job then query.
+
 ## UX/UI Review
 PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approve its own look.
 
@@ -72,3 +78,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 15:51 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-003, TASK-006] READY_FOR_DEPLOY |
 | 2026-09-25 15:53 | READY | IN_PROGRESS | BE | branch feature/TASK-008-video-query-api from product main a79b495 |
+| 2026-09-25 15:57 | IN_PROGRESS | CODE_REVIEW | BE | product sha d0b1436b4e0790094032cfb2628b2a71c8d7ffa5; Implementation iteration 1; ./mvnw -q verify pass (100) |
