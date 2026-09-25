@@ -3,7 +3,7 @@ id: TASK-002
 title: Service skeleton with health, logs, and OpenAPI
 type: TASK
 priority: HIGH
-status: TESTING
+status: READY_FOR_DEPLOY
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:47
+updated: 2026-09-25 14:48
 ---
 
 ## Description
@@ -44,10 +44,10 @@ must start from the documented local setup (compose + `SERVER_PORT`). No crawl o
 features yet.
 
 ## Acceptance Criteria
-- [ ] AC-001 The service can start successfully using the documented local development setup.
-- [ ] AC-022 Application logs are structured and contain sufficient information to investigate crawl failures.
-- [ ] AC-024 Application health checks are available.
-- [ ] AC-025 APIs are documented through OpenAPI.
+- [x] AC-001 The service can start successfully using the documented local development setup.
+- [x] AC-022 Application logs are structured and contain sufficient information to investigate crawl failures.
+- [x] AC-024 Application health checks are available.
+- [x] AC-025 APIs are documented through OpenAPI.
 
 ## Design (SA)
 
@@ -82,6 +82,15 @@ Merged `9d951ba14568ca1c6fa5eaf84c7317407b47c178`.
 
 ## Test (TEST)
 
+### Run 1 — PASS
+- Tested: main @ 9d951ba14568ca1c6fa5eaf84c7317407b47c178 (contains merge_commit)
+- Build/tests: `./mvnw -q verify` PASS
+- AC-001 pass — `SERVER_PORT=18081 ./mvnw spring-boot:run` → Started DouyinCrawlerApplication; Tomcat 18081
+- AC-022 pass — ECS JSON console (`ecs.version=8.11`, `@timestamp`, `log.level`, `service.name`); crawl fields TASK-006
+- AC-024 pass — `GET /actuator/health` → 200 `{"groups":["liveness","readiness"],"status":"UP"}`
+- AC-025 pass — `GET /v3/api-docs` → 200 OpenAPI 3.1.0 empty `paths`
+- Evidence: `tests/TASK-002-run-1.md`
+
 ## Deployment (DEVOPS)
 
 ## History
@@ -93,3 +102,4 @@ Merged `9d951ba14568ca1c6fa5eaf84c7317407b47c178`.
 | 2026-09-25 14:44 | IN_PROGRESS | CODE_REVIEW | BE | product sha 523e282; Implementation iteration 1; ./mvnw -q verify pass (4) |
 | 2026-09-25 14:46 | CODE_REVIEW | MERGED | SA | review round 1 APPROVED; merge_commit=9d951ba14568ca1c6fa5eaf84c7317407b47c178 --no-ff parents 70231b2 + 523e282; reviews/TASK-002-round-1.md |
 | 2026-09-25 14:47 | MERGED | TESTING | TEST | tested sha 9d951ba14568ca1c6fa5eaf84c7317407b47c178 is main HEAD and contains merge_commit; run 1 started |
+| 2026-09-25 14:48 | TESTING | READY_FOR_DEPLOY | TEST | tests/TASK-002-run-1.md PASS; AC-001 AC-022 AC-024 AC-025 checked; ./mvnw -q verify PASS; health+openapi 200 |
