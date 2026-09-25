@@ -26,6 +26,7 @@ Registry (written by `scripts/repo.py create`; do not edit by hand):
 
 | Component | Type | Path | Remote |
 |-----------|------|------|--------|
+| douyin-crawler-service | BE | `product/services/douyin-crawler-service` | https://github.com/Conganh97/product-douyin-crawler-service |
 
 ## Stack
 
