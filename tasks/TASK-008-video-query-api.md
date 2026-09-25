@@ -3,7 +3,7 @@ id: TASK-008
 title: Video query API, keyset pagination, and crawl integration tests
 type: TASK
 priority: HIGH
-status: CODE_REVIEW
+status: MERGED
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -17,7 +17,7 @@ figma:
 depends_on: [TASK-003, TASK-006]
 sprint:
 branch: feature/TASK-008-video-query-api
-merge_commit:
+merge_commit: 607c9c1d8cd7a795c8913d77aeb36fdeaec74261
 release:
 review_iteration: 0
 uxui_review_iteration: 0
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:57
+updated: 2026-09-25 15:59
 ---
 
 ## Description
@@ -68,6 +68,14 @@ PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approv
 ## Review (SA)
 Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 
+### Round 1 — APPROVED
+Reviewed: feature/TASK-008-video-query-api @ `d0b1436b4e0790094032cfb2628b2a71c8d7ffa5` · Build/tests: `./mvnw -q verify` PASS (100)
+| # | File | Severity | Comment |
+|---|------|----------|---------|
+| 1 | JpaVideoMetricRepository.java | MINOR | `findLatestByVideoIds` loads every snapshot for the page then keeps the first per id |
+| 2 | VideoCursor.java | MINOR | Cursor is reversible Base64 of `instant\|uuid`; design only requires opaque, not signed |
+| 3 | VideoController.java | MINOR | OpenAPI `@Operation` does not declare 400/404 ProblemDetail responses (paths and operationIds are present) |
+
 ## Test (TEST)
 
 ## Deployment (DEVOPS)
@@ -79,3 +87,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 15:51 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-003, TASK-006] READY_FOR_DEPLOY |
 | 2026-09-25 15:53 | READY | IN_PROGRESS | BE | branch feature/TASK-008-video-query-api from product main a79b495 |
 | 2026-09-25 15:57 | IN_PROGRESS | CODE_REVIEW | BE | product sha d0b1436b4e0790094032cfb2628b2a71c8d7ffa5; Implementation iteration 1; ./mvnw -q verify pass (100) |
+| 2026-09-25 15:59 | CODE_REVIEW | MERGED | SA | reviews/TASK-008-round-1.md APPROVED; merge_commit 607c9c1d8cd7a795c8913d77aeb36fdeaec74261 (--no-ff, parents a79b495 + d0b1436); ./mvnw -q verify PASS (100) |
