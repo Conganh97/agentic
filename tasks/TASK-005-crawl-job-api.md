@@ -3,7 +3,7 @@ id: TASK-005
 title: Crawl job API and async dispatch
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 15:17
+updated: 2026-09-25 15:22
 ---
 
 ## Description
@@ -65,6 +65,12 @@ Optional `@Scheduled` sweep applies the same rule so jobs fail even if no one re
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (crawl job API)
+- Branch: `feature/TASK-005-crawl-job-api` @ 0c24091
+- Changed: `crawljob/{api,application,domain,infrastructure}`, `shared/error/ApiExceptionHandler.java`, `V2__crawl_job.sql`, `CrawlerProperties` job.stale-after, actuator prometheus
+- Tests: `./mvnw -q verify` → pass (51)
+- Notes: POST `/api/v1/crawl-jobs` returns 202 PENDING and dispatches on `crawlJobTaskExecutor` after commit. GET returns job resource + counters. Stub runner marks RUNNING then COMPLETED (no item work; TASK-006). NFR-5 stale RUNNING marked FAILED on create/status read and optional 5m sweep. RFC 9457 ProblemDetail for 400/404. Meters `crawler.jobs`, `crawler.videos.*`, `crawler.job.duration` registered at `/actuator/prometheus`.
+
 ## UX/UI Review
 PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approve its own look.
 
@@ -81,3 +87,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 15:11 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-003] READY_FOR_DEPLOY |
 | 2026-09-25 15:17 | READY | IN_PROGRESS | BE | branch feature/TASK-005-crawl-job-api |
+| 2026-09-25 15:22 | IN_PROGRESS | CODE_REVIEW | BE | product sha 0c24091821bdfa4fad83f4ff9e5105a7b19a8ea0; Implementation iteration 1; ./mvnw -q verify pass (51) |
