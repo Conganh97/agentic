@@ -3,7 +3,7 @@ id: TASK-003
 title: Video and metric persistence with uniqueness
 type: TASK
 priority: HIGH
-status: IN_PROGRESS
+status: CODE_REVIEW
 assignee: BE
 parent: REQ-001
 requirement_revision: 1
@@ -32,7 +32,7 @@ failure_recoverable:
 human_gate:
 approved_by:
 approved_at:
-updated: 2026-09-25 14:51
+updated: 2026-09-25 14:53
 ---
 
 ## Description
@@ -59,6 +59,12 @@ Domain unit tests for id derivation and snapshot-append rules.
 
 ## Implementation (BE/FE)
 
+### Iteration 1 (video persistence)
+- Branch: `feature/TASK-003-video-persistence` @ f442c78
+- Changed: `video/{domain,application,infrastructure}`, `db/migration/V1__video_and_video_metric.sql`, JPA + Flyway wiring
+- Tests: `./mvnw -q verify` → pass (15)
+- Notes: Flyway owns `video` / `video_metric` only. UNIQUE (source, source_video_id). Missing `source_video_id` → SHA-256 of canonical URL. Metric snapshots insert-only. No REST query API; no crawl_job tables. Testcontainers PostgreSQL 16.
+
 ## UX/UI Review
 PQA writes visual rounds here / `docs/design/ux/reviews/`. UX/UI does not approve its own look.
 
@@ -75,3 +81,4 @@ Code only. PQA owns UX_UI merge and FE visual `uxui_review`.
 | 2026-09-25 14:26 | — | BACKLOG | SA | Created from REQ-001 design revision 1 hash c34978450afab2c1 |
 | 2026-09-25 14:49 | BACKLOG | READY | SCRUM | DoR met; deps [TASK-002] MERGED |
 | 2026-09-25 14:51 | READY | IN_PROGRESS | BE | branch feature/TASK-003-video-persistence |
+| 2026-09-25 14:53 | IN_PROGRESS | CODE_REVIEW | BE | product sha f442c78; Implementation iteration 1; ./mvnw -q verify pass (15) |
